@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>abin の 成长之路</title>
-    <link>https://kevinbin123.github.io/</link>
-    <description>Recent content on abin の 成长之路</description>
+    <title>Tecs on abin の 成长之路</title>
+    <link>https://kevinbin123.github.io/tecs/</link>
+    <description>Recent content in Tecs on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 06 Nov 2021 00:50:39 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 06 Nov 2021 00:50:39 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/tecs/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Windows上安装hexo并且推送到github过程记录</title>
       <link>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
@@ -44,25 +44,6 @@ hugo server --theme=hyde --buildDrafts 在配置文件中修改后,然后启动
 修改config.toml 增加 theme = &amp;quot;m10c&amp;quot; 启动： hugo server --buildDrafts 访问的话 http://localhost:1313/
 配置github推送 hugo --baseUrl=&amp;quot;https://kevinbin123.github.io/&amp;quot; --buildDrafts 进入public目录，用git base here工具
 git init git add . git commit -m &amp;quot;hugo blog&amp;quot; git remote add origin git@github.</description>
-    </item>
-    
-    <item>
-      <title>MarkDown语法的学习</title>
-      <link>https://kevinbin123.github.io/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</link>
-      <pubDate>Fri, 05 Nov 2021 23:47:43 +0800</pubDate>
-      
-      <guid>https://kevinbin123.github.io/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</guid>
-      <description>MarkDown的语法学习 代码块 ```go package main import fmt func main(){ } 标题 # 一级标题 ## 二级标题 ### 三级标题 #### 四级标题 ##### 五级标题 ###### 六级标题 一级标题 二级标题 三级标题 四级标题 五级标题 六级标题 字体 **加粗字体** ==高亮显示== ~~删除字体~~ *斜体* 加粗字体
-==高亮显示==
-删除字体
-斜体
-引用 &amp;gt;作者 &amp;gt;&amp;gt;作者 &amp;gt;&amp;gt;&amp;gt;作者  作者
- 作者
- 作者
-   图片 ![图片描述](/images/me.png) 链接 [链接描述](链接地址) 百度
-列表 无序列表 - 无序列表1 - 无序列表2 有序列表 1+.+名称 无序列表
-  香蕉
-  苹果</description>
     </item>
     
   </channel>

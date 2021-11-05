@@ -2,10 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://kevinbin123.github.io/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2021-11-05T23:47:43+08:00</lastmod>
-  </url><url>
     <loc>https://kevinbin123.github.io/</loc>
+    <lastmod>2021-11-06T00:50:39+08:00</lastmod>
+  </url><url>
+    <loc>https://kevinbin123.github.io/tecs/</loc>
+    <lastmod>2021-11-06T00:50:39+08:00</lastmod>
+  </url><url>
+    <loc>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</loc>
+    <lastmod>2021-11-06T00:50:39+08:00</lastmod>
+  </url><url>
+    <loc>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</loc>
+    <lastmod>2021-11-06T00:49:06+08:00</lastmod>
+  </url><url>
+    <loc>https://kevinbin123.github.io/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2021-11-05T23:47:43+08:00</lastmod>
   </url><url>
     <loc>https://kevinbin123.github.io/post/</loc>
