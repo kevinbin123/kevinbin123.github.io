@@ -13,16 +13,30 @@
       <pubDate>Sat, 06 Nov 2021 00:50:39 +0800</pubDate>
       
       <guid>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
-      <description>安装准备 安装git 、nodejs、npm 、cnpm 1、安装nodejs和npm,访问官网直接安装即可 node.js网址： https://nodejs.org/en/ 2、安装git,访问官网直接安装即可 Git网址：https://gitforwindows.org/（这个也是Windows版的） 3、安装cnpm（安装的是淘宝的源）
+      <description>安装准备 安装git 、nodejs、npm 、cnpm
+1、安装nodejs和npm,访问官网直接安装即可
+node.js网址： https://nodejs.org/en/
+2、安装git,访问官网直接安装即可
+Git网址：https://gitforwindows.org/（这个也是Windows版的）
+3、安装cnpm（安装的是淘宝的源）
 npm install cnpm -g --registry=https://registry.npm.taobao.org 4、输入npm -v和node -v以及cnpm -v检查当前版本 默认是会注册到环境变量，如果没有，则自己添加一下
 安装hexo 1、安装一个Hexo博客框架，在命令行输入
-cnpm install -g hexo-cli 2、完成后输入hexo -v进行验证 3、创建一个博客的文件夹 D:\myblog\hexotest（手动建或者用命令mkdir都可以） 4、输入hexo init的命令去初始化，这样执行完毕后，一个hexo博客框架的基础就会全部安装在文件夹里了，注意你的cmd一定要是管理员模式
+cnpm install -g hexo-cli 2、完成后输入hexo -v进行验证
+3、创建一个博客的文件夹
+D:\myblog\hexotest（手动建或者用命令mkdir都可以）
+4、输入hexo init的命令去初始化，这样执行完毕后，一个hexo博客框架的基础就会全部安装在文件夹里了，注意你的cmd一定要是管理员模式
 hexo init 5、启动，输入hexo s命令，然后访问查看效果
 使用hexo 1、清理
 hexo clean 2、新建博客
 hexo n &amp;quot;文章名&amp;quot; 编辑文章要用markdown工具去编写具体的内容（D:\myblog\hexotest\source_posts） 3、生成文章
 hexo g 4、开启博客发布文章
-hexo s 推送github 安装hexo-deplyer-git cnpm install hexo-deployer-git --save 配置git 使用ssh方式推送到github 1、在github上新建自己的仓库 2、配置ssh 2.1 查看Git环境所有配置 git config &amp;ndash;list 2.2 如果没有配置user.name和user.email则需要先配置 git config &amp;ndash;global user.</description>
+hexo s 推送github 安装hexo-deplyer-git cnpm install hexo-deployer-git --save 配置git 使用ssh方式推送到github
+1、在github上新建自己的仓库
+2、配置ssh
+2.1 查看Git环境所有配置
+git config &amp;ndash;list
+2.2 如果没有配置user.name和user.email则需要先配置
+git config &amp;ndash;global user.</description>
     </item>
     
     <item>
