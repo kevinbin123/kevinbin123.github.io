@@ -6,7 +6,25 @@
     <description>Recent content on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 06 Nov 2021 00:50:39 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 06 Nov 2021 18:15:59 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Centos上用docker部署nginx记录</title>
+      <link>https://kevinbin123.github.io/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Sat, 06 Nov 2021 18:15:59 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</guid>
+      <description>1、先部署docker，参考博客：
+ 博客：https://blog.csdn.net/Ming13416908424/article/details/107753792
+ 2、docker配置一下阿里镜像，加快一下速度
+3、拉取nginx镜像
+docker pull nginx:latest 4、运行容器
+docker run -p 80:80 --name nginx -d nginx 5、复制容器内的配置文件到宿主主机
+docker exec nginx ls /etc/nginx ##以下内容不是要输入的，是显示出来的 conf.d fastcgi_params koi-utf koi-win mime.types modules nginx.conf scgi_params uwsgi_params win-utf 6、复制容器内的配置文件到宿主机，或者仅复制conf.d文件夹内的配置文件，运行时挂载相应文件即可
+docker cp -a nginx:/etc/nginx/ /srv/nginx/conf 7、停止Nginx容器并删除
+docker stop nginx docker rm nginx 8、重新运行容器，并挂载我们在第三步复制出来的配置文件目录（注意这一步之前没有加rw等，踩了很多坑；conf下的default.conf里面root路径也不能修改，会出现404）
+docker run --privileged=true --restart always --name nginx -p 80:80 \ -v /srv/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro \ -v /srv/nginx/conf/conf.d:/etc/nginx/conf.d:ro \ -v /srv/nginx/html:/usr/share/nginx/html:rw \ -v/srv/nginx/logs:/var/log/nginx -d nginx 9、到此Nginx已安装完成，如有需要就直接修改/srv/nginx/conf/conf.</description>
+    </item>
+    
     <item>
       <title>Windows上安装hexo并且推送到github过程记录</title>
       <link>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
@@ -77,25 +95,6 @@ git init git add . git commit -m &amp;quot;hugo blog&amp;quot; git remote add or
 列表 无序列表 - 无序列表1 - 无序列表2 有序列表 1+.+名称 无序列表
   香蕉
   苹果</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://kevinbin123.github.io/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://kevinbin123.github.io/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</guid>
-      <description>title: &amp;ldquo;Centos上用docker部署nginx记录&amp;rdquo; date: 2021-11-06T18:15:59+08:00 draft: true
-1、先部署docker，参考博客：
- 博客：https://blog.csdn.net/Ming13416908424/article/details/107753792
- 2、docker配置一下阿里镜像，加快一下速度
-3、拉取nginx镜像
-docker pull nginx:latest 4、运行容器
-docker run -p 80:80 --name nginx -d nginx 5、复制容器内的配置文件到宿主主机
-docker exec nginx ls /etc/nginx ##以下内容不是要输入的，是显示出来的 conf.d fastcgi_params koi-utf koi-win mime.types modules nginx.conf scgi_params uwsgi_params win-utf 6、复制容器内的配置文件到宿主机，或者仅复制conf.d文件夹内的配置文件，运行时挂载相应文件即可
-docker cp -a nginx:/etc/nginx/ /srv/nginx/conf 7、停止Nginx容器并删除
-docker stop nginx docker rm nginx 8、重新运行容器，并挂载我们在第三步复制出来的配置文件目录（注意这一步之前没有加rw等，踩了很多坑；conf下的default.conf里面root路径也不能修改，会出现404）
-docker run --privileged=true --restart always --name nginx -p 80:80 \ -v /srv/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro \ -v /srv/nginx/conf/conf.d:/etc/nginx/conf.d:ro \ -v /srv/nginx/html:/usr/share/nginx/html:rw \ -v/srv/nginx/logs:/var/log/nginx -d nginx 9、到此Nginx已安装完成，如有需要就直接修改/srv/nginx/conf/conf.</description>
     </item>
     
   </channel>
