@@ -8,6 +8,15 @@
     <language>en-us</language>
     <lastBuildDate>Sat, 06 Nov 2021 18:15:59 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Test</title>
+      <link>https://kevinbin123.github.io/test/</link>
+      <pubDate>Sat, 06 Nov 2021 23:27:24 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/test/</guid>
+      <description> test </description>
+    </item>
+    
+    <item>
       <title>Centos上用docker部署nginx记录</title>
       <link>https://kevinbin123.github.io/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 06 Nov 2021 18:15:59 +0800</pubDate>
