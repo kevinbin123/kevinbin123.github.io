@@ -6,7 +6,16 @@
     <description>Recent content on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 07 Nov 2021 23:53:53 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 08 Nov 2021 00:28:22 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Test2</title>
+      <link>https://kevinbin123.github.io/post/test2/</link>
+      <pubDate>Mon, 08 Nov 2021 00:28:22 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/test2/</guid>
+      <description>test github-webhook </description>
+    </item>
+    
     <item>
       <title>Test</title>
       <link>https://kevinbin123.github.io/post/test/</link>
