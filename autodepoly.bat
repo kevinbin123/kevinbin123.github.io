@@ -1,5 +1,5 @@
 cd ..
-hugo   --buildDrafts
+hugo  --buildDrafts
 cd public
 git add .
 set /p m=entry your update
