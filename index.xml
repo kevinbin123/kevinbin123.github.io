@@ -6,7 +6,26 @@
     <description>Recent content on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 08 Nov 2021 00:28:22 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 08 Nov 2021 23:21:28 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>利用webhook将github上的博客同步到阿里云服务器记录</title>
+      <link>/tecs/%E5%88%A9%E7%94%A8webhook%E5%B0%86github%E4%B8%8A%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%AD%A5%E5%88%B0%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Mon, 08 Nov 2021 23:21:28 +0800</pubDate>
+      
+      <guid>/tecs/%E5%88%A9%E7%94%A8webhook%E5%B0%86github%E4%B8%8A%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%AD%A5%E5%88%B0%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%B0%E5%BD%95/</guid>
+      <description>写在前面，如何用hugo搭建博客并推送到github，可以参考前文Windows上安装hugo并且推送到github过程记录
+本文主要记录，从windows创建好的博文推送到github之后，如何利用webhook，从github拉取到阿里云服务器上
+1、服务器上安装git工具
+yum install git #安装好之后，查看是否安装成功 git --version 2、下载github-webhook工具
+#到这个网站找最新的 https://github.com/yezihack/github-webhook/releases #github release如果下载太慢可以试试这个 wget http://img.sgfoot.com/github-webhook1.4.1.linux-amd64.tar.gz 3、解压安装
+tar -zxvf github-webhook1.4.1.linux-amd64.tar.gz cp github-webhook /usr/bin/ chmod u+x /usr/bin/github-webhook cd /usr/bin 4、启动webhook,我这里是使用后台运行的方式
+nohup github-webhook -b /www/wwwroot/github-webhook-shell.sh -s yourself-secret &amp;amp; 这里的-b后面的路径是拉取github内容的脚本; -s 后面的是密码，也是github那边的webhook设置的密码，随便设置，两边到时候保持一致就可以了
+#! /bin/bash git --git-dir=&amp;#34;/www/wwwroot/120.25.194.155-520/kevinbin123.github.io/.git&amp;#34; --work-tree=&amp;#34;/www/wwwroot/120.25.194.155-520/kevinbin123.github.io&amp;#34; pull origin hugo exit 0 5、测试是否web-hook能通(ip换成自己的服务器ip)
+http://ip:2020/ping ps，处理阿里云那边的防火墙要开端口，自己的服务器的防火墙端口也要开放（一下是centos8开端口的方法）
+firewall-cmd --list-all firewall-cmd --add-port=2020/tcp --permanent firewall-cmd --reload firewall-cmd --list-all 6、生成公钥配置到github上
+ssh-keygen -t rsa cat .ssh/id_rsa.pub 复制代码 然后复制到github的settings-&amp;gt;SSH and GPG keys上 7、进入到自己的服务器的网站路径下，我这边是因为安装了宝塔，直接建了一个网站;把gitHub上的内容先clone下来</description>
+    </item>
+    
     <item>
       <title>Test2</title>
       <link>/post/test2/</link>
