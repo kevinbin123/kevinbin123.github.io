@@ -27,25 +27,6 @@ ssh-keygen -t rsa cat .ssh/id_rsa.pub 复制代码 然后复制到github的setti
     </item>
     
     <item>
-      <title>Test2</title>
-      <link>/post/test2/</link>
-      <pubDate>Mon, 08 Nov 2021 00:28:22 +0800</pubDate>
-      
-      <guid>/post/test2/</guid>
-      <description>test github-webhook test commit
-hahahah</description>
-    </item>
-    
-    <item>
-      <title>Test</title>
-      <link>/post/test/</link>
-      <pubDate>Sun, 07 Nov 2021 23:53:53 +0800</pubDate>
-      
-      <guid>/post/test/</guid>
-      <description>test git -webhook </description>
-    </item>
-    
-    <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Sat, 06 Nov 2021 23:40:31 +0800</pubDate>
