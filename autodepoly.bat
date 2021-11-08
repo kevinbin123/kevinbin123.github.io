@@ -1,5 +1,5 @@
 cd ..
-hugo --baseUrl="https://kevinbin123.github.io/"  --buildDrafts
+hugo   --buildDrafts
 cd public
 git add .
 set /p m=entry your update

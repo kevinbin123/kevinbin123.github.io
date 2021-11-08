@@ -2,54 +2,54 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>abin の 成长之路</title>
-    <link>https://kevinbin123.github.io/</link>
+    <link>http://example.org/</link>
     <description>Recent content on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 08 Nov 2021 00:28:22 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 08 Nov 2021 00:28:22 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Test2</title>
-      <link>https://kevinbin123.github.io/post/test2/</link>
+      <link>http://example.org/post/test2/</link>
       <pubDate>Mon, 08 Nov 2021 00:28:22 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/post/test2/</guid>
+      <guid>http://example.org/post/test2/</guid>
       <description>test github-webhook test commit
 hahahah</description>
     </item>
     
     <item>
       <title>Test</title>
-      <link>https://kevinbin123.github.io/post/test/</link>
+      <link>http://example.org/post/test/</link>
       <pubDate>Sun, 07 Nov 2021 23:53:53 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/post/test/</guid>
+      <guid>http://example.org/post/test/</guid>
       <description>test git -webhook </description>
     </item>
     
     <item>
       <title>About</title>
-      <link>https://kevinbin123.github.io/about/</link>
+      <link>http://example.org/about/</link>
       <pubDate>Sat, 06 Nov 2021 23:40:31 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/about/</guid>
+      <guid>http://example.org/about/</guid>
       <description>about this is about</description>
     </item>
     
     <item>
       <title>Test</title>
-      <link>https://kevinbin123.github.io/test/</link>
+      <link>http://example.org/test/</link>
       <pubDate>Sat, 06 Nov 2021 23:27:24 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/test/</guid>
+      <guid>http://example.org/test/</guid>
       <description> test </description>
     </item>
     
     <item>
       <title>Centos上用docker部署nginx记录</title>
-      <link>https://kevinbin123.github.io/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</link>
+      <link>http://example.org/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 06 Nov 2021 18:15:59 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</guid>
+      <guid>http://example.org/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</guid>
       <description>1、先部署docker，参考博客：
  博客：https://blog.csdn.net/Ming13416908424/article/details/107753792
  2、docker配置一下阿里镜像，加快一下速度
@@ -64,10 +64,10 @@ docker run --privileged=true --restart always --name nginx -p 80:80 \ -v /srv/ng
     
     <item>
       <title>Windows上安装hexo并且推送到github过程记录</title>
-      <link>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
+      <link>http://example.org/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 06 Nov 2021 00:50:39 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
+      <guid>http://example.org/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
       <description>安装准备 安装git 、nodejs、npm 、cnpm
 1、安装nodejs和npm,访问官网直接安装即可
 node.js网址： https://nodejs.org/en/
@@ -96,10 +96,10 @@ git config &amp;ndash;global user.</description>
     
     <item>
       <title>Windows上安装hugo并且推送到github过程记录</title>
-      <link>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
+      <link>http://example.org/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 06 Nov 2021 00:49:06 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
+      <guid>http://example.org/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
       <description>安装hugo （从0.48版本开始就需要自己配置环境变量）
 访问官网；选择tag里面下载最新的包，比如hugo_0.89.0_windows-64bit.zip
 解压出来后，放到一个文件夹中，并设置成环境变量
@@ -117,10 +117,10 @@ git init git add . git commit -m &amp;quot;hugo blog&amp;quot; git remote add or
     
     <item>
       <title>MarkDown语法的学习</title>
-      <link>https://kevinbin123.github.io/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</link>
+      <link>http://example.org/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</link>
       <pubDate>Fri, 05 Nov 2021 23:47:43 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</guid>
+      <guid>http://example.org/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</guid>
       <description>MarkDown的语法学习 代码块 ```go package main import fmt func main(){ } 标题 # 一级标题 ## 二级标题 ### 三级标题 #### 四级标题 ##### 五级标题 ###### 六级标题 一级标题 二级标题 三级标题 四级标题 五级标题 六级标题 字体 **加粗字体** ==高亮显示== ~~删除字体~~ *斜体* 加粗字体
 ==高亮显示==
 删除字体
