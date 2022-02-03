@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title> // abin の 成长之路</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.89.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abin" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Golang 中GC回收机制 三色标记与混合写屏障 GC (Garbage Collection)垃圾回收机制
+GoV1.3之前的回收机制：标记清除（mark and sweep）
+GoV1.5 的回收机制：三色标记
+GoV1.8的回收机制：混合写屏障
+标记清除 垃圾回收的对象就是程序不可达的对象。
+过程 1、执行STW(Stop The World)，暂停程序业务逻辑，找到所有可达对象，和不大可达对象
+2、标记出来所有可达的对象
+3、没有被标记的对象，被GC所清除
+4、停止暂停，程序继续运行，然后重复这个这个过程，知道process程序生命周期结束。
+缺点 1、STW，让程序暂停，程序出现卡顿（最重要的问题）
+2、标记需要扫描整个heap
+3、清除数据会产生heap碎片
+尝试改进：
+原来的顺序：
+启动STW - &gt; Mark标记 -&gt;Sweep清除 -&gt;停止STW
+改进思路：
+启动STW -&gt; Mark标记 -&gt; 停止STW -&gt;Sweep清除
+结论：STW时间的影响并不能得到有效的改进，尝试使用其他的方式。
+三色标记法 三色：White白色标记表、Grey灰色标记表、Black黑色标记表
+过程 1、所有的对象放在白色标记表中
+2、遍历Root Set（非递归，只遍历一次），把直接可达的对象从白色标记表中移除，并放到灰色标记表中
+3、遍历Grey灰色标记表，将可达对象，从白色标记表中移除，放到灰色标记表中，遍历过的灰色对象从灰色标记表移除，放到黑色标记表中
+4、重复3这个过程，直到灰色标记表为空，剩下的白色标记表中的对象就是要被清除的。
+5、回收所有白色对象（垃圾）
+不启动STW存在的问题 假如不启动STW，在GC回收过程中存在这种一个情况：
+有一个白色对象3，原先被灰色对象2指向着，这个时候，黑色对象4指向白色对象3，灰色对象2断开白色对象3了。这个时候会发生如下情况：
+灰色对象2遍历可达对象的时候，白色对象3不会被扫描到，黑色对象4已经是黑色了，不会再去扫描；这个时候白色对象3没有任何对象扫描到它，则会当做是垃圾回收掉。但它并不是垃圾（被黑色对象4引用着）。
+这种情况是需要避免的，要发生这种情况，需要满足两个条件：
+​	条件1：一个白色对象被黑色对象引用（白色被挂在黑色下）
+​	条件2：灰色对象与它可达关系的白色对象遭到破坏（灰色同时丢了该白色）
+如何保证对象不丢失，提高GC效率，减少STW时间呢
+强弱三色不变式 不让条件1、条件2同时满足（破坏两个条件同时成立），可以保证对象不丢失
+破坏条件1：强三色不变式
+​	强制性不允许黑色对象引用白色对象
+破坏条件2：弱三色不变式
+​	黑色对象可以引用白色，但是白色对象存在其他灰色对它的引用，或者可达它的链路上存在灰色对象
+屏障机制 如何实现强弱三色不变式，需要用到屏障机制，也就会添加一些额外的判断机制，来遏制条件1、条件2同时发生。"/>
+
+    <meta property="og:title" content="" />
+<meta property="og:description" content="Golang 中GC回收机制 三色标记与混合写屏障 GC (Garbage Collection)垃圾回收机制
+GoV1.3之前的回收机制：标记清除（mark and sweep）
+GoV1.5 的回收机制：三色标记
+GoV1.8的回收机制：混合写屏障
+标记清除 垃圾回收的对象就是程序不可达的对象。
+过程 1、执行STW(Stop The World)，暂停程序业务逻辑，找到所有可达对象，和不大可达对象
+2、标记出来所有可达的对象
+3、没有被标记的对象，被GC所清除
+4、停止暂停，程序继续运行，然后重复这个这个过程，知道process程序生命周期结束。
+缺点 1、STW，让程序暂停，程序出现卡顿（最重要的问题）
+2、标记需要扫描整个heap
+3、清除数据会产生heap碎片
+尝试改进：
+原来的顺序：
+启动STW - &gt; Mark标记 -&gt;Sweep清除 -&gt;停止STW
+改进思路：
+启动STW -&gt; Mark标记 -&gt; 停止STW -&gt;Sweep清除
+结论：STW时间的影响并不能得到有效的改进，尝试使用其他的方式。
+三色标记法 三色：White白色标记表、Grey灰色标记表、Black黑色标记表
+过程 1、所有的对象放在白色标记表中
+2、遍历Root Set（非递归，只遍历一次），把直接可达的对象从白色标记表中移除，并放到灰色标记表中
+3、遍历Grey灰色标记表，将可达对象，从白色标记表中移除，放到灰色标记表中，遍历过的灰色对象从灰色标记表移除，放到黑色标记表中
+4、重复3这个过程，直到灰色标记表为空，剩下的白色标记表中的对象就是要被清除的。
+5、回收所有白色对象（垃圾）
+不启动STW存在的问题 假如不启动STW，在GC回收过程中存在这种一个情况：
+有一个白色对象3，原先被灰色对象2指向着，这个时候，黑色对象4指向白色对象3，灰色对象2断开白色对象3了。这个时候会发生如下情况：
+灰色对象2遍历可达对象的时候，白色对象3不会被扫描到，黑色对象4已经是黑色了，不会再去扫描；这个时候白色对象3没有任何对象扫描到它，则会当做是垃圾回收掉。但它并不是垃圾（被黑色对象4引用着）。
+这种情况是需要避免的，要发生这种情况，需要满足两个条件：
+​	条件1：一个白色对象被黑色对象引用（白色被挂在黑色下）
+​	条件2：灰色对象与它可达关系的白色对象遭到破坏（灰色同时丢了该白色）
+如何保证对象不丢失，提高GC效率，减少STW时间呢
+强弱三色不变式 不让条件1、条件2同时满足（破坏两个条件同时成立），可以保证对象不丢失
+破坏条件1：强三色不变式
+​	强制性不允许黑色对象引用白色对象
+破坏条件2：弱三色不变式
+​	黑色对象可以引用白色，但是白色对象存在其他灰色对它的引用，或者可达它的链路上存在灰色对象
+屏障机制 如何实现强弱三色不变式，需要用到屏障机制，也就会添加一些额外的判断机制，来遏制条件1、条件2同时发生。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/note/go/golanggc/" /><meta property="article:section" content="note" />
+
+
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/avatar.jpg" alt="abin" /></a>
+      <h1>abin の 成长之路</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">首页</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tecs/">学习</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">关于</a>
+      </nav>
+      <p>A man as good as me should have lived a glorious life</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/kevinbin123" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="http://120.25.194.155" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>mySite</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title"></h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jan 1, 0001
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          1 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="golang-中gc回收机制-三色标记与混合写屏障">Golang 中GC回收机制 三色标记与混合写屏障</h1>
+<p>GC (Garbage Collection)垃圾回收机制</p>
+<p>GoV1.3之前的回收机制：标记清除（mark and sweep）</p>
+<p>GoV1.5 的回收机制：三色标记</p>
+<p>GoV1.8的回收机制：混合写屏障</p>
+<h2 id="标记清除">标记清除</h2>
+<p>垃圾回收的对象就是程序不可达的对象。</p>
+<h3 id="过程">过程</h3>
+<p>1、执行STW(Stop The World)，暂停程序业务逻辑，找到所有可达对象，和不大可达对象</p>
+<p>2、标记出来所有可达的对象</p>
+<p>3、没有被标记的对象，被GC所清除</p>
+<p>4、停止暂停，程序继续运行，然后重复这个这个过程，知道process程序生命周期结束。</p>
+<h3 id="缺点">缺点</h3>
+<p>1、STW，让程序暂停，程序出现卡顿（最重要的问题）</p>
+<p>2、标记需要扫描整个heap</p>
+<p>3、清除数据会产生heap碎片</p>
+<p>尝试改进：</p>
+<p>原来的顺序：</p>
+<p>启动STW - &gt; Mark标记 -&gt;Sweep清除 -&gt;停止STW</p>
+<p>改进思路：</p>
+<p>启动STW -&gt; Mark标记 -&gt; 停止STW -&gt;Sweep清除</p>
+<p>结论：STW时间的影响并不能得到有效的改进，尝试使用其他的方式。</p>
+<h2 id="三色标记法">三色标记法</h2>
+<p>三色：White白色标记表、Grey灰色标记表、Black黑色标记表</p>
+<h3 id="过程-1">过程</h3>
+<p>1、所有的对象放在白色标记表中</p>
+<p>2、遍历Root Set（非递归，只遍历一次），把直接可达的对象从<strong>白色标记表</strong>中移除，并放到<strong>灰色标记表</strong>中</p>
+<p>3、遍历<strong>Grey灰色</strong>标记表，将可达对象，从<strong>白色</strong>标记表中移除，放到<strong>灰色</strong>标记表中，遍历过的<strong>灰色</strong>对象从灰色标记表移除，放到<strong>黑色</strong>标记表中</p>
+<p>4、重复3这个过程，直到<strong>灰色标记表为空</strong>，剩下的<strong>白色标记表</strong>中的对象就是要被<strong>清除</strong>的。</p>
+<p>5、回收所有白色对象（垃圾）</p>
+<h3 id="不启动stw存在的问题">不启动STW存在的问题</h3>
+<p>假如不启动STW，在GC回收过程中存在这种一个情况：</p>
+<p>有一个白色对象3，原先被灰色对象2指向着，这个时候，黑色对象4指向白色对象3，灰色对象2断开白色对象3了。这个时候会发生如下情况：</p>
+<p>灰色对象2遍历可达对象的时候，白色对象3不会被扫描到，黑色对象4已经是黑色了，不会再去扫描；这个时候白色对象3没有任何对象扫描到它，则会当做是垃圾回收掉。但它并不是垃圾（被黑色对象4引用着）。</p>
+<p>这种情况是需要避免的，要发生这种情况，需要满足两个条件：</p>
+<p>​	条件1：一个白色对象被黑色对象引用（白色被挂在黑色下）</p>
+<p>​	条件2：灰色对象与它可达关系的白色对象遭到破坏（灰色同时丢了该白色）</p>
+<p>如何保证对象不丢失，提高GC效率，减少STW时间呢</p>
+<h3 id="强弱三色不变式">强弱三色不变式</h3>
+<p>不让条件1、条件2同时满足（破坏两个条件同时成立），可以保证对象不丢失</p>
+<p>破坏条件1：强三色不变式</p>
+<p>​	强制性不允许黑色对象引用白色对象</p>
+<p>破坏条件2：弱三色不变式</p>
+<p>​	黑色对象可以引用白色，但是白色对象存在其他灰色对它的引用，或者可达它的链路上存在灰色对象</p>
+<h3 id="屏障机制">屏障机制</h3>
+<p>如何实现强弱三色不变式，需要用到屏障机制，也就会添加一些额外的判断机制，来遏制条件1、条件2同时发生。</p>
+<p>插入屏障：对象被引用的时候，触发的机制</p>
+<p>删除屏障：对象被删除的时候，触发的机制</p>
+<h4 id="插入写屏障">插入写屏障</h4>
+<p>具体操作：在A对象引用B对象的时候，B对象被标记为灰色（将B挂在A下游，B必须被标记为灰色）</p>
+<p>满足的是强三色不变式：不存在黑色引用白色，因为白色会强制变成灰色</p>
+<p>场景：</p>
+<p>​	A之前没有下游对象，新添加一个下游对象B，B被标记为灰色</p>
+<p>​	A之前有下游对象C，添加下游对象B，B被标记为灰色，将下游对象C更换为B</p>
+<p><strong>注意：插入写屏障不在栈上使用</strong></p>
+<p>由于栈上没有触发插入写屏障，可能存在误删除的情况，在准备回收白色前，需要重新遍历扫描一次栈空间，此时加STW暂停保护栈，防止外界干扰（比如有新的白色被添加到黑色下）</p>
+<p>不足：结束时需要STW来重新扫描栈，大约10~100ms</p>
+<h4 id="删除写屏障">删除写屏障</h4>
+<p>具体操作：被删除的对象，如果自身为灰色或者白色，那么被标记为灰色</p>
+<p>满足的弱三色不变式（保护灰色对象到白色对象的路径不会断）</p>
+<p>场景：</p>
+<p>​	A对象，删除B对象的引用；B被A删除，被标记为灰（如果B之前为白）</p>
+<p>​	A对象，更换下游B为C；B被A删除，被标记为灰（如果B之前为白）</p>
+<p>不足：回收精度低，一个对象即使被删除了最后一个指向它的指针也依旧可以活过这一轮，在下一轮GC中被清理掉。</p>
+<h2 id="混合写屏障">混合写屏障</h2>
+<p>由于插入写屏障，结束时需要STW来重新扫描栈，大约需要10~100ms；删除写屏障，存在回收精度低等不足；在GoV1.8版本采用三色标记法+混合写屏障机制</p>
+<h3 id="过程-2">过程</h3>
+<p>具体操作：</p>
+<p>​	1、GC开始将栈上的对象全部扫描并标记为黑色（之后不再进行第二次重复扫描，无需STW）</p>
+<p>​	2、GC期间，任何在栈上创建的新对象，均为黑色</p>
+<p>​	3、被删除的对象标记为灰色（还是仅在堆上启用）</p>
+<p>​	4、被添加的对象标记为灰色（还是仅在堆上启用）</p>
+<p>满足：变形的弱三色不变式（结合了插入、删除写屏障两者的优点）</p>
+<h3 id="具体场景">具体场景</h3>
+<h4 id="对象被堆对象删除成为栈对象的下游">对象被堆对象删除，成为栈对象的下游</h4>
+<p>前提：堆对象4 -&gt;堆对象7=对象7 	//对象7被对象4引用</p>
+<p>栈对象1 -&gt;对象7 = 堆对象7				//将堆对象7 挂在 栈对象1 下游</p>
+<p>堆对象4 -&gt;对象7 = null						//对象4 删除引用 对象7</p>
+<p>具体流程：</p>
+<p>1、将对象7添加到栈对象1下游，因为栈不启用写屏障，直接挂在下面</p>
+<p>2、堆对象4删除堆对象7的引用关系，触发写屏障，标记被删除对象7为灰色</p>
+<h4 id="对象被一个栈对象删除引用成为另一个栈对象的下游">对象被一个栈对象删除引用，成为另一个栈对象的下游</h4>
+<p>操作：</p>
+<p>new 栈对象9</p>
+<p>对象9 -&gt;对象3 = 对象3					//将栈对象3 挂在 栈对象9 下游</p>
+<p>对象2 -&gt;对象3 = null						//对象2 删除引用 对象3</p>
+<p>具体流程：</p>
+<p>1、new栈对象9，对象9为黑色</p>
+<p>2、将对象3添加到对象9下游，因为栈不启用写屏障，直接挂在下面</p>
+<p>3、对象2删除对象3的引用关系，直接删除，栈上不启用写屏障</p>
+<h4 id="对象被一个堆对象删除引用成为另一个堆对象的下游">对象被一个堆对象删除引用，成为另一个堆对象的下游</h4>
+<p>操作：</p>
+<p>堆对象10 -&gt; 对象7 = 堆对象7 			//将堆对象7 挂在 堆对象10 下游</p>
+<p>堆对象4 -&gt; 对象 7 = null					//对象4 删除引用 对象7</p>
+<p>具体流程：</p>
+<p>1、将堆对象7添加到堆对象10下游，启用写屏障，堆对象7被标记为灰色</p>
+<p>2、堆对象4删除堆对象7的引用关系，启用写屏障，堆对象7被标记为灰色</p>
+<h4 id="对象被栈对象删除成为堆对象的下游">对象被栈对象删除，成为堆对象的下游</h4>
+<p>操作：</p>
+<p>栈对象1 -&gt; 对象2 = null					//对象1 删除引用 对象2</p>
+<p>堆对象4 -&gt; 对象2 = 栈对象2			//对象4 添加下游 栈对象2</p>
+<p>堆对象4 -&gt; 对象7 = null					//对象4 删除引用 对象7</p>
+<p>具体流程：</p>
+<p>1、栈对象1删除引用栈对象2，不启用写屏障，直接删除</p>
+<p>2、堆对象4添加栈对象2（栈对象2的颜色还是黑色）</p>
+<p>3、堆对象4删除引用对象7，启用写屏障，堆对象7被标记为灰色</p>
+<h2 id="参考文献">参考文献</h2>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1wz4y1y7Kd?spm_id_from=333.999.0.0">https://www.bilibili.com/video/BV1wz4y1y7Kd?spm_id_from=333.999.0.0</a></p>
+</blockquote>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
