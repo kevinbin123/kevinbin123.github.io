@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title> // abin の 成长之路</title>
+    <title>Golang GMP学习笔记 // abin の 成长之路</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.89.0" />
@@ -12,7 +12,7 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
+<meta name="twitter:title" content="Golang GMP学习笔记"/>
 <meta name="twitter:description" content="Golang协程调度器原理与GMP设计思想 Golang调度器由来 单进程问题 早期计算机是单进程，存在一些问题：计算机只能一个任务一个任务处理，进程阻塞带来CPU时间的浪费。
 多进程/多线程问题 为了改进这些问题，出现多线程/多进程操作系统：CPU调度器将调度时间分成一片一片时间片，在每个时间片中执行对应的进程，在宏观上看起来进程A、B、C是在并发执行；解决了单进程的阻塞问题。
 但却带来问题：
@@ -48,7 +48,7 @@ P和M的数量：
 ​	work stealing机制：本线程没有可运行的G的时候，从其他M的P本地队列中偷取G，放在自己的P本地队列中执行
 ​	hand off机制：当前M1在执行的G1出现了阻塞操作，创建/唤醒一个threadM3，将当前M1的P和P的本地队列都交给M3，然后M1和G1进行阻塞，M1睡眠或销毁。"/>
 
-    <meta property="og:title" content="" />
+    <meta property="og:title" content="Golang GMP学习笔记" />
 <meta property="og:description" content="Golang协程调度器原理与GMP设计思想 Golang调度器由来 单进程问题 早期计算机是单进程，存在一些问题：计算机只能一个任务一个任务处理，进程阻塞带来CPU时间的浪费。
 多进程/多线程问题 为了改进这些问题，出现多线程/多进程操作系统：CPU调度器将调度时间分成一片一片时间片，在每个时间片中执行对应的进程，在宏观上看起来进程A、B、C是在并发执行；解决了单进程的阻塞问题。
 但却带来问题：
@@ -85,8 +85,8 @@ P和M的数量：
 ​	hand off机制：当前M1在执行的G1出现了阻塞操作，创建/唤醒一个threadM3，将当前M1的P和P的本地队列都交给M3，然后M1和G1进行阻塞，M1睡眠或销毁。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/note/go/golanggmp/" /><meta property="article:section" content="note" />
-
-
+<meta property="article:published_time" content="2022-02-03T16:47:43+08:00" />
+<meta property="article:modified_time" content="2022-02-03T16:47:43+08:00" />
 
 
 
@@ -127,14 +127,14 @@ P和M的数量：
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title"></h1>
+      <h1 class ="post-title">Golang GMP学习笔记</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
   <title>calendar</title>
   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
 </svg>
-          Jan 1, 0001
+          Feb 3, 2022
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
