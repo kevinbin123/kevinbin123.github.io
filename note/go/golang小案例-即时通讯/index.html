@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Golang小案例 即时通讯 // abin の 成长之路</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.89.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abin" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Golang小案例 即时通讯"/>
+<meta name="twitter:description" content="Golang小案例-即时通讯 本案例的目的是通过练习这么一个即时通讯的小案例来掌握go语言的基本使用；
+这个案例是从B站的一个视频看到的，地址在文末的参考文献中，自己又写一遍主要是为了防止忘记，好记性不如烂笔头，眼过千遍，不如coding一遍。
+本案例使用的架构如图所示：
+思路：
+1、构建server服务器，server服务器中包含ip地址，port端口，包含一个onLineMap的map类型的字段，用来记录上线的用户，还包含一个Message的channel，用来广播消息
+2、server中还启动一个DoHandler的goroutine，用来处理每一个连接到server的业务逻辑；以及开启一个ListenMessage的goroutine来监听Message
+3、user中包含了Name，Addr，还包含一个C的channel，用来接收从Message发过来的消息，还有conn用来与对应的客户端通信
+4、user中实现OnLine用户上线方法、OffLine用户下线方法、DoMessage用户处理消息业务
+构建Server  本小节目标：构建server服务器，能启动server
+ 1、定义Server类型，一个服务器至少需要一个IP和一个端口
+type Server struct{ Ip string	//服务器的ip 	Port int	//服务器的端口 } 2、创建Server对象
+func NewServer(ip string, port int) *Server{ server:=&amp;Server{ Ip:ip, Port:port, } return server } 3、启动Server服务，按照先监听、再创建accept、然后处理read的顺序启动server
+func (this *Server) Start(){ //监听listen 	listener, err := net.Listen(&#34;tcp&#34;, fmt.Sprintf(&#34;%s:%d&#34;, this.Ip, this.Port)) if err!=nil{ fmt.Println(&#34;listen error:&#34;,err) return } //关闭监听 	defer listener.Close() //创建accept 	for{ conn, err := listener.Accept() if err!"/>
+
+    <meta property="og:title" content="Golang小案例 即时通讯" />
+<meta property="og:description" content="Golang小案例-即时通讯 本案例的目的是通过练习这么一个即时通讯的小案例来掌握go语言的基本使用；
+这个案例是从B站的一个视频看到的，地址在文末的参考文献中，自己又写一遍主要是为了防止忘记，好记性不如烂笔头，眼过千遍，不如coding一遍。
+本案例使用的架构如图所示：
+思路：
+1、构建server服务器，server服务器中包含ip地址，port端口，包含一个onLineMap的map类型的字段，用来记录上线的用户，还包含一个Message的channel，用来广播消息
+2、server中还启动一个DoHandler的goroutine，用来处理每一个连接到server的业务逻辑；以及开启一个ListenMessage的goroutine来监听Message
+3、user中包含了Name，Addr，还包含一个C的channel，用来接收从Message发过来的消息，还有conn用来与对应的客户端通信
+4、user中实现OnLine用户上线方法、OffLine用户下线方法、DoMessage用户处理消息业务
+构建Server  本小节目标：构建server服务器，能启动server
+ 1、定义Server类型，一个服务器至少需要一个IP和一个端口
+type Server struct{ Ip string	//服务器的ip 	Port int	//服务器的端口 } 2、创建Server对象
+func NewServer(ip string, port int) *Server{ server:=&amp;Server{ Ip:ip, Port:port, } return server } 3、启动Server服务，按照先监听、再创建accept、然后处理read的顺序启动server
+func (this *Server) Start(){ //监听listen 	listener, err := net.Listen(&#34;tcp&#34;, fmt.Sprintf(&#34;%s:%d&#34;, this.Ip, this.Port)) if err!=nil{ fmt.Println(&#34;listen error:&#34;,err) return } //关闭监听 	defer listener.Close() //创建accept 	for{ conn, err := listener.Accept() if err!" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/" /><meta property="article:section" content="note" />
+<meta property="article:published_time" content="2022-02-22T21:31:59+08:00" />
+<meta property="article:modified_time" content="2022-02-22T21:31:59+08:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/avatar.jpg" alt="abin" /></a>
+      <h1>abin の 成长之路</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">首页</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tecs/">学习</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/note/">笔记</a>
+      </nav>
+      <p>A man as good as me should have lived a glorious life</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/kevinbin123" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="http://ecoder.xyz:520/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-cloud">
+  <title>mySite</title>
+  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Golang小案例 即时通讯</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 22, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          6 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="golang小案例-即时通讯">Golang小案例-即时通讯</h1>
+<p>本案例的目的是通过练习这么一个即时通讯的小案例来掌握go语言的基本使用；</p>
+<p>这个案例是从B站的一个视频看到的，地址在文末的参考文献中，自己又写一遍主要是为了防止忘记，好记性不如烂笔头，眼过千遍，不如coding一遍。</p>
+<p>本案例使用的架构如图所示：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112170655391.png" alt="image-20220112170655391"></p>
+<p>思路：</p>
+<p>1、构建server服务器，server服务器中包含ip地址，port端口，包含一个onLineMap的map类型的字段，用来记录上线的用户，还包含一个Message的channel，用来广播消息</p>
+<p>2、server中还启动一个DoHandler的goroutine，用来处理每一个连接到server的业务逻辑；以及开启一个ListenMessage的goroutine来监听Message</p>
+<p>3、user中包含了Name，Addr，还包含一个C的channel，用来接收从Message发过来的消息，还有conn用来与对应的客户端通信</p>
+<p>4、user中实现OnLine用户上线方法、OffLine用户下线方法、DoMessage用户处理消息业务</p>
+<h2 id="构建server">构建Server</h2>
+<blockquote>
+<p>本小节目标：构建server服务器，能启动server</p>
+</blockquote>
+<p>1、定义Server类型，一个服务器至少需要一个IP和一个端口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Server</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Ip</span> <span style="color:#66d9ef">string</span>	<span style="color:#75715e">//服务器的ip
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Port</span> <span style="color:#66d9ef">int</span>	<span style="color:#75715e">//服务器的端口
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>2、创建Server对象</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewServer</span>(<span style="color:#a6e22e">ip</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">port</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>{
+	<span style="color:#a6e22e">server</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">Server</span>{
+		<span style="color:#a6e22e">Ip</span>:<span style="color:#a6e22e">ip</span>,
+		<span style="color:#a6e22e">Port</span>:<span style="color:#a6e22e">port</span>,
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">server</span>
+}
+</code></pre></div><p>3、启动Server服务，按照先监听、再创建accept、然后处理read的顺序启动server</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">Start</span>(){
+	<span style="color:#75715e">//监听listen
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">listener</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d&#34;</span>, <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Ip</span>, <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Port</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;listen error:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#75715e">//关闭监听
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">listener</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#75715e">//创建accept
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>{
+		<span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">listener</span>.<span style="color:#a6e22e">Accept</span>()
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+			<span style="color:#66d9ef">continue</span>
+		}
+        <span style="color:#75715e">//将业务的处理逻辑放到DoHandler中，并使用一个go协程启动
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">DoHandler</span>(<span style="color:#a6e22e">conn</span>)
+	}
+
+}
+</code></pre></div><p>4、处理连接业务，先测试服务器是否创建成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">DoHandler</span>(<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>){
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;服务器创建成功&#34;</span>)
+
+}
+</code></pre></div><p>5、在main中启动Server</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">server</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewServer</span>(<span style="color:#e6db74">&#34;127.0.0.1&#34;</span>, <span style="color:#ae81ff">9999</span>)
+	<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">Start</span>()
+}
+</code></pre></div><p>6、测试结果，编译后并使用nc工具连接服务器，会出现如下提示：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">go</span> <span style="color:#a6e22e">build</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">o</span> <span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">exe</span> <span style="color:#a6e22e">server</span>.<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">main</span>.<span style="color:#66d9ef">go</span> <span style="color:#75715e">//进行编译
+</span></code></pre></div><p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/carbon.png" alt=""></p>
+<h2 id="用户上线">用户上线</h2>
+<blockquote>
+<p>本小节目标：用户上线能够广播出去让其他用户看到</p>
+</blockquote>
+<p>1、定义user类型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>		<span style="color:#75715e">//user名称
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Addr</span> <span style="color:#66d9ef">string</span>		<span style="color:#75715e">//user的ip地址
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">C</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>	<span style="color:#75715e">//user维护一个用来通信的channel
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>	<span style="color:#75715e">//user的conn
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>2、创建user对象</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewUser</span>(<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>,<span style="color:#a6e22e">server</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>)<span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>{
+	<span style="color:#a6e22e">remoteName</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">RemoteAddr</span>().<span style="color:#a6e22e">String</span>()	<span style="color:#75715e">//获取地址
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">User</span>{
+		<span style="color:#a6e22e">Name</span>:<span style="color:#a6e22e">remoteName</span>,	<span style="color:#75715e">//将地址当做user名称
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">Addr</span>:<span style="color:#a6e22e">remoteName</span>,	<span style="color:#75715e">//user的ip地址也一样使用这个值
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">C</span>:make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>),
+		<span style="color:#a6e22e">Conn</span>:<span style="color:#a6e22e">conn</span>,
+	}
+	<span style="color:#75715e">//启动监听当前user的channel消息
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">ListenMessage</span>()
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">user</span>
+}
+</code></pre></div><p>3、监听user的channel消息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">ListenMessage</span>(){
+	<span style="color:#66d9ef">for</span>{
+		<span style="color:#a6e22e">msg</span><span style="color:#f92672">:=&lt;-</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">C</span>
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Conn</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">msg</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;\n&#34;</span>)) <span style="color:#75715e">//一旦有消息，立刻发送给对端的客户端
+</span><span style="color:#75715e"></span>	}
+}
+</code></pre></div><p>4、server新增onlinemap和message属性</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Server</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Ip</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Port</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Message</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>	<span style="color:#75715e">//广播消息使用的Message channel
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">OnlineMap</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#f92672">*</span><span style="color:#a6e22e">User</span> <span style="color:#75715e">//维护在线用户的一个map
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">MapLock</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">RWMutex</span>	<span style="color:#75715e">//加锁，在onlinemap中增减都需要先上锁
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>5、DoHandler中实现用户上线的时候，添加到onlinemap中，并且广播用户已上线</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">DoHandler</span>(<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>){
+	<span style="color:#75715e">//fmt.Println(&#34;服务器创建成功&#34;)
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//用户上线，将用户加入到onlinemap中,并且广播用户已上线
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewUser</span>(<span style="color:#a6e22e">conn</span>)
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">mapLock</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">OnlineMap</span>[<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>]=<span style="color:#a6e22e">user</span>
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">mapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">user</span>,<span style="color:#e6db74">&#34;online&#34;</span>)
+    
+    <span style="color:#75715e">//阻塞
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">select</span>{}
+
+}
+</code></pre></div><p>6、server新增广播方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">user</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>,<span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">string</span>){
+	<span style="color:#a6e22e">sendMsg</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;[&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Addr</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;]&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;:&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">msg</span>
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Message</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">sendMsg</span>
+}
+</code></pre></div><p>7、监听message的channle，并将消息发送给所有在线的用户</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">ListenMessage</span>(){
+	<span style="color:#66d9ef">for</span>{
+		<span style="color:#a6e22e">msg</span><span style="color:#f92672">:=&lt;-</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Message</span>
+		<span style="color:#75715e">//将msg发送给所有在线的user
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Lock</span>()
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">cli</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">OnlineMap</span>{
+			<span style="color:#a6e22e">cli</span>.<span style="color:#a6e22e">C</span><span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">msg</span>
+		}
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+	}
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">Start</span>(){
+	<span style="color:#75715e">//监听listen
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">listener</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d&#34;</span>, <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Ip</span>, <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Port</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;listen error:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#75715e">//关闭监听
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">listener</span>.<span style="color:#a6e22e">Close</span>()
+	
+    <span style="color:#75715e">//启动监听Message的goroutine
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">ListenMessage</span>()
+    <span style="color:#75715e">//创建accept
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>{
+		<span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">listener</span>.<span style="color:#a6e22e">Accept</span>()
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+			<span style="color:#66d9ef">continue</span>
+		}
+		<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">DoHandler</span>(<span style="color:#a6e22e">conn</span>)
+	}
+
+}
+</code></pre></div><p>8、测试结果，可以看到其他用户上线，也会通知到当前用户</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112173344282.png" alt="image-20220112173344282"></p>
+<h2 id="用户消息广播">用户消息广播</h2>
+<blockquote>
+<p>本小节目标：用户发送的消息也能够被广播，让其他用户看到</p>
+</blockquote>
+<p>1、完善server.go handler业务方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">DoHandler</span>(<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>){
+	<span style="color:#75715e">//fmt.Println(&#34;服务器创建成功&#34;)
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//用户上线，将用户加入到onlinemap中
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewUser</span>(<span style="color:#a6e22e">conn</span>)
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">mapLock</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">OnlineMap</span>[<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>]=<span style="color:#a6e22e">user</span>
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">mapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">user</span>,<span style="color:#e6db74">&#34;online&#34;</span>)
+	<span style="color:#75715e">//接受客户端发送消息
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">buf</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">byte</span>,<span style="color:#ae81ff">4096</span>)
+		<span style="color:#66d9ef">for</span>{
+			<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Conn</span>.<span style="color:#a6e22e">Read</span>(<span style="color:#a6e22e">buf</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span><span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>{
+                <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">user</span>,<span style="color:#e6db74">&#34;offline&#34;</span>)
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">EOF</span>{
+				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn read err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+				<span style="color:#66d9ef">return</span>
+			}
+            <span style="color:#75715e">//获取用户的消息，并去除&#39;\n&#39;
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">msg</span><span style="color:#f92672">:=</span>string(<span style="color:#a6e22e">buf</span>[:<span style="color:#a6e22e">n</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+            <span style="color:#75715e">//将得到的消息进行广播
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">user</span>,<span style="color:#a6e22e">msg</span>)
+
+		}
+
+	}()
+
+	<span style="color:#75715e">//阻塞
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">select</span>{}
+
+}
+</code></pre></div><p>2、测试结果，可以看不到不止是上线消息被广播，发送的消息也能被广播</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112174033623.png" alt="image-20220112174033623"></p>
+<h2 id="业务层封装">业务层封装</h2>
+<blockquote>
+<p>本小节目标：将关于用户的上线、下线、发送消息的操作封装到User模块中</p>
+</blockquote>
+<p>1、user类型新增server的关联</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Addr</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">C</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>
+	<span style="color:#a6e22e">Server</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>	<span style="color:#75715e">//关联server
+</span><span style="color:#75715e"></span>}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewUser</span>(<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>,<span style="color:#a6e22e">server</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>)<span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>{
+	<span style="color:#a6e22e">remoteName</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">RemoteAddr</span>().<span style="color:#a6e22e">String</span>()
+	<span style="color:#a6e22e">user</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">User</span>{
+		<span style="color:#a6e22e">Name</span>:<span style="color:#a6e22e">remoteName</span>,
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#a6e22e">remoteName</span>,
+		<span style="color:#a6e22e">C</span>:make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>),
+		<span style="color:#a6e22e">Conn</span>:<span style="color:#a6e22e">conn</span>,
+		<span style="color:#a6e22e">Server</span>:<span style="color:#a6e22e">server</span>,
+	}
+	<span style="color:#75715e">//启动监听
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">ListenMessage</span>()
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">user</span>
+}
+</code></pre></div><p>2、user新增online方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">OnLine</span>(){
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>[<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>]=<span style="color:#a6e22e">this</span>
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">this</span>,<span style="color:#e6db74">&#34;online&#34;</span>)
+}
+</code></pre></div><p>3、user新增offline方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">OffLine</span>(){
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Lock</span>()
+	delete(<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>,<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>)
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">this</span>,<span style="color:#e6db74">&#34;offline&#34;</span>)
+}
+</code></pre></div><p>4、user新增DoMessage方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">DoMessage</span>(<span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">string</span>){
+    <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">this</span>,<span style="color:#a6e22e">msg</span>)
+
+}
+</code></pre></div><p>5、将server中相关方法替换</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">DoHandler</span>(<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>){
+	<span style="color:#75715e">//fmt.Println(&#34;服务器创建成功&#34;)
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//用户上线，将用户加入到onlinemap中
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewUser</span>(<span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">this</span>)
+	<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">OnLine</span>()
+	<span style="color:#75715e">//接受客户端发送消息
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">buf</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">byte</span>,<span style="color:#ae81ff">4096</span>)
+		<span style="color:#66d9ef">for</span>{
+			<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Conn</span>.<span style="color:#a6e22e">Read</span>(<span style="color:#a6e22e">buf</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span><span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>{
+				<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">OffLine</span>()
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">EOF</span>{
+				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn read err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#a6e22e">msg</span><span style="color:#f92672">:=</span>string(<span style="color:#a6e22e">buf</span>[:<span style="color:#a6e22e">n</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+			<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">DoMessage</span>(<span style="color:#a6e22e">msg</span>)
+		}
+
+	}()
+    <span style="color:#75715e">//阻塞
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">select</span>{}
+
+}
+</code></pre></div><p>6、测试结果，可以看到封装好，原先的功能还是正常</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112174033623.png" alt="image-20220112174033623"></p>
+<h2 id="查询用户">查询用户</h2>
+<blockquote>
+<p>本小节目标：用户发送who指令，能够查询到当前在线的所有用户</p>
+</blockquote>
+<p>1、指定协议，发送指定指令时候表示查询；消息格式为：who</p>
+<p>2、user.go实现sendMsg方法，向对象客户端发送消息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">SendMsg</span>(<span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">string</span>){
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Conn</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">msg</span>))
+}
+</code></pre></div><p>3、user.go在DoMessage方法中，对who执行进行处理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//处理消息
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">DoMessage</span>(<span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">string</span>){
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">msg</span><span style="color:#f92672">==</span><span style="color:#e6db74">&#34;who&#34;</span>{
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Lock</span>()
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">user</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>{
+			<span style="color:#a6e22e">sendMsg</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;[&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Addr</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;]&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34; is online...\n&#34;</span>
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#a6e22e">sendMsg</span>) <span style="color:#75715e">//这边就不是广播消息了，而是谁查询，就把消息发给对应的客户端
+</span><span style="color:#75715e"></span>		}
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">this</span>,<span style="color:#a6e22e">msg</span>)
+	}
+
+}
+</code></pre></div><p>4、测试结果，发送who指令后，把当前所有在线的客户端进行显示</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112175022368.png" alt="image-20220112175022368"></p>
+<h2 id="修改用户名">修改用户名</h2>
+<blockquote>
+<p>本节目标：通过发送“rename|张三”这种格式的消息，将自己的名字修改成指定内容</p>
+</blockquote>
+<p>1、定义消息格式：rename|张三</p>
+<p>2、user.go的DoMessage中对rename指令处理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//处理消息
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">DoMessage</span>(<span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">string</span>){
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">msg</span><span style="color:#f92672">==</span><span style="color:#e6db74">&#34;who&#34;</span>{
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Lock</span>()
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">user</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>{
+			<span style="color:#a6e22e">sendMsg</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;[&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Addr</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;]&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34; is online...\n&#34;</span>
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#a6e22e">sendMsg</span>)
+		}
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+	}<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">msg</span>)&gt;<span style="color:#ae81ff">7</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">msg</span>[:<span style="color:#ae81ff">7</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;rename|&#34;</span> {
+		<span style="color:#75715e">//获取修改后的用户名
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">newName</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">msg</span>, <span style="color:#e6db74">&#34;|&#34;</span>)[<span style="color:#ae81ff">1</span>]
+		<span style="color:#75715e">//查询用户名是否存在
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">ok</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>[<span style="color:#a6e22e">newName</span>]
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span>{
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#e6db74">&#34;userName is exist\n&#34;</span> )
+		}<span style="color:#66d9ef">else</span>{
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Lock</span>()
+			delete(<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>,<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>)	<span style="color:#75715e">//先删除onlinemap中原先的记录
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>[<span style="color:#a6e22e">newName</span>]=<span style="color:#a6e22e">this</span>		<span style="color:#75715e">//将新更新的用户名添加到onlinemap中
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>=<span style="color:#a6e22e">newName</span>						<span style="color:#75715e">//将user.Name中的名字进行更新
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#e6db74">&#34;you have changed name as: &#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;\n&#34;</span>)
+		}
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">this</span>,<span style="color:#a6e22e">msg</span>)
+	}
+
+}
+</code></pre></div><p>3、测试结果，可以看到通过“rename|lisi”指令已经将当前用户的名字改成了“lisi”</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112175115898.png" alt="image-20220112175115898"></p>
+<h2 id="超时关闭">超时关闭</h2>
+<blockquote>
+<p>本节目标：长时间不活跃的用户提示下线，并把连接断开，资源回收；任意消息的发送都表示用户活跃。</p>
+</blockquote>
+<p>用户的任意消息都表示这个用户是活跃的，长时间不活跃认为超时，强制关闭用户的链接</p>
+<p>1、添加活跃标志，使用isLive这样一个channel来实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">DoHandler</span>(<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>){
+	<span style="color:#75715e">//fmt.Println(&#34;服务器创建成功&#34;)
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//用户上线，将用户加入到onlinemap中
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewUser</span>(<span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">this</span>)
+	<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">OnLine</span>()
+	<span style="color:#a6e22e">isLive</span><span style="color:#f92672">:=</span>make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
+	<span style="color:#75715e">//接受客户端发送消息
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">buf</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">byte</span>,<span style="color:#ae81ff">4096</span>)
+		<span style="color:#66d9ef">for</span>{
+			<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Conn</span>.<span style="color:#a6e22e">Read</span>(<span style="color:#a6e22e">buf</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span><span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>{
+				<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">OffLine</span>()
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">EOF</span>{
+				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn read err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#a6e22e">msg</span><span style="color:#f92672">:=</span>string(<span style="color:#a6e22e">buf</span>[:<span style="color:#a6e22e">n</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+			<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">DoMessage</span>(<span style="color:#a6e22e">msg</span>)
+
+			<span style="color:#75715e">//用户的任意消息，代表当前用户是一个活跃的
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">isLive</span><span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">true</span>
+		}
+
+	}()
+
+	
+
+}
+</code></pre></div><p>2、在handler中，添加定时器功能，超时强踢；这边用到一个技巧，isLive这个case有值输出的时候，整个select里面所有的case的判断条件会执行一遍，所以time.After也会重新计时，但是这个case里面的内容不会执行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">DoHandler</span>(<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>){
+	<span style="color:#75715e">//fmt.Println(&#34;服务器创建成功&#34;)
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//用户上线，将用户加入到onlinemap中
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewUser</span>(<span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">this</span>)
+	<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">OnLine</span>()
+	<span style="color:#a6e22e">isLive</span><span style="color:#f92672">:=</span>make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
+	<span style="color:#75715e">//接受客户端发送消息
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">buf</span><span style="color:#f92672">:=</span>make([]<span style="color:#66d9ef">byte</span>,<span style="color:#ae81ff">4096</span>)
+		<span style="color:#66d9ef">for</span>{
+			<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Conn</span>.<span style="color:#a6e22e">Read</span>(<span style="color:#a6e22e">buf</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span><span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>{
+				<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">OffLine</span>()
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">EOF</span>{
+				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn read err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#a6e22e">msg</span><span style="color:#f92672">:=</span>string(<span style="color:#a6e22e">buf</span>[:<span style="color:#a6e22e">n</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+			<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">DoMessage</span>(<span style="color:#a6e22e">msg</span>)
+
+			<span style="color:#75715e">//用户的任意消息，代表当前用户是一个活跃的
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">isLive</span><span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">true</span>
+		}
+
+	}()
+
+	<span style="color:#75715e">//超时强踢，这边用到一个技巧，isLive这个case有值输出的时候，整个select里面所有的case的条件会执行一遍，所以time.After也会重新计时，但是这个case里面的内容不会执行。
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>{
+		<span style="color:#66d9ef">select</span>{
+			<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">isLive</span>:
+			<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">After</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span><span style="color:#f92672">*</span><span style="color:#ae81ff">10</span>):
+				<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#e6db74">&#34;you are dropped!\n&#34;</span>)
+				<span style="color:#75715e">//销毁资源
+</span><span style="color:#75715e"></span>				close(<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">C</span>)
+				<span style="color:#75715e">//关闭连接
+</span><span style="color:#75715e"></span>				<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Conn</span>.<span style="color:#a6e22e">Close</span>()
+				<span style="color:#75715e">//退出当前的Handler
+</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">return</span> <span style="color:#75715e">//等同于这个操作 runtime.Goexit()
+</span><span style="color:#75715e"></span>		}
+	}
+
+}
+</code></pre></div><p>3、测试结果，可以看到这个用户10s钟没有任何操作，就被下线了</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112175152370.png" alt="image-20220112175152370"></p>
+<h2 id="私聊功能">私聊功能</h2>
+<blockquote>
+<p>本节目标：通过发送“to|张三|hello”这样格式的指令，可以和指定的用户，比如“张三”进行对话，而其他用户是看不到的</p>
+</blockquote>
+<p>1、定义消息格式：to|张三|说话内容</p>
+<p>2、在user.go的DoMessage方法中，处理to指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//处理消息
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">DoMessage</span>(<span style="color:#a6e22e">msg</span> <span style="color:#66d9ef">string</span>){
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">msg</span><span style="color:#f92672">==</span><span style="color:#e6db74">&#34;who&#34;</span>{
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Lock</span>()
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">user</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>{
+			<span style="color:#a6e22e">sendMsg</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;[&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Addr</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;]&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34; is online...\n&#34;</span>
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#a6e22e">sendMsg</span>)
+		}
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+	}<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">msg</span>)&gt;<span style="color:#ae81ff">7</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">msg</span>[:<span style="color:#ae81ff">7</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;rename|&#34;</span> {
+		<span style="color:#75715e">//获取修改后的用户名
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">newName</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">msg</span>, <span style="color:#e6db74">&#34;|&#34;</span>)[<span style="color:#ae81ff">1</span>]
+		<span style="color:#75715e">//查询用户名是否存在
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">ok</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>[<span style="color:#a6e22e">newName</span>]
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span>{
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#e6db74">&#34;userName is exist\n&#34;</span> )
+		}<span style="color:#66d9ef">else</span>{
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Lock</span>()
+			delete(<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>,<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>)
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>[<span style="color:#a6e22e">newName</span>]=<span style="color:#a6e22e">this</span>
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">MapLock</span>.<span style="color:#a6e22e">Unlock</span>()
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>=<span style="color:#a6e22e">newName</span>
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#e6db74">&#34;you have changed name as: &#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;\n&#34;</span>)
+		}
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">msg</span>)&gt;<span style="color:#ae81ff">3</span><span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">msg</span>[:<span style="color:#ae81ff">3</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;to|&#34;</span> {
+		<span style="color:#75715e">//获取私聊的对象名称
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">toName</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">msg</span>,<span style="color:#e6db74">&#34;|&#34;</span>)[<span style="color:#ae81ff">1</span>]
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">toName</span><span style="color:#f92672">==</span><span style="color:#e6db74">&#34;&#34;</span>{
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#e6db74">&#34;message format err,please user \&#34; to|zhagnsan|hello \&#34; format \n&#34;</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#75715e">//判断私聊对象是否在线，以及获取当前的私聊对象
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">toUser</span>,<span style="color:#a6e22e">ok</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">OnlineMap</span>[<span style="color:#a6e22e">toName</span>]
+		<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span>{
+			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#e6db74">&#34;this user not online\n&#34;</span>)
+		}<span style="color:#66d9ef">else</span>{
+			<span style="color:#75715e">//获取私聊的内容
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">content</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">msg</span>,<span style="color:#e6db74">&#34;|&#34;</span>)[<span style="color:#ae81ff">2</span>]
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">==</span><span style="color:#e6db74">&#34;&#34;</span>{
+				<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#e6db74">&#34;message format err,please user \&#34; to|zhagnsan|hello \&#34; format \n&#34;</span>)
+			}<span style="color:#66d9ef">else</span>{
+				<span style="color:#a6e22e">toUser</span>.<span style="color:#a6e22e">SendMsg</span>(<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;to say:&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">content</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;\n&#34;</span>) <span style="color:#75715e">//使用toUser来发送消息，这样就只有toUser这个用户的客户端能收到消息了
+</span><span style="color:#75715e"></span>			}
+		}
+
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Server</span>.<span style="color:#a6e22e">BroadCast</span>(<span style="color:#a6e22e">this</span>,<span style="color:#a6e22e">msg</span>)
+	}
+
+}
+</code></pre></div><p>3、测试结果，可以看到“zhangsan” 对当前用户说的内容</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112175314674.png" alt="image-20220112175314674"></p>
+<h2 id="客户端实现">客户端实现</h2>
+<blockquote>
+<p>本节目标：之前都是通过nc工具来连接服务端，本节要实现一个客户端，不需要通过nc工具也能直接连接客户端，但是本节实现的是没有UI的客户端</p>
+</blockquote>
+<h3 id="客户端定义与连接">客户端定义与连接</h3>
+<blockquote>
+<p>本小节目标：实现Client并连接上服务器</p>
+</blockquote>
+<p>1、Client类型定义</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Client</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">ServerIp</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">ServerPort</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>
+}
+</code></pre></div><p>2、创建Client对象并连接服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewClient</span>(<span style="color:#a6e22e">ip</span> <span style="color:#66d9ef">string</span>,<span style="color:#a6e22e">port</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>{
+	<span style="color:#75715e">//创建客户端对象
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">client</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">ServerIp</span>:  <span style="color:#a6e22e">ip</span>,
+		<span style="color:#a6e22e">ServerPort</span>: <span style="color:#a6e22e">port</span>,
+	}
+	<span style="color:#75715e">//连接服务器
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d&#34;</span>, <span style="color:#a6e22e">ip</span>, <span style="color:#a6e22e">port</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;net dial err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+	}
+	<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">conn</span>=<span style="color:#a6e22e">conn</span>
+
+	<span style="color:#75715e">//返回对象
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">client</span>
+}
+</code></pre></div><p>3、创建Client对象</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewClient</span>(<span style="color:#e6db74">&#34;127.0.0.1&#34;</span>,<span style="color:#ae81ff">9999</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">client</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;连接服务器失败&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;&gt;连接服务器成功&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+	<span style="color:#75715e">//启动客户端业务
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">select</span>{}
+}
+</code></pre></div><p>4、测试结果，通过编译后，执行文件，可以连接到服务器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">go</span> <span style="color:#a6e22e">build</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">o</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">exe</span> <span style="color:#a6e22e">client</span>.<span style="color:#66d9ef">go</span>  <span style="color:#75715e">// 编译
+</span></code></pre></div><p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112175452713.png" alt="image-20220112175452713"></p>
+<h3 id="解析命令行">解析命令行</h3>
+<blockquote>
+<p>本小节目标：通过命令行解析来接收用户输入的参数</p>
+</blockquote>
+<p>1、init函数初始化命令行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">Sip</span> <span style="color:#66d9ef">string</span>	<span style="color:#75715e">//设置全局变量，用来接收ip地址
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">Sport</span> <span style="color:#66d9ef">int</span>	<span style="color:#75715e">//设置全局变量，用来接收port端口
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">init</span>(){
+	<span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">StringVar</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Sip</span>,<span style="color:#e6db74">&#34;ip&#34;</span>,<span style="color:#e6db74">&#34;127.0.0.1&#34;</span>,<span style="color:#e6db74">&#34;entry server ip (default 127.0.0.1)&#34;</span>)
+	<span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">IntVar</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Sport</span>,<span style="color:#e6db74">&#34;port&#34;</span>,<span style="color:#ae81ff">9999</span>,<span style="color:#e6db74">&#34;entry server port (defualt 9999)&#34;</span>)
+}
+</code></pre></div><p>2、解析命令行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+    <span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()	<span style="color:#75715e">//解析命令行传入的参数
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewClient</span>(<span style="color:#a6e22e">Sip</span>, <span style="color:#a6e22e">Sport</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">client</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;连接服务器失败&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;&gt;连接服务器成功&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+	<span style="color:#75715e">//启动客户端业务
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">select</span>{}
+}
+</code></pre></div><p>3、测试结果，用户可以通过参入参数指定需要连接的ip和端口，不输入默认则是设置好的“127.0.0.1:9999”</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112175733966.png" alt="image-20220112175733966"></p>
+<h3 id="菜单显示">菜单显示</h3>
+<blockquote>
+<p>本小节目标：显示菜单，提供可以供用户选择需要做的操作</p>
+</blockquote>
+<p>1、client新增flag属性</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Client</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">ServerIp</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">ServerPort</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>
+	<span style="color:#a6e22e">flag</span> <span style="color:#66d9ef">int</span>		<span style="color:#75715e">//记录用户选择的菜单
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewClient</span>(<span style="color:#a6e22e">ip</span> <span style="color:#66d9ef">string</span>,<span style="color:#a6e22e">port</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>{
+	<span style="color:#75715e">//创建客户端对象
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">client</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">ServerIp</span>:  <span style="color:#a6e22e">ip</span>,
+		<span style="color:#a6e22e">ServerPort</span>: <span style="color:#a6e22e">port</span>,
+		<span style="color:#a6e22e">flag</span>:<span style="color:#ae81ff">999</span>, 	<span style="color:#75715e">//不能是0 - 3,先设置为999
+</span><span style="color:#75715e"></span>	}
+	<span style="color:#75715e">//连接服务器
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">conn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%d&#34;</span>, <span style="color:#a6e22e">ip</span>, <span style="color:#a6e22e">port</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;net dial err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+	}
+	<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">conn</span>=<span style="color:#a6e22e">conn</span>
+
+	<span style="color:#75715e">//返回对象
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">client</span>
+}
+</code></pre></div><p>2、新增menu方法，获取用户输入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">Menu</span>() <span style="color:#66d9ef">bool</span>{
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">flag</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;1.公聊模式&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;2.私聊模式&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;3.修改用户名&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;0.退出&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">flag</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">flag</span><span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">flag</span><span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">3</span>{
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span>=<span style="color:#a6e22e">flag</span>
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;请输入合法的数字&gt;&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+	}
+
+}
+</code></pre></div><p>3、新增Run主业务循环</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">Run</span>(){
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span><span style="color:#f92672">!=</span><span style="color:#ae81ff">0</span>{
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Menu</span>()<span style="color:#f92672">!=</span><span style="color:#66d9ef">true</span>{  <span style="color:#75715e">//如果用户输入的数字不合法，则一直显示菜单
+</span><span style="color:#75715e"></span>
+		}
+		<span style="color:#75715e">//根据不同模式处理不同的业务
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span>{
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">1</span>:
+			<span style="color:#75715e">//公聊
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;公聊模式选择...&#34;</span>)
+			<span style="color:#66d9ef">break</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>:
+			<span style="color:#75715e">//私聊
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;私聊模式选择...&#34;</span>)
+			<span style="color:#66d9ef">break</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">3</span>:
+			<span style="color:#75715e">//更名
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;更新用户名选择...&#34;</span>)
+			<span style="color:#66d9ef">break</span>
+		}
+	}
+}
+</code></pre></div><p>4、main中调用Run</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewClient</span>(<span style="color:#a6e22e">Sip</span>, <span style="color:#a6e22e">Sport</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">client</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;连接服务器失败&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;&gt;连接服务器成功&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+	<span style="color:#75715e">//启动客户端业务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Run</span>()
+}
+</code></pre></div><p>5、测试结果，可以看到菜单显示出来了</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220113103737733.png" alt="image-20220113103737733"></p>
+<h3 id="更新用户名">更新用户名</h3>
+<blockquote>
+<p>本小节目标：通过选择3，可以进行更新用户名</p>
+</blockquote>
+<p>1、新增UpdateName方法更新用户名</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">UpdateName</span>() <span style="color:#66d9ef">bool</span>{
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;请输入要更新的名字&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span>)	<span style="color:#75715e">//fmt.Scan是以空格判断结尾，如果要输入空格，建议换成bufio.NewReader(os.Stdin)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">sendMsg</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;rename|&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;\n&#34;</span>
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">sendMsg</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn.Write err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+}
+</code></pre></div><p>2、加入到Run业务分支中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">Run</span>(){
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span><span style="color:#f92672">!=</span><span style="color:#ae81ff">0</span>{
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Menu</span>()<span style="color:#f92672">!=</span><span style="color:#66d9ef">true</span>{
+
+		}
+		<span style="color:#75715e">//根据不同模式处理不同的业务
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span>{
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">1</span>:
+			<span style="color:#75715e">//公聊
+</span><span style="color:#75715e"></span>            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;公聊模式选择...&#34;</span>)
+			<span style="color:#66d9ef">break</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>:
+			<span style="color:#75715e">//私聊
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;私聊模式选择...&#34;</span>)
+			<span style="color:#66d9ef">break</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">3</span>:
+			<span style="color:#75715e">//更名
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">UpdateName</span>()
+			<span style="color:#66d9ef">break</span>
+		}
+	}
+}
+</code></pre></div><p>3、添加处理Server回执消息方法DealResponse</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">DealResponse</span>(){
+	<span style="color:#75715e">//一旦this.conn有数据，就直接copy到stdout标准输出上，永久阻塞监听
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>,<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">conn</span>)
+}
+</code></pre></div><p>4、开启一个go，去承载DealResponse</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">flag</span>.<span style="color:#a6e22e">Parse</span>()
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewClient</span>(<span style="color:#a6e22e">Sip</span>, <span style="color:#a6e22e">Sport</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">client</span><span style="color:#f92672">==</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;连接服务器失败&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&gt;&gt;&gt;&gt;&gt;连接服务器成功&gt;&gt;&gt;&gt;&gt;&gt;&#34;</span>)
+	<span style="color:#75715e">//单独开启goroutine去处理服务器消息
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">DealResponse</span>()
+	<span style="color:#75715e">//启动客户端业务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Run</span>()
+}
+</code></pre></div><p>5、测试结果，client选择了3之后，输入自己的名称后，就可以更改自己的用户名了。</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112175912954.png" alt="image-20220112175912954"></p>
+<h3 id="公聊模式">公聊模式</h3>
+<blockquote>
+<p>本小节目标：用户选择1进入公聊模式，并发送消息后，其他在线用户都能看到消息</p>
+</blockquote>
+<p>1、新增PublicChat公聊模式业务；</p>
+<p>由于fmt.Scanln输入的消息会以空格结尾，所以这里换成bufio.NewReader来接收消息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">PublicChat</span>(){
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">chatMsg</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;请输入公聊内容，exit退出&#34;</span>)
+	<span style="color:#75715e">//fmt.Scanln(&amp;chatMsg)
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//Scanln输入会以空格结尾，所以这里换成bufio.NewReader(os.Stdin)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">reader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>)
+	<span style="color:#a6e22e">chatMsg</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">reader</span>.<span style="color:#a6e22e">ReadString</span>(<span style="color:#e6db74">&#39;\n&#39;</span>)
+	<span style="color:#a6e22e">chatMsg</span>=<span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">TrimSpace</span>(<span style="color:#a6e22e">chatMsg</span>)
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">chatMsg</span><span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;exit&#34;</span>{
+		<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">chatMsg</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;\n&#34;</span>))
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn.Write err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">chatMsg</span>=<span style="color:#e6db74">&#34;&#34;</span>
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;请输入公聊内容，exit退出&#34;</span>)
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">chatMsg</span>)
+	}
+}
+</code></pre></div><p>2、加入Run分支中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">Run</span>(){
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span><span style="color:#f92672">!=</span><span style="color:#ae81ff">0</span>{
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Menu</span>()<span style="color:#f92672">!=</span><span style="color:#66d9ef">true</span>{
+
+		}
+		<span style="color:#75715e">//根据不同模式处理不同的业务
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span>{
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">1</span>:
+			<span style="color:#75715e">//公聊
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;公聊模式选择...&#34;</span>)
+			<span style="color:#66d9ef">break</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>:
+			<span style="color:#75715e">//私聊
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">PrivateChat</span>()
+			<span style="color:#66d9ef">break</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">3</span>:
+			<span style="color:#75715e">//更名
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">UpdateName</span>()
+			<span style="color:#66d9ef">break</span>
+		}
+	}
+}
+</code></pre></div><p>3、测试结果，用户输入1后，进行公聊模式，其他用户也能够收到消息</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112180037874.png" alt="image-20220112180037874"></p>
+<h3 id="私聊模式">私聊模式</h3>
+<blockquote>
+<p>本小节目标：用户选择2进入私聊模式后，再选择私聊的用户，发送内容后，可以进行私聊</p>
+</blockquote>
+<p>1、查询当前在线用户</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">SelectUser</span>(){
+	<span style="color:#a6e22e">sendMsg</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;who\n&#34;</span>
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">sendMsg</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;select user conn.Write err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+}
+</code></pre></div><p>2、新增私聊模式业务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">PrivateChat</span>(){
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">toName</span> <span style="color:#66d9ef">string</span>
+
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">content</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SelectUser</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;请输入需要私聊的对象的用户名，exit退出&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">toName</span>)
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">toName</span><span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;exit&#34;</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;请输入需要聊天的内容，exit退出&#34;</span>)
+		<span style="color:#75715e">//fmt.Scanln(&amp;content)
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//Scanln输入会以空格结尾，所以这里换成bufio.NewReader(os.Stdin)
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">reader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdin</span>)
+		<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">reader</span>.<span style="color:#a6e22e">ReadString</span>(<span style="color:#e6db74">&#39;\n&#39;</span>)
+		<span style="color:#a6e22e">content</span>=<span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">TrimSpace</span>(<span style="color:#a6e22e">content</span>)
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;exit&#34;</span>{
+			<span style="color:#a6e22e">sendMsg</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;to|&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">toName</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;|&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">content</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;\n\n&#34;</span>
+			<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">sendMsg</span>))
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;privateChat conn.Write err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+				<span style="color:#66d9ef">break</span>
+			}
+			<span style="color:#a6e22e">content</span>=<span style="color:#e6db74">&#34;&#34;</span>
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;请输入需要聊天的内容，exit退出&#34;</span>)
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">content</span>)
+
+		}
+		<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">SelectUser</span>()
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;请输入需要私聊的对象的用户名，exit退出&#34;</span>)
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">toName</span>)
+	}
+
+}
+</code></pre></div><p>3、添加到Run分支</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Client</span>) <span style="color:#a6e22e">Run</span>(){
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span><span style="color:#f92672">!=</span><span style="color:#ae81ff">0</span>{
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Menu</span>()<span style="color:#f92672">!=</span><span style="color:#66d9ef">true</span>{
+
+		}
+		<span style="color:#75715e">//根据不同模式处理不同的业务
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">flag</span>{
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">1</span>:
+			<span style="color:#75715e">//公聊
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">PublicChat</span>()
+			<span style="color:#66d9ef">break</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>:
+			<span style="color:#75715e">//私聊
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">PrivateChat</span>()
+			<span style="color:#66d9ef">break</span>
+		<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">3</span>:
+			<span style="color:#75715e">//更名
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">UpdateName</span>()
+			<span style="color:#66d9ef">break</span>
+		}
+	}
+}
+</code></pre></div><p>4、测试结果，用户选择私聊后，发送了聊天内容，对方可以正确收到消息</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112180243242.png" alt="image-20220112180243242"></p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220112180216419.png" alt="image-20220112180216419"></p>
+<h2 id="参考文献">参考文献</h2>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1gf4y1r79E?from=search&amp;seid=17563448039410003060&amp;spm_id_from=333.337.0.0">https://www.bilibili.com/video/BV1gf4y1r79E?from=search&amp;seid=17563448039410003060&amp;spm_id_from=333.337.0.0</a></p>
+</blockquote>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

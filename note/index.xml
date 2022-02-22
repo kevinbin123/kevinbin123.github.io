@@ -6,7 +6,28 @@
     <description>Recent content in Notes on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 17 Feb 2022 00:02:17 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 22 Feb 2022 21:31:59 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang小案例 即时通讯</title>
+      <link>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/</link>
+      <pubDate>Tue, 22 Feb 2022 21:31:59 +0800</pubDate>
+      
+      <guid>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/</guid>
+      <description>Golang小案例-即时通讯 本案例的目的是通过练习这么一个即时通讯的小案例来掌握go语言的基本使用；
+这个案例是从B站的一个视频看到的，地址在文末的参考文献中，自己又写一遍主要是为了防止忘记，好记性不如烂笔头，眼过千遍，不如coding一遍。
+本案例使用的架构如图所示：
+思路：
+1、构建server服务器，server服务器中包含ip地址，port端口，包含一个onLineMap的map类型的字段，用来记录上线的用户，还包含一个Message的channel，用来广播消息
+2、server中还启动一个DoHandler的goroutine，用来处理每一个连接到server的业务逻辑；以及开启一个ListenMessage的goroutine来监听Message
+3、user中包含了Name，Addr，还包含一个C的channel，用来接收从Message发过来的消息，还有conn用来与对应的客户端通信
+4、user中实现OnLine用户上线方法、OffLine用户下线方法、DoMessage用户处理消息业务
+构建Server  本小节目标：构建server服务器，能启动server
+ 1、定义Server类型，一个服务器至少需要一个IP和一个端口
+type Server struct{ Ip string	//服务器的ip 	Port int	//服务器的端口 } 2、创建Server对象
+func NewServer(ip string, port int) *Server{ server:=&amp;amp;Server{ Ip:ip, Port:port, } return server } 3、启动Server服务，按照先监听、再创建accept、然后处理read的顺序启动server
+func (this *Server) Start(){ //监听listen 	listener, err := net.Listen(&amp;#34;tcp&amp;#34;, fmt.Sprintf(&amp;#34;%s:%d&amp;#34;, this.Ip, this.Port)) if err!=nil{ fmt.Println(&amp;#34;listen error:&amp;#34;,err) return } //关闭监听 	defer listener.Close() //创建accept 	for{ conn, err := listener.Accept() if err!</description>
+    </item>
+    
     <item>
       <title>MySQL笔记</title>
       <link>/note/db/mysql%E7%AC%94%E8%AE%B0/</link>
