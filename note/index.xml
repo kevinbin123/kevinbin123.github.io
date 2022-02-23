@@ -6,7 +6,32 @@
     <description>Recent content in Notes on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 22 Feb 2022 21:31:59 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 24 Feb 2022 00:40:21 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis笔记</title>
+      <link>/note/go/redis%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Thu, 24 Feb 2022 00:40:21 +0800</pubDate>
+      
+      <guid>/note/go/redis%E7%AC%94%E8%AE%B0/</guid>
+      <description>redis笔记 安装 windows下安装 下载redis:https://github.com/tporadowski/redis/releases
+解压后，cmd进入到redis文件夹；输入命令启动：
+redis-server.exe
+启动cli连接server，新开一个cmd进入redis文件夹，输入命令：
+redis-cli.exe -h 127.0.0.1 -p 6379
+Linux下安装 docker方式：
+直接使用docker启用一个redis5.0.7的环境
+docker run --name redis507 -p 6379:6379 -d redis:5.0.7
+启用redis-cli连接redis server
+docker run -it --network host --rm redis:5.0.7 redis-cli
+正常方式：
+下载地址：https://redis.io/download
+下载并安装
+# wget https://download.redis.io/releases/redis-6.2.6.tar.gz # tar -zxvf redis-6.2.6.tar.gz # cd redis-6.2.6 # make make完之后，src目录会出现redis-server服务程序，还有客户端程序redis-cli；redis.conf也可以省略，使用默认配置
+# cd src # ./redis-server ../redis.conf 服务端启动之后，可以使用客户端与服务端进行交互
+# cd src # ./redis-cli 带ip地址和端口的链接
+# ./redis-cli -h 127.0.0.1 -p 6379 -a &amp;#34;mypass&amp;#34; 查看是否可以连接</description>
+    </item>
+    
     <item>
       <title>Golang小案例 即时通讯</title>
       <link>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/</link>
