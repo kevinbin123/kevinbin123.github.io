@@ -6,7 +6,52 @@
     <description>Recent content on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 24 Feb 2022 00:40:21 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 28 Feb 2022 20:54:45 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang小案例 获取成语并查询</title>
+      <link>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</link>
+      <pubDate>Mon, 28 Feb 2022 20:54:45 +0800</pubDate>
+      
+      <guid>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</guid>
+      <description>Golang小案例-获取成语并查询 前言：
+本案例实现的功能：
+1、通过[万维易源]接口获取成语
+2、解析获取到的内容，并通过成语title获取具体是成语释义
+3、解析释义，并持久化到本地文件
+4、根据命令行参数来实现精确查询或者模糊查询
+本案例用到的知识为：
+1、通过http.Get获取接口内容
+2、通过json.Unmarsal解析内容
+3、通过json的Encode方法持久化数据
+4、通过flag实现命令行参数的解析
+准备工作
+定义成语的结构体
+type Idiom struct { Title string `json:&amp;#34;title&amp;#34;` Spell string `json:&amp;#34;spell&amp;#34;` Smiple string `json:&amp;#34;simple&amp;#34;` Derivation string `json:&amp;#34;derivation&amp;#34;` Content string `json:&amp;#34;content&amp;#34;` } 使用一个map来存放所有的成语
+var Idioms = make(map[string]Idiom) 定义一个本地路径用来持久化数据
+var DBpath = &amp;#34;成语大全.json&amp;#34; 定义用来接收命令行参数的变量
+var StringVar string var KeyVar string 获取列表数据
+从接口获取列表数据
+func GetJson(url string) (bytes []byte, err error) { resp, err := http.Get(url) if err != nil { fmt.</description>
+    </item>
+    
+    <item>
+      <title>Docker笔记</title>
+      <link>/note/go/docker%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Sun, 27 Feb 2022 20:53:41 +0800</pubDate>
+      
+      <guid>/note/go/docker%E7%AC%94%E8%AE%B0/</guid>
+      <description>Docker笔记 基本概念 安装 在centos上安装，需要Centos7以上的版本
+其它系统以及自动安装的方式可以查看参考文献1
+手动安装
+0、安装之前先卸载
+$ sudo yum remove docker \  docker-client \  docker-client-latest \  docker-common \  docker-latest \  docker-latest-logrotate \  docker-logrotate \  docker-engine 1、安装设置仓库需要的软件包
+[root@localhost ~]# yum install -y yum-utils device-mapper-persistent-data lvm2 2、设置仓库，这边选择阿里云的
+[root@localhost ~]# yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 3、安装最新版本的Docker Engine-Community和containerd；
+[root@localhost ~]# yum install docker-ce docker-ce-cli containerd.io 4、启动docker并设置为开机自启动
+[root@localhost ~]# systemctl start docker [root@localhost ~]# systemctl enable docker 5、查看版本，用来验证是否安装成功
+[root@localhost ~]# docker --version docker的使用 demo的使用 Docker 以 ubuntu 镜像创建一个新容器，然后在容器里执行 bin/echo &amp;ldquo;Hello world&amp;rdquo;</description>
+    </item>
+    
     <item>
       <title>Redis笔记</title>
       <link>/note/go/redis%E7%AC%94%E8%AE%B0/</link>
