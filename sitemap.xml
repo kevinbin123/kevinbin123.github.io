@@ -3,12 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>/</loc>
-    <lastmod>2022-02-28T20:54:45+08:00</lastmod>
+    <lastmod>2022-03-04T20:36:19+08:00</lastmod>
   </url><url>
-    <loc>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</loc>
-    <lastmod>2022-02-28T20:54:45+08:00</lastmod>
+    <loc>/note/go/gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2022-03-04T20:36:19+08:00</lastmod>
   </url><url>
     <loc>/note/</loc>
+    <lastmod>2022-03-04T20:36:19+08:00</lastmod>
+  </url><url>
+    <loc>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</loc>
     <lastmod>2022-02-28T20:54:45+08:00</lastmod>
   </url><url>
     <loc>/note/go/docker%E7%AC%94%E8%AE%B0/</loc>

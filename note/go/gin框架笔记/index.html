@@ -1,0 +1,1941 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Gin框架笔记 // abin の 成长之路</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.89.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abin" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Gin框架笔记"/>
+<meta name="twitter:description" content="Gin框架笔记 初识gin 通过go mod init xxx 来管理包，只需要引入包即可，会自动下载包；不需要手动 go get了
+步骤：
+1、通过gin.Default()创建默认路由引擎
+2、设置路由，支持restful风格的api
+3、启动web服务
+简单示例代码：
+package main import &#34;github.com/gin-gonic/gin&#34; func main(){ r:=gin.Default() r.GET(&#34;/&#34;,func(c *gin.Context){ c.String(200,&#34;hello&#34;) }) r.Run() } 浏览器访问效果：
+实现热加载的方式：借助其他工具，比如fresh
+1、下载fresh工具：go get github.com/pilu/fresh
+2、使用fresh命令启动
+gin的路由 使用Restful风格的API 常见的有GET/POST/PUT/DELETE
+GET 使用get方式访问指定的路由；一般用来请求数据
+package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建默认的路由引擎 	//设置路由 	//启动web服务 	r:=gin.Default() r.GET(&#34;/users&#34;,func(c *gin.Context){ c.String(200,&#34;我是用户页面&#34;) }) } 使用postman，用get方式请求路径效果：
+POST 使用post方式来请求指定的路由，一般用来增加数据
+package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建默认的路由引擎 	//设置路由 	//启动web服务 	r:=gin."/>
+
+    <meta property="og:title" content="Gin框架笔记" />
+<meta property="og:description" content="Gin框架笔记 初识gin 通过go mod init xxx 来管理包，只需要引入包即可，会自动下载包；不需要手动 go get了
+步骤：
+1、通过gin.Default()创建默认路由引擎
+2、设置路由，支持restful风格的api
+3、启动web服务
+简单示例代码：
+package main import &#34;github.com/gin-gonic/gin&#34; func main(){ r:=gin.Default() r.GET(&#34;/&#34;,func(c *gin.Context){ c.String(200,&#34;hello&#34;) }) r.Run() } 浏览器访问效果：
+实现热加载的方式：借助其他工具，比如fresh
+1、下载fresh工具：go get github.com/pilu/fresh
+2、使用fresh命令启动
+gin的路由 使用Restful风格的API 常见的有GET/POST/PUT/DELETE
+GET 使用get方式访问指定的路由；一般用来请求数据
+package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建默认的路由引擎 	//设置路由 	//启动web服务 	r:=gin.Default() r.GET(&#34;/users&#34;,func(c *gin.Context){ c.String(200,&#34;我是用户页面&#34;) }) } 使用postman，用get方式请求路径效果：
+POST 使用post方式来请求指定的路由，一般用来增加数据
+package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建默认的路由引擎 	//设置路由 	//启动web服务 	r:=gin." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/note/go/gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/" /><meta property="article:section" content="note" />
+<meta property="article:published_time" content="2022-03-04T20:36:19+08:00" />
+<meta property="article:modified_time" content="2022-03-04T20:36:19+08:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/avatar.jpg" alt="abin" /></a>
+      <h1>abin の 成长之路</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">首页</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tecs/">学习</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/note/">笔记</a>
+      </nav>
+      <p>A man as good as me should have lived a glorious life</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/kevinbin123" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="http://ecoder.xyz:520/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-cloud">
+  <title>mySite</title>
+  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Gin框架笔记</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Mar 4, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          11 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="gin框架笔记">Gin框架笔记</h1>
+<h2 id="初识gin">初识gin</h2>
+<p>通过go mod init xxx 来管理包，只需要引入包即可，会自动下载包；不需要手动 go get了</p>
+<p>步骤：</p>
+<p>1、通过gin.Default()创建默认路由引擎</p>
+<p>2、设置路由，支持restful风格的api</p>
+<p>3、启动web服务</p>
+<p>简单示例代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+
+   <span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+
+   <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+      <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">200</span>,<span style="color:#e6db74">&#34;hello&#34;</span>)
+   })
+
+   <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>()
+}
+</code></pre></div><p>浏览器访问效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301154142338.png" alt="image-20220301154142338"></p>
+<p>实现热加载的方式：借助其他工具，比如fresh</p>
+<p>1、下载fresh工具：<code>go get github.com/pilu/fresh</code></p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301154901132.png" alt="image-20220301154901132"></p>
+<p>2、使用fresh命令启动</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301154938700.png" alt="image-20220301154938700"></p>
+<h2 id="gin的路由">gin的路由</h2>
+<h3 id="使用restful风格的api">使用Restful风格的API</h3>
+<p>常见的有GET/POST/PUT/DELETE</p>
+<h4 id="get">GET</h4>
+<p>使用get方式访问指定的路由；一般用来请求数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/users&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">200</span>,<span style="color:#e6db74">&#34;我是用户页面&#34;</span>)
+	})
+
+}
+
+</code></pre></div><p>使用postman，用get方式请求路径效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301170843806.png" alt="image-20220301170843806"></p>
+<h4 id="post">POST</h4>
+<p>使用post方式来请求指定的路由，一般用来增加数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">POST</span>(<span style="color:#e6db74">&#34;/add&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">200</span>,<span style="color:#e6db74">&#34;使用post增加数据&#34;</span>)
+	})<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">200</span>,<span style="color:#e6db74">&#34;使用delete删除数据&#34;</span>)
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+</code></pre></div><p>使用postman，用post方式请求路径效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301170900318.png" alt="image-20220301170900318"></p>
+<h4 id="put">PUT</h4>
+<p>使用put方式来请求指定的路由，一般用来修改数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">PUT</span>(<span style="color:#e6db74">&#34;/edit&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">200</span>,<span style="color:#e6db74">&#34;使用put修改数据&#34;</span>)
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+</code></pre></div><p>使用postman，用put方式请求路径效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301170915834.png" alt="image-20220301170915834"></p>
+<h4 id="delete">DELETE</h4>
+<p>使用delete方式来请求指定的路由，一般用来删除数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">DELETE</span>(<span style="color:#e6db74">&#34;/delete&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">200</span>,<span style="color:#e6db74">&#34;使用delete删除数据&#34;</span>)
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+</code></pre></div><p>使用postman，用delete方式请求路径效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301170930394.png" alt="image-20220301170930394"></p>
+<h3 id="gin数据格式的响应">Gin数据格式的响应</h3>
+<p>​	Gin数据格式的响应常见的有：c.String()、c.JSON()、c.JSONP()、c.XML()、c.HTML()、c.protobuf()</p>
+<h4 id="cstring">c.String()</h4>
+<p>返回string类型的数据：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;hello gin&#34;</span>)
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+</code></pre></div><p>访问效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171758952.png" alt="image-20220301171758952"></p>
+<h4 id="cjson">c.JSON()</h4>
+<p>返回json类型的数据；可以自定义map[string]interface{}；也可以使用gin.H(本质上也是一个map[string]interface{});也可以返回一个结构体。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Article</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Title</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;title&#34;`</span>
+	<span style="color:#a6e22e">Desc</span> <span style="color:#66d9ef">string</span>		<span style="color:#e6db74">`json:&#34;desc&#34;`</span>
+	<span style="color:#a6e22e">Content</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;content&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/json&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#ae81ff">200</span>,<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}{
+			<span style="color:#e6db74">&#34;success&#34;</span>:<span style="color:#66d9ef">true</span>,
+			<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;hello gin json&#34;</span>,
+		})
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/json2&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#ae81ff">200</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+			<span style="color:#e6db74">&#34;success&#34;</span>:<span style="color:#66d9ef">true</span>,
+			<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;hello gin.H return json&#34;</span>,
+		})
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/json3&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">temp</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">Article</span>{
+			<span style="color:#a6e22e">Title</span>:   <span style="color:#e6db74">&#34;这是一个标题&#34;</span>,
+			<span style="color:#a6e22e">Desc</span>:    <span style="color:#e6db74">&#34;这是一个描述&#34;</span>,
+			<span style="color:#a6e22e">Content</span>: <span style="color:#e6db74">&#34;这个一个内容&#34;</span>,
+		}
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">temp</span>)
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+</code></pre></div><p>访问效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171829024.png" alt="image-20220301171829024"></p>
+<h4 id="cjsonp">C.JSONP()</h4>
+<p>为了解决json数据跨域的问题，可以访问jsonp格式；在前端请求的时候加上callback参数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Article</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Title</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;title&#34;`</span>
+	<span style="color:#a6e22e">Desc</span> <span style="color:#66d9ef">string</span>		<span style="color:#e6db74">`json:&#34;desc&#34;`</span>
+	<span style="color:#a6e22e">Content</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;content&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/json4&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">temp</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">Article</span>{
+			<span style="color:#a6e22e">Title</span>:   <span style="color:#e6db74">&#34;这是一个标题&#34;</span>,
+			<span style="color:#a6e22e">Desc</span>:    <span style="color:#e6db74">&#34;这是一个描述&#34;</span>,
+			<span style="color:#a6e22e">Content</span>: <span style="color:#e6db74">&#34;这个一个内容&#34;</span>,
+		}
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSONP</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">temp</span>)
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+</code></pre></div><p>访问效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171849871.png" alt="image-20220301171849871"></p>
+<h4 id="cxml">c.XML()</h4>
+<p>返回xml格式数据。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/xml&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">XML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+			<span style="color:#e6db74">&#34;success&#34;</span>:<span style="color:#66d9ef">true</span>,
+			<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;hello this is xml&#34;</span>,
+		})
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+</code></pre></div><p>访问效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171905179.png" alt="image-20220301171905179"></p>
+<h4 id="chtml">c.HTML()</h4>
+<p>返回html格式的数据：</p>
+<p>步骤：</p>
+<p>1、定义html模板</p>
+<p>2、通过LoadHTMLGlob设置模板</p>
+<p>3、通过c.HTML()设置模板。</p>
+<p>例如定义一个index.html模板</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;index.html&#34;}}
+<span style="color:#75715e">&lt;!doctype html&gt;</span>
+&lt;<span style="color:#f92672">html</span> <span style="color:#a6e22e">lang</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+&lt;<span style="color:#f92672">head</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Generator&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;EditPlus®&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Author&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Keywords&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Description&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">title</span>&gt;index page&lt;/<span style="color:#f92672">title</span>&gt;
+&lt;/<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">body</span>&gt;
+这是一个首页页面
+{{.title}}-{{.content}}
+&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;
+{{end}}
+</code></pre></div><p>在后端通过LoadHTMLGlob设置模板；并加载index.html模板：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LoadHTMLGlob</span>(<span style="color:#e6db74">&#34;templates/*&#34;</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/index&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#ae81ff">200</span>,<span style="color:#e6db74">&#34;index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+			<span style="color:#e6db74">&#34;title&#34;</span>:<span style="color:#e6db74">&#34;首页标题&#34;</span>,
+			<span style="color:#e6db74">&#34;content&#34;</span>:<span style="color:#e6db74">&#34;首页内容..&#34;</span>,
+		})
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/news&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#ae81ff">200</span>,<span style="color:#e6db74">&#34;news.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+</code></pre></div><p>访问效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171922271.png" alt="image-20220301171922271"></p>
+<h4 id="cprotobuf">c.protobuf()</h4>
+<p>返回protobuf格式的数据。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin/testdata/protoexample&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//创建默认的路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//启动web服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/protobuf&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">reps</span><span style="color:#f92672">:=</span>[]<span style="color:#66d9ef">int64</span>{int64(<span style="color:#ae81ff">1</span>),int64(<span style="color:#ae81ff">2</span>)}
+		<span style="color:#75715e">//定义数据
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">label</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;label&#34;</span>
+		<span style="color:#a6e22e">data</span><span style="color:#f92672">:=&amp;</span><span style="color:#a6e22e">protoexample</span>.<span style="color:#a6e22e">Test</span>{
+			<span style="color:#a6e22e">Label</span>:            <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">label</span>,
+			<span style="color:#a6e22e">Reps</span>:             <span style="color:#a6e22e">reps</span>,
+		}
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ProtoBuf</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">data</span>)
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+
+}
+
+</code></pre></div><p>访问效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301172534944.png" alt="image-20220301172534944"></p>
+<h2 id="gin模板渲染">Gin模板渲染</h2>
+<h3 id="基本使用">基本使用</h3>
+<p>1、创建几个模板</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302100927948.png" alt="image-20220302100927948"></p>
+<p>2、模板中写入内容；比如admin下的index.html内容如下：</p>
+<p>{{define}}和{{end}}成对出现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;admin/index.html&#34;}}
+<span style="color:#75715e">&lt;!doctype html&gt;</span>
+&lt;<span style="color:#f92672">html</span> <span style="color:#a6e22e">lang</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+&lt;<span style="color:#f92672">head</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Generator&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;EditPlus®&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Author&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Keywords&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Description&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">title</span>&gt;index page&lt;/<span style="color:#f92672">title</span>&gt;
+&lt;/<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">body</span>&gt;
+&lt;<span style="color:#f92672">h1</span>&gt;后台首页&lt;/<span style="color:#f92672">h1</span>&gt;
+&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;
+{{end}}
+</code></pre></div><p>3、使用LoadHTMLGlob加载模板；设置路由后可以正常访问</p>
+<p>4、如果html中有用到静态文件，还需要使用Static来设置一下静态文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LoadHTMLGlob</span>(<span style="color:#e6db74">&#34;templates/**/*&#34;</span>)
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//前台首页
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+	<span style="color:#75715e">//前台新闻页面
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/news&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/news.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+
+	<span style="color:#75715e">//后台首页
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/admin&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+	<span style="color:#75715e">//后台用户页面
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/admin/user&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/user.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+}
+
+</code></pre></div><p>效果</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302101411869.png" alt="image-20220302101411869"></p>
+<h3 id="gin模板基本语法">Gin模板基本语法</h3>
+<p><strong>基本内容：</strong></p>
+<p>​	绑定数据：{{.xxx}}</p>
+<p>​	保存变量：{{$temp .xxx}}</p>
+<p>​	比较函数：{{if gt $temp value}}</p>
+<p>​	遍历：{{range $key,$value:=.xxx}}</p>
+<p>​	解构结构体：{{with .xxx}}  {{end}}</p>
+<p>​	预定义函数：{{len .xxx}}  还有其他预定义函数；</p>
+<p>​	自定义模板函数：通过r.SetFuncMap(template.FuncMap{})来设置</p>
+<p>​	模板嵌套：通过{{template &ldquo;public/public.html&rdquo; .}} 最后一个点加上可以传值到嵌套的模板中；</p>
+<p><strong>简单示例：</strong></p>
+<p>后端传值：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;html/template&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Role</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Privilege</span> <span style="color:#66d9ef">string</span>
+}
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Hiredate</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+    <span style="color:#75715e">//设置自定义函数
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">SetFuncMap</span>(<span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">FuncMap</span>{
+		<span style="color:#e6db74">&#34;unixToTime&#34;</span>:<span style="color:#a6e22e">UnixToTime</span>,
+		<span style="color:#e6db74">&#34;printstr&#34;</span>:<span style="color:#a6e22e">PrintStr</span>,
+	})
+
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LoadHTMLGlob</span>(<span style="color:#e6db74">&#34;templates/**/*&#34;</span>)
+    <span style="color:#75715e">//设置静态文件
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Static</span>(<span style="color:#e6db74">&#34;/static&#34;</span>,<span style="color:#e6db74">&#34;./static&#34;</span>)
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//前台首页
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+	<span style="color:#75715e">//前台新闻页面
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/news&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/news.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+
+	<span style="color:#75715e">//后台首页
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/admin&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+	<span style="color:#75715e">//后台用户页面
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/admin/user&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/user.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+			<span style="color:#e6db74">&#34;title&#34;</span>:<span style="color:#e6db74">&#34;这是一个title&#34;</span>,
+			<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;暂无消息&#34;</span>,
+			<span style="color:#e6db74">&#34;score&#34;</span>:<span style="color:#ae81ff">89</span>,
+			<span style="color:#e6db74">&#34;hobby&#34;</span>:[]<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;吃饭&#34;</span>,<span style="color:#e6db74">&#34;睡觉&#34;</span>,<span style="color:#e6db74">&#34;阅读&#34;</span>},
+			<span style="color:#e6db74">&#34;role&#34;</span>:[]<span style="color:#66d9ef">interface</span>{}{
+				<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Role</span>{
+					<span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;管理员&#34;</span>,
+					<span style="color:#a6e22e">Privilege</span>:<span style="color:#e6db74">&#34;全部&#34;</span>,
+				},
+				<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Role</span>{
+					<span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;专题维护&#34;</span>,
+					<span style="color:#a6e22e">Privilege</span>:<span style="color:#e6db74">&#34;增改&#34;</span>,
+				},
+			},
+			<span style="color:#e6db74">&#34;user&#34;</span>:<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{
+				<span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;abin&#34;</span>,
+				<span style="color:#a6e22e">Age</span>:<span style="color:#ae81ff">18</span>,
+				<span style="color:#a6e22e">Hiredate</span>:<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>(),
+			},
+			<span style="color:#e6db74">&#34;date&#34;</span>:<span style="color:#ae81ff">1646184906</span>,
+			<span style="color:#e6db74">&#34;subtitle&#34;</span>:<span style="color:#e6db74">&#34;子标题&#34;</span>,
+		})
+	})
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+}
+
+<span style="color:#75715e">//时间戳转换成日期
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">UnixToTime</span>(<span style="color:#a6e22e">timestamp</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">string</span>{
+	<span style="color:#a6e22e">t</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Unix</span>(int64(<span style="color:#a6e22e">timestamp</span>),<span style="color:#ae81ff">0</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006-01-02 15:04:05&#34;</span>)
+}
+<span style="color:#75715e">//拼接字符串
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PrintStr</span>(<span style="color:#a6e22e">str1</span>,<span style="color:#a6e22e">str2</span> <span style="color:#66d9ef">string</span>)  <span style="color:#66d9ef">string</span>{
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">str1</span><span style="color:#f92672">+</span><span style="color:#a6e22e">str2</span>
+}
+</code></pre></div><p>html模板中的用法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;admin/user.html&#34;}}
+<span style="color:#75715e">&lt;!doctype html&gt;</span>
+&lt;<span style="color:#f92672">html</span> <span style="color:#a6e22e">lang</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+&lt;<span style="color:#f92672">head</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Generator&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;EditPlus®&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Author&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Keywords&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Description&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+    &lt;<span style="color:#f92672">title</span>&gt;news page&lt;/<span style="color:#f92672">title</span>&gt;
+    &lt;<span style="color:#f92672">link</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stylesheet&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/static/css/base.css&#34;</span>&gt;
+&lt;/<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">body</span>&gt;
+&lt;<span style="color:#f92672">h2</span>&gt;后台用户页面&lt;/<span style="color:#f92672">h2</span>&gt;
+&lt;<span style="color:#f92672">img</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/static/images/golang.jpg&#34;</span> <span style="color:#a6e22e">width</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;100&#34;</span>/&gt;
+&lt;<span style="color:#f92672">br</span>&gt;
+输出数据：
+{{ .title}}
+&lt;<span style="color:#f92672">br</span>&gt;
+变量.
+{{$t:= .score}}
+{{$t}}
+&lt;<span style="color:#f92672">br</span>&gt;
+比较函数/条件判断：
+{{if gt $t 90}} 优秀
+    {{else if gt $t 80}} 良好
+    {{else}}
+{{end}}
+&lt;<span style="color:#f92672">br</span>&gt;
+range:遍历切片
+&lt;<span style="color:#f92672">ul</span>&gt;
+    {{range $key,$value:=.hobby}}
+    &lt;<span style="color:#f92672">li</span>&gt;{{$key}}---{{$value}}&lt;/<span style="color:#f92672">li</span>&gt;
+
+    {{end}}
+&lt;/<span style="color:#f92672">ul</span>&gt;
+
+&lt;<span style="color:#f92672">ul</span>&gt;
+    {{range $key,$value:=.role}}
+        &lt;<span style="color:#f92672">li</span>&gt;{{$key}}---{{$value.Name}}---{{$value.Privilege}}&lt;/<span style="color:#f92672">li</span>&gt;
+
+    {{end}}
+&lt;/<span style="color:#f92672">ul</span>&gt;
+
+&lt;<span style="color:#f92672">br</span>&gt;
+With:结构结构体
+{{with .user}}
+   &lt;<span style="color:#f92672">p</span>&gt; {{.Name}}&lt;/<span style="color:#f92672">p</span>&gt;
+   &lt;<span style="color:#f92672">p</span>&gt; {{.Age}}&lt;/<span style="color:#f92672">p</span>&gt;
+   &lt;<span style="color:#f92672">p</span>&gt; {{.Hiredate}}&lt;/<span style="color:#f92672">p</span>&gt;
+{{end}}
+&lt;<span style="color:#f92672">br</span>&gt;
+预定义参数：比如len
+&lt;<span style="color:#f92672">p</span>&gt; {{len .title}}&lt;/<span style="color:#f92672">p</span>&gt;
+&lt;<span style="color:#f92672">br</span>&gt;
+自定义模板函数
+&lt;<span style="color:#f92672">p</span>&gt;时间戳时间：{{.date}}&lt;/<span style="color:#f92672">p</span>&gt;
+&lt;<span style="color:#f92672">p</span>&gt;转换后的时间：{{unixToTime .date}}&lt;/<span style="color:#f92672">p</span>&gt;
+&lt;<span style="color:#f92672">p</span>&gt;拼接字符：{{printstr .title .msg}}&lt;/<span style="color:#f92672">p</span>&gt;
+&lt;<span style="color:#f92672">br</span>&gt;
+嵌套template
+{{template &#34;public/public.html&#34; .}}
+&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;
+{{end }}
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302101750491.png" alt="image-20220302101750491"></p>
+<h2 id="gin数据解析和绑定">Gin数据解析和绑定</h2>
+<h3 id="解析url参数">解析Url参数</h3>
+<p>通过Query可以获取url里面的参数；DefaultQuery可以获取参数，如果没有获取到，可以指定默认值；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;name&#34; form:&#34;username&#34; xml:&#34;username&#34;`</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>	<span style="color:#e6db74">`json:&#34;age&#34; form:&#34;age&#34; xml:&#34;age&#34;`</span>
+	<span style="color:#a6e22e">Password</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;password&#34; form:&#34;password&#34; xml:&#34;password&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/index&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">username</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Query</span>(<span style="color:#e6db74">&#34;username&#34;</span>)
+		<span style="color:#a6e22e">age</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Query</span>(<span style="color:#e6db74">&#34;age&#34;</span>)
+		<span style="color:#a6e22e">page</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">DefaultQuery</span>(<span style="color:#e6db74">&#34;page&#34;</span>,<span style="color:#e6db74">&#34;1&#34;</span>)
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+			<span style="color:#e6db74">&#34;username&#34;</span>:<span style="color:#a6e22e">username</span>,
+			<span style="color:#e6db74">&#34;age&#34;</span>:<span style="color:#a6e22e">age</span>,
+			<span style="color:#e6db74">&#34;page&#34;</span>:<span style="color:#a6e22e">page</span>,
+		})
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/getuser&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">person</span> <span style="color:#a6e22e">Person</span>
+		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ShouldBind</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">person</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;error&#34;</span>:<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>()})
+		}<span style="color:#66d9ef">else</span>{
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">person</span>)
+		}
+	})
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+}
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302143401041.png" alt="image-20220302143401041"></p>
+<h3 id="解析表单参数">解析表单参数</h3>
+<p>通过PostForm可以获取到表单的参数；DefaultPostForm可以获取到表单的参数值，如果没有获取到，可以使用指定的参数值；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;name&#34; form:&#34;username&#34; xml:&#34;username&#34;`</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>	<span style="color:#e6db74">`json:&#34;age&#34; form:&#34;age&#34; xml:&#34;age&#34;`</span>
+	<span style="color:#a6e22e">Password</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;password&#34; form:&#34;password&#34; xml:&#34;password&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LoadHTMLGlob</span>(<span style="color:#e6db74">&#34;templates/**/*&#34;</span>)
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/add&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/add.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">POST</span>(<span style="color:#e6db74">&#34;/Doadd&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">username</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">PostForm</span>(<span style="color:#e6db74">&#34;username&#34;</span>)
+		<span style="color:#a6e22e">password</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">PostForm</span>(<span style="color:#e6db74">&#34;password&#34;</span>)
+		<span style="color:#a6e22e">age</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">DefaultPostForm</span>(<span style="color:#e6db74">&#34;age&#34;</span>,<span style="color:#e6db74">&#34;18&#34;</span>)
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+			<span style="color:#e6db74">&#34;username&#34;</span>:<span style="color:#a6e22e">username</span>,
+			<span style="color:#e6db74">&#34;password&#34;</span>:<span style="color:#a6e22e">password</span>,
+			<span style="color:#e6db74">&#34;age&#34;</span>:<span style="color:#a6e22e">age</span>,
+		})
+	})
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">POST</span>(<span style="color:#e6db74">&#34;/Doadd2&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">person</span> <span style="color:#a6e22e">Person</span>
+		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ShouldBind</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">person</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;error&#34;</span>:<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>()})
+		}<span style="color:#66d9ef">else</span>{
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">person</span>)
+		}
+	})
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+}
+
+</code></pre></div><p>表单页面示例add.html</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;default/add.html&#34;}}
+    &lt;<span style="color:#f92672">form</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;post&#34;</span> <span style="color:#a6e22e">action</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Doadd&#34;</span>&gt;
+        用户名： &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;username&#34;</span>&gt;
+        密码：&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;password&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;password&#34;</span>&gt;
+        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;submit&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;提交&#34;</span>&gt;
+    &lt;/<span style="color:#f92672">form</span>&gt;
+
+    &lt;<span style="color:#f92672">form</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;post&#34;</span> <span style="color:#a6e22e">action</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Doadd2&#34;</span>&gt;
+        用户名： &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;username&#34;</span>&gt;
+        密码：&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;password&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;password&#34;</span>&gt;
+        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;submit&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;提交&#34;</span>&gt;
+    &lt;/<span style="color:#f92672">form</span>&gt;
+{{end}}
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302143616914.png" alt="image-20220302143616914"></p>
+<h3 id="动态参数">动态参数</h3>
+<p>通过Param可以获取动态的参数值</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//动态路由传值
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/list/:cid&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">cid</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Param</span>(<span style="color:#e6db74">&#34;cid&#34;</span>)
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">cid</span>)
+	})
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+}
+
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302143727194.png" alt="image-20220302143727194"></p>
+<h3 id="xml">xml</h3>
+<p>将xml格式的数据，通过GetRawData获得切片；然后通过xml.Unmarshal解析到结构体。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;encoding/xml&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;name&#34; form:&#34;username&#34; xml:&#34;username&#34;`</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>	<span style="color:#e6db74">`json:&#34;age&#34; form:&#34;age&#34; xml:&#34;age&#34;`</span>
+	<span style="color:#a6e22e">Password</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;password&#34; form:&#34;password&#34; xml:&#34;password&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">POST</span>(<span style="color:#e6db74">&#34;/xml&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+		<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetRawData</span>()
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(string(<span style="color:#a6e22e">data</span>))
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">person</span> <span style="color:#a6e22e">Person</span>
+		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">xml</span>.<span style="color:#a6e22e">Unmarshal</span>(<span style="color:#a6e22e">data</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">person</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;error&#34;</span>:<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>()})
+		}<span style="color:#66d9ef">else</span>{
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">person</span>)
+		}
+	})
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
+}
+
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302115448345.png" alt="image-20220302115448345"></p>
+<h2 id="gin-路由分组">Gin 路由分组</h2>
+<h3 id="路由分组">路由分组</h3>
+<p>通过Group来进行路由分组：</p>
+<p>比如，这里创建routers包含后端路由adminRouters和前端路由defaultRouters；</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302145933767.png" alt="image-20220302145933767"></p>
+<p>routers/DefaultRouters.go包含了前端的一些路由</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">routers</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DefaultRoutersInit</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Engine</span>){
+	<span style="color:#a6e22e">defaultRouters</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Group</span>(<span style="color:#e6db74">&#34;/&#34;</span>)
+	{
+		<span style="color:#75715e">//前台首页
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">defaultRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+		})
+		<span style="color:#75715e">//前台新闻页面
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">defaultRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/news&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/news.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+		})
+
+	}
+}
+</code></pre></div><p>routers/AdminRouters.go包含了后端的一些路由</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">routers</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">AdminRoutersInit</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Engine</span>){
+	<span style="color:#a6e22e">adminRouters</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Group</span>(<span style="color:#e6db74">&#34;/admin&#34;</span>)
+	{
+		<span style="color:#75715e">//后台首页
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+		})
+		<span style="color:#75715e">//后台用户页面
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/user&#34;</span>,<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/user.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+		})
+	}
+}
+
+</code></pre></div><p>main.go也进行对应的调整。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/routers&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;html/template&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;name&#34; form:&#34;username&#34; xml:&#34;username&#34;`</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>	<span style="color:#e6db74">`json:&#34;age&#34; form:&#34;age&#34; xml:&#34;age&#34;`</span>
+	<span style="color:#a6e22e">Password</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;password&#34; form:&#34;password&#34; xml:&#34;password&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">SetFuncMap</span>(<span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">FuncMap</span>{
+		<span style="color:#e6db74">&#34;unixToTime&#34;</span>:<span style="color:#a6e22e">UnixToTime</span>,
+		<span style="color:#e6db74">&#34;printstr&#34;</span>:<span style="color:#a6e22e">PrintStr</span>,
+	})
+
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LoadHTMLGlob</span>(<span style="color:#e6db74">&#34;templates/**/*&#34;</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Static</span>(<span style="color:#e6db74">&#34;/static&#34;</span>,<span style="color:#e6db74">&#34;./static&#34;</span>)
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置默认路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">routers</span>.<span style="color:#a6e22e">DefaultRoutersInit</span>(<span style="color:#a6e22e">r</span>)
+	<span style="color:#75715e">//设置后台管理路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">routers</span>.<span style="color:#a6e22e">AdminRoutersInit</span>(<span style="color:#a6e22e">r</span>)
+	
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9099&#34;</span>)
+}
+
+</code></pre></div><h3 id="路由文件抽离">路由文件抽离</h3>
+<p>之前的例子中，路由的的控制器方法都紧在后面，我们进行抽离，使用自定义控制器；</p>
+<p>controllers里面包含各种路由控制的方法；admin里面是后端路由的控制器；front是前端路由的控制器；</p>
+<p>admin中的indexController里面是后端首页路由的控制器；userController是后端用户路由的控制器等。</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302154504593.png" alt="image-20220302154504593"></p>
+<p>front/newsController.go包含了访问首页的时候的Default控制器；以及访问新闻页面的News控制器；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">front</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">DefaultController</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">DefaultController</span>)<span style="color:#a6e22e">Default</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">DefaultController</span>)<span style="color:#a6e22e">News</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/news.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+}
+
+</code></pre></div><p>admin/userControler.go包含了后端访问用户首页的Index控制器；新增用户的Add控制器；编辑用户的Edit控制器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserController</span> <span style="color:#66d9ef">struct</span>{}
+
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;用户列表&#34;</span>})
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;添加用户&#34;</span>})
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Edit</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;编辑用户&#34;</span>})
+}
+</code></pre></div><p>admin/indexController.go包含了后端首页的Index控制器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IndexController</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+}
+</code></pre></div><p>各个控制器都抽离出去，自定义后；接下来需要对路由文件进行调整</p>
+<p>调整routers/adminRouters.go；引入控制器所在的包；对控制器方法进行实例化以及调用；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">routers</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/admin&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">AdminRoutersInit</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Engine</span>){
+	<span style="color:#a6e22e">adminRouters</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Group</span>(<span style="color:#e6db74">&#34;/admin&#34;</span>)
+	{
+		<span style="color:#75715e">//后台首页
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">IndexController</span>{}.<span style="color:#a6e22e">Index</span>)
+		<span style="color:#75715e">//后台用户页面
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/user&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">UserController</span>{}.<span style="color:#a6e22e">Index</span>)
+		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/user/add&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">UserController</span>{}.<span style="color:#a6e22e">Add</span>)
+		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/user/edit&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">UserController</span>{}.<span style="color:#a6e22e">Edit</span>)
+
+	}
+}
+</code></pre></div><p>调整routers/defaultRouters.go；引入控制器所在的包；对控制器方法进行实例化以及调用；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">routers</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/front&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DefaultRoutersInit</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Engine</span>){
+	<span style="color:#a6e22e">defaultRouters</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Group</span>(<span style="color:#e6db74">&#34;/&#34;</span>)
+	{
+		<span style="color:#75715e">//前台首页
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">defaultRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#a6e22e">front</span>.<span style="color:#a6e22e">DefaultController</span>{}.<span style="color:#a6e22e">Default</span>)
+		<span style="color:#75715e">//前台新闻页面
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">defaultRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/news&#34;</span>,<span style="color:#a6e22e">front</span>.<span style="color:#a6e22e">DefaultController</span>{}.<span style="color:#a6e22e">News</span>)
+
+	}
+}
+</code></pre></div><h3 id="实现控制器的继承">实现控制器的继承</h3>
+<p>由于控制器方法的实现都是基于结构体；我们也可以进行继承；</p>
+<p>定义一个基础控制器；这里叫做baseController</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302161448372.png" alt="image-20220302161448372"></p>
+<p>Base/baseController.go ；包含两个方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">Base</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">BaseController</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">BaseController</span>) <span style="color:#a6e22e">Success</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;成功&#34;</span>)
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">BaseController</span>) <span style="color:#a6e22e">Failed</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;失败&#34;</span>)
+}
+
+</code></pre></div><p>修改admin/indexController.go；IndexController实现BaseController；就可以直接调用BaseController中实现的方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/Base&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IndexController</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Base</span>.<span style="color:#a6e22e">BaseController</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//c.HTML(http.StatusOK,&#34;admin/index.html&#34;,gin.H{})
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">con</span>.<span style="color:#a6e22e">Success</span>(<span style="color:#a6e22e">c</span>)
+}
+</code></pre></div><p>效果</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302161556501.png" alt="image-20220302161556501"></p>
+<h2 id="gin中间件">Gin中间件</h2>
+<p>中间件包含了全局中间件、路由中间件等；gin.Default()本身其实就使用了两个中间件：Logger(), Recovery()；如果不想使用这些中间件的话；可以用gin.New()来设置默认路由引擎。</p>
+<p>中间件的顺序默认是从按照顺序执行的；也可以在中间件中使用Next()方法，来实现递归调用。</p>
+<p>先准备两个中间件：MiddleWare/middleware.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">MiddleWare</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Middle01</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">start</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经进入了Middle01中间件&#34;</span>)
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Next</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您在Middel01中间件共用时：&#34;</span>,<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Since</span>(<span style="color:#a6e22e">start</span>))
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){
+		<span style="color:#a6e22e">ccp</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Copy</span>()
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;goroutine get url:&#34;</span>,<span style="color:#a6e22e">ccp</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>)
+	}()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经离开了Middle01中间件&#34;</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Middle02</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">start</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经进入了Middle02中间件&#34;</span>)
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您在Middel02中间件共用时：&#34;</span>,<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Since</span>(<span style="color:#a6e22e">start</span>))
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经离开了Middle02中间件&#34;</span>)
+}
+</code></pre></div><h3 id="全局中间件">全局中间件</h3>
+<p>直接在全局中通过Use()来设置；</p>
+<p>main.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/routers&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;html/template&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#75715e">//全局中间件
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Use</span>(<span style="color:#a6e22e">MiddleWare</span>.<span style="color:#a6e22e">Middle01</span>,<span style="color:#a6e22e">MiddleWare</span>.<span style="color:#a6e22e">Middle02</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">SetFuncMap</span>(<span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">FuncMap</span>{
+		<span style="color:#e6db74">&#34;unixToTime&#34;</span>:<span style="color:#a6e22e">UnixToTime</span>,
+		<span style="color:#e6db74">&#34;printstr&#34;</span>:<span style="color:#a6e22e">PrintStr</span>,
+	})
+
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LoadHTMLGlob</span>(<span style="color:#e6db74">&#34;templates/**/*&#34;</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Static</span>(<span style="color:#e6db74">&#34;/static&#34;</span>,<span style="color:#e6db74">&#34;./static&#34;</span>)
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置默认路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">routers</span>.<span style="color:#a6e22e">DefaultRoutersInit</span>(<span style="color:#a6e22e">r</span>)
+	<span style="color:#75715e">//设置后台管理路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">routers</span>.<span style="color:#a6e22e">AdminRoutersInit</span>(<span style="color:#a6e22e">r</span>)
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9099&#34;</span>)
+}
+
+</code></pre></div><h3 id="路由中间件">路由中间件</h3>
+<p>在某个路由分组或者某个路由上进行设置；</p>
+<p>routers/defaultRouters.go</p>
+<p>两种方式：</p>
+<p>一：直接在Group后面添加中间件</p>
+<p>二：使用Use方式来添加中间件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">routers</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/MiddleWare&#34;</span>
+	<span style="color:#e6db74">&#34;StudyGin/controllers/front&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DefaultRoutersInit</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Engine</span>){
+	<span style="color:#a6e22e">defaultRouters</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Group</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#a6e22e">MiddleWare</span>.<span style="color:#a6e22e">Middle01</span>)
+	<span style="color:#a6e22e">defaultRouters</span>.<span style="color:#a6e22e">Use</span>(<span style="color:#a6e22e">MiddleWare</span>.<span style="color:#a6e22e">Middle02</span>)
+	{
+		<span style="color:#75715e">//前台首页
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">defaultRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#a6e22e">front</span>.<span style="color:#a6e22e">DefaultController</span>{}.<span style="color:#a6e22e">Defalut</span>)
+		<span style="color:#75715e">//前台新闻页面
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">defaultRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/news&#34;</span>,<span style="color:#a6e22e">front</span>.<span style="color:#a6e22e">DefaultController</span>{}.<span style="color:#a6e22e">News</span>)
+
+	}
+}
+
+</code></pre></div><h3 id="共享数据">共享数据</h3>
+<p>可以利用中间件来进行共享数据；在中间件中使用c.Set来设置数据，在路由中通过c.Get来获取数据</p>
+<p>在MiddleWare/middleware.go中通过c.Set来设置数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">MiddleWare</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Middle02</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">start</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经进入了Middle02中间件&#34;</span>)
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#75715e">//通过c.Set来设置数据
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您在Middel02中间件共用时：&#34;</span>,<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Since</span>(<span style="color:#a6e22e">start</span>))
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经离开了Middle02中间件&#34;</span>)
+}
+</code></pre></div><p>在controllers/front/newsController.go中通过c.Get来获取数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">front</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">DefaultController</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">DefaultController</span>)<span style="color:#a6e22e">Defalut</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+    <span style="color:#75715e">//通过c.Get来获取数据
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">username</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;username&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">username</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;default/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;username&#34;</span>:<span style="color:#a6e22e">username</span>.(<span style="color:#66d9ef">string</span>)})
+}
+
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302174254157.png" alt="image-20220302174254157"></p>
+<p>注意：在中间件使用协程的时候，需要将上下文复制后，再使用;c.Copy()</p>
+<p>在MiddleWare/middleware.go中设置一个goroutine；需要将上下文复制后，再使用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">MiddleWare</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Middle01</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">start</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经进入了Middle01中间件&#34;</span>)
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Next</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您在Middel01中间件共用时：&#34;</span>,<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Since</span>(<span style="color:#a6e22e">start</span>))
+    <span style="color:#75715e">//注意：在中间件中开辟goroutine的时候，需要使用c.Copy来复制上下文。
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(){
+		<span style="color:#a6e22e">ccp</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Copy</span>()
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;goroutine get url:&#34;</span>,<span style="color:#a6e22e">ccp</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>)
+	}()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经离开了Middle01中间件&#34;</span>)
+}
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302174323188.png" alt="image-20220302174323188"></p>
+<h2 id="gin-上传文件">Gin 上传文件</h2>
+<p>通过gin上传文件的步骤：</p>
+<p>1、在html模板中设置对应的上传字段；form表单中需要加入<code>enctype=&quot;multipart/form-data&quot;</code></p>
+<p>2、如果是多文件上传的时候，name设置成一样并且要加上[]符号</p>
+<p>3、在后端单个文件通过FormFile来获取文件；多个文件通过MultipartForm来获取文件</p>
+<p>4、通过SaveUploadedFile来保存文件。</p>
+<p>示例：</p>
+<p>admin/add.html；在上传页面，设置了几个单个文件，和一组多文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;admin/user/add.html&#34;}}
+    <span style="color:#75715e">&lt;!doctype html&gt;</span>
+    &lt;<span style="color:#f92672">html</span> <span style="color:#a6e22e">lang</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+    &lt;<span style="color:#f92672">head</span>&gt;
+        &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span>&gt;
+        &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Generator&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;EditPlus®&#34;</span>&gt;
+        &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Author&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+        &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Keywords&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+        &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Description&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>&gt;
+        &lt;<span style="color:#f92672">title</span>&gt;后台新增用户界面&lt;/<span style="color:#f92672">title</span>&gt;
+    &lt;/<span style="color:#f92672">head</span>&gt;
+    &lt;<span style="color:#f92672">body</span>&gt;
+    &lt;<span style="color:#f92672">h1</span>&gt;新增用户&lt;/<span style="color:#f92672">h1</span>&gt;
+    &lt;<span style="color:#f92672">form</span> <span style="color:#a6e22e">action</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/admin/user/upload&#34;</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;post&#34;</span> <span style="color:#a6e22e">enctype</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;multipart/form-data&#34;</span>&gt;
+        用户名：&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;username&#34;</span>&gt;
+        头像：&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;file&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;avatar&#34;</span>&gt;
+        履历：&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;file&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;resume&#34;</span>&gt;
+        作品1：&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;file&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;production[]&#34;</span>&gt;
+        作品2：&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;file&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;production[]&#34;</span>&gt;
+        作品3：&lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;file&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;production[]&#34;</span>&gt;
+        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;submit&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;提交&#34;</span>&gt;
+    &lt;/<span style="color:#f92672">form</span>&gt;
+    &lt;/<span style="color:#f92672">body</span>&gt;
+    &lt;/<span style="color:#f92672">html</span>&gt;
+{{end}}
+</code></pre></div><p>routers/adminRouters.go增加upload路由，来处理表单的post请求。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">routers</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/admin&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">AdminRoutersInit</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Engine</span>){
+	<span style="color:#a6e22e">adminRouters</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Group</span>(<span style="color:#e6db74">&#34;/admin&#34;</span>)
+	{
+		<span style="color:#75715e">//后台首页
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">IndexController</span>{}.<span style="color:#a6e22e">Index</span>)
+		<span style="color:#75715e">//后台用户页面
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/user&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">UserController</span>{}.<span style="color:#a6e22e">Index</span>)
+		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/user/add&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">UserController</span>{}.<span style="color:#a6e22e">Add</span>)
+		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">POST</span>(<span style="color:#e6db74">&#34;/user/upload&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">UserController</span>{}.<span style="color:#a6e22e">Post</span>)
+		<span style="color:#a6e22e">adminRouters</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/user/edit&#34;</span>,<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">UserController</span>{}.<span style="color:#a6e22e">Edit</span>)
+
+	}
+}
+</code></pre></div><p>controllers/admin/userController.go中Post方法实现获取文件以及保存文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserController</span> <span style="color:#66d9ef">struct</span>{}
+
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;用户列表&#34;</span>})
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/user/add.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Post</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">/*
+</span><span style="color:#75715e">	1、获取上传的文件
+</span><span style="color:#75715e">	2、获取后缀名 判断类型是否正确 .jpg .png .gif .jpeg等
+</span><span style="color:#75715e">	3、创建图片保存目录 static/upload/20220303
+</span><span style="color:#75715e">	4、生成文件名称和文件保存的目录
+</span><span style="color:#75715e">	5、执行上传
+</span><span style="color:#75715e">	*/</span>
+
+	<span style="color:#75715e">//创建保存文件的文件夹
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">dir</span><span style="color:#f92672">:=</span><span style="color:#e6db74">&#34;./static/upload/&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">GetDay</span>()
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">MkdirAll</span>(<span style="color:#a6e22e">dir</span>, <span style="color:#ae81ff">0666</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;创建文件夹失败&#34;</span>})
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#75715e">//获取头像文件
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">avatar</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">FormFile</span>(<span style="color:#e6db74">&#34;avatar&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;保存文件失败&#34;</span>})
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#75715e">//获取文件后缀名
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">tempExt</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">path</span>.<span style="color:#a6e22e">Ext</span>(<span style="color:#a6e22e">avatar</span>.<span style="color:#a6e22e">Filename</span>)
+		<span style="color:#75715e">//判断后缀名是否正确
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">IsPicExt</span>(<span style="color:#a6e22e">tempExt</span>){
+			<span style="color:#75715e">//获取前缀名
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">tempprefix</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">TrimSuffix</span>(<span style="color:#a6e22e">avatar</span>.<span style="color:#a6e22e">Filename</span>, <span style="color:#a6e22e">tempExt</span>)
+			<span style="color:#75715e">//拼接新的文件名：前缀名+时间戳+后缀名
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">temp</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">tempprefix</span><span style="color:#f92672">+</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">FormatInt</span>(<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">GetUnix</span>(),<span style="color:#ae81ff">10</span>)<span style="color:#f92672">+</span><span style="color:#a6e22e">tempExt</span>
+			<span style="color:#a6e22e">dst</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">path</span>.<span style="color:#a6e22e">Join</span>(<span style="color:#a6e22e">dir</span>,<span style="color:#a6e22e">temp</span>)
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SaveUploadedFile</span>(<span style="color:#a6e22e">avatar</span>,<span style="color:#a6e22e">dst</span>)
+		}<span style="color:#66d9ef">else</span>{
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;文件类型不合法&#34;</span>})
+			<span style="color:#66d9ef">return</span>
+		}
+	}
+	<span style="color:#a6e22e">resume</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">FormFile</span>(<span style="color:#e6db74">&#34;resume&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;文件保存失败&#34;</span>})
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">tempExt</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">path</span>.<span style="color:#a6e22e">Ext</span>(<span style="color:#a6e22e">resume</span>.<span style="color:#a6e22e">Filename</span>)
+		<span style="color:#a6e22e">tempprefix</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">TrimSuffix</span>(<span style="color:#a6e22e">resume</span>.<span style="color:#a6e22e">Filename</span>, <span style="color:#a6e22e">tempExt</span>)
+		<span style="color:#a6e22e">temp</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">tempprefix</span><span style="color:#f92672">+</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">FormatInt</span>(<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">GetUnix</span>(),<span style="color:#ae81ff">10</span>)<span style="color:#f92672">+</span><span style="color:#a6e22e">tempExt</span>
+		<span style="color:#a6e22e">dst</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">path</span>.<span style="color:#a6e22e">Join</span>(<span style="color:#a6e22e">dir</span>,<span style="color:#a6e22e">temp</span>)
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SaveUploadedFile</span>(<span style="color:#a6e22e">resume</span>,<span style="color:#a6e22e">dst</span>)
+	}
+
+	<span style="color:#a6e22e">form</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">MultipartForm</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;文件保存失败&#34;</span>})
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">files</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">form</span>.<span style="color:#a6e22e">File</span>[<span style="color:#e6db74">&#34;production[]&#34;</span>]
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">file</span><span style="color:#f92672">:=</span><span style="color:#66d9ef">range</span> <span style="color:#a6e22e">files</span>{
+			<span style="color:#a6e22e">tempExt</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">path</span>.<span style="color:#a6e22e">Ext</span>(<span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Filename</span>)
+			<span style="color:#a6e22e">tempprefix</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">TrimSuffix</span>(<span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Filename</span>, <span style="color:#a6e22e">tempExt</span>)
+			<span style="color:#a6e22e">temp</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">tempprefix</span><span style="color:#f92672">+</span><span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">FormatInt</span>(<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">GetUnix</span>(),<span style="color:#ae81ff">10</span>)<span style="color:#f92672">+</span><span style="color:#a6e22e">tempExt</span>
+			<span style="color:#a6e22e">dst</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">path</span>.<span style="color:#a6e22e">Join</span>(<span style="color:#a6e22e">dir</span>,<span style="color:#a6e22e">temp</span>)
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SaveUploadedFile</span>(<span style="color:#a6e22e">file</span>,<span style="color:#a6e22e">dst</span>)
+		}
+	}
+
+	<span style="color:#75715e">/*
+</span><span style="color:#75715e">	//单文件
+</span><span style="color:#75715e">	file, _ := c.FormFile(&#34;avatar&#34;)
+</span><span style="color:#75715e">	resume,_:=c.FormFile(&#34;resume&#34;)
+</span><span style="color:#75715e">	dst:=path.Join(&#34;./static/upload&#34;,file.Filename)
+</span><span style="color:#75715e">	resumedst:=path.Join(&#34;./static/upload&#34;,resume.Filename)
+</span><span style="color:#75715e">	c.SaveUploadedFile(file,dst)
+</span><span style="color:#75715e">	c.SaveUploadedFile(resume,resumedst)
+</span><span style="color:#75715e">	
+</span><span style="color:#75715e">	//多文件
+</span><span style="color:#75715e">	form, _ := c.MultipartForm()
+</span><span style="color:#75715e">	files := form.File[&#34;production[]&#34;]
+</span><span style="color:#75715e">	for _,title:=range files{
+</span><span style="color:#75715e">		dst:=path.Join(&#34;./static/upload&#34;,title.Filename)
+</span><span style="color:#75715e">		c.SaveUploadedFile(title,dst)
+</span><span style="color:#75715e">	}
+</span><span style="color:#75715e">	*/</span>
+
+
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;上传成功&#34;</span>})
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Edit</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;编辑用户&#34;</span>})
+}
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303105049767.png" alt="image-20220303105049767"></p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303144444594.png" alt="image-20220303144444594"></p>
+<h2 id="gin-会话控制">Gin 会话控制</h2>
+<h3 id="cookie">Cookie</h3>
+<p>通过SetCookie来设置；Cookie来获取；</p>
+<p>示例：</p>
+<p>controllers/admin/indexController.go通过c.SetCookie来设置</p>
+<blockquote>
+<p>参数值：name, value string, maxAge int, path, domain string, secure, httpOnly bool
+含义分别是：
+name:cookie名字
+value:cookie值
+maxAge:有效期
+path:路径
+domain:域名
+secure:安全，设置为true只在https有效
+httpOnly：是否允许前端修改</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/Base&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IndexController</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Base</span>.<span style="color:#a6e22e">BaseController</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//设置Cookie
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置多个域名能够共享Cookie；将domain设置为类似.xx.com的格式
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SetCookie</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>,<span style="color:#ae81ff">3600</span>,<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#e6db74">&#34;localhost&#34;</span>,<span style="color:#66d9ef">false</span>,<span style="color:#66d9ef">true</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	<span style="color:#75715e">//con.Success(c)
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>controllers/admin/userController.go通过c.Cookie获取cookie</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserController</span> <span style="color:#66d9ef">struct</span>{}
+
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//获取Cookie
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cookie</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Cookie</span>(<span style="color:#e6db74">&#34;username&#34;</span>)
+
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+		<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;用户列表&#34;</span>,
+		<span style="color:#e6db74">&#34;cookie&#34;</span>:<span style="color:#a6e22e">cookie</span>,
+	})
+}
+</code></pre></div><p>效果：</p>
+<p>通过首页设置cookie</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303154346450.png" alt="image-20220303154346450"></p>
+<p>访问用户列表页面获取cookie</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303154357473.png" alt="image-20220303154357473"></p>
+<p>删除Cookie的方式就是将有效期设置为-1;</p>
+<p>controllers/admin/indexController.go使用Delete来删除Cookie。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/Base&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IndexController</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Base</span>.<span style="color:#a6e22e">BaseController</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//设置Cookie
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置多个域名能够共享Cookie；将domain设置为类似.xx.com的格式
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SetCookie</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>,<span style="color:#ae81ff">3600</span>,<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#e6db74">&#34;localhost&#34;</span>,<span style="color:#66d9ef">false</span>,<span style="color:#66d9ef">true</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	<span style="color:#75715e">//con.Success(c)
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//删除Cookie；通过设置过期时间为-1来设置删除；
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SetCookie</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#e6db74">&#34;localhost&#34;</span>,<span style="color:#66d9ef">false</span>,<span style="color:#66d9ef">true</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;删除cookie成功&#34;</span>})
+}
+</code></pre></div><p>过期也是通过将maxAge参数设置为具体的时间来设置过期，单位是秒。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/Base&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IndexController</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Base</span>.<span style="color:#a6e22e">BaseController</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//设置Cookie
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//maxAge设置为具体的数字，表示X秒后过期
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SetCookie</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>,<span style="color:#ae81ff">5</span>,<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#e6db74">&#34;.bin.com&#34;</span>,<span style="color:#66d9ef">false</span>,<span style="color:#66d9ef">true</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	<span style="color:#75715e">//con.Success(c)
+</span><span style="color:#75715e"></span>}
+
+</code></pre></div><p>设置多域名：通过将domain参数中的localhost值改成.xx.xx的格式来实现二级域名共享Cookie。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/Base&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IndexController</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Base</span>.<span style="color:#a6e22e">BaseController</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//设置Cookie
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置多个域名能够共享Cookie；将domain设置为类似.xx.com的格式
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SetCookie</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>,<span style="color:#ae81ff">3600</span>,<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#e6db74">&#34;.bin.com&#34;</span>,<span style="color:#66d9ef">false</span>,<span style="color:#66d9ef">true</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	<span style="color:#75715e">//con.Success(c)
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//删除Cookie；通过设置过期时间为-1来设置删除；
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">SetCookie</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#34;/&#34;</span>,<span style="color:#e6db74">&#34;.abin.com&#34;</span>,<span style="color:#66d9ef">false</span>,<span style="color:#66d9ef">true</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;删除cookie成功&#34;</span>})
+}
+</code></pre></div><h3 id="session">Session</h3>
+<p>gin没有直接实现session，借助第三方工具：gin-contrib/sessions</p>
+<h4 id="基于cookie存储">基于cookie存储</h4>
+<p>基本步骤：</p>
+<p>1、引入包</p>
+<p>2、配置中间件；创建基于cookie的存储引擎，然后配置session中间件</p>
+<p>3、通过Default()获得Session;使用Set设置，Save保存；</p>
+<p>4、使用Get获取session.</p>
+<p>示例：</p>
+<p>main.go中导入包，并配置了基于cookie存储的session中间件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;StudyGin/routers&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;html/template&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-contrib/sessions&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-contrib/sessions/cookie&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Role</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Privilege</span> <span style="color:#66d9ef">string</span>
+}
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Hiredate</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;name&#34; form:&#34;username&#34; xml:&#34;username&#34;`</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>	<span style="color:#e6db74">`json:&#34;age&#34; form:&#34;age&#34; xml:&#34;age&#34;`</span>
+	<span style="color:#a6e22e">Password</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;password&#34; form:&#34;password&#34; xml:&#34;password&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#75715e">//全局中间件
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//r.Use(MiddleWare.Middle01,MiddleWare.Middle02)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">SetFuncMap</span>(<span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">FuncMap</span>{
+		<span style="color:#e6db74">&#34;unixToTime&#34;</span>:<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">UnixToTime</span>,
+		<span style="color:#e6db74">&#34;printstr&#34;</span>:<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">PrintStr</span>,
+	})
+	<span style="color:#75715e">//配置session中间件
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//创建基于cookie的存储引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">store</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cookie</span>.<span style="color:#a6e22e">NewStore</span>([]byte(<span style="color:#e6db74">&#34;abinsecret18&#34;</span>))
+	<span style="color:#75715e">//配置session中间件，store可以替换成其他的比如redis
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Use</span>(<span style="color:#a6e22e">sessions</span>.<span style="color:#a6e22e">Sessions</span>(<span style="color:#e6db74">&#34;mysession&#34;</span>,<span style="color:#a6e22e">store</span>))
+
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LoadHTMLGlob</span>(<span style="color:#e6db74">&#34;templates/**/*&#34;</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Static</span>(<span style="color:#e6db74">&#34;/static&#34;</span>,<span style="color:#e6db74">&#34;./static&#34;</span>)
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置默认路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">routers</span>.<span style="color:#a6e22e">DefaultRoutersInit</span>(<span style="color:#a6e22e">r</span>)
+	<span style="color:#75715e">//设置后台管理路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">routers</span>.<span style="color:#a6e22e">AdminRoutersInit</span>(<span style="color:#a6e22e">r</span>)
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9099&#34;</span>)
+}
+</code></pre></div><p>controllers/admin/indexController.go中通过Set设置session</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/controllers/Base&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-contrib/sessions&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">IndexController</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Base</span>.<span style="color:#a6e22e">BaseController</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">IndexController</span>) <span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">////设置Cookie
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">////设置多个域名能够共享Cookie；将domain设置为类似.xx.com的格式
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//c.SetCookie(&#34;username&#34;,&#34;abin&#34;,5,&#34;/&#34;,&#34;.bin.com&#34;,false,true)
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//设置session
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">session</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sessions</span>.<span style="color:#a6e22e">Default</span>(<span style="color:#a6e22e">c</span>)
+	<span style="color:#75715e">//设置session的过期时间
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">Options</span>(<span style="color:#a6e22e">sessions</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">MaxAge</span>:<span style="color:#ae81ff">20</span>,	<span style="color:#75715e">//单位是s
+</span><span style="color:#75715e"></span>	})
+    <span style="color:#75715e">//设置session的值
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;username&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>)
+    <span style="color:#75715e">//保存session
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">Save</span>()
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;admin/index.html&#34;</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{})
+	<span style="color:#75715e">//con.Success(c)
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>controllers/admin/userController.go通过Get获取session</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-contrib/sessions&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserController</span> <span style="color:#66d9ef">struct</span>{}
+
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//获取Cookie
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//cookie, _ := c.Cookie(&#34;username&#34;)
+</span><span style="color:#75715e"></span>	
+	<span style="color:#75715e">//获取session
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">session</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sessions</span>.<span style="color:#a6e22e">Default</span>(<span style="color:#a6e22e">c</span>)
+    <span style="color:#75715e">//通过get获取session的值
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">username</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">session</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;username&#34;</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+		<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;用户列表&#34;</span>,
+		<span style="color:#e6db74">&#34;session&#34;</span>:<span style="color:#a6e22e">username</span>,
+	})
+}
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303164252344.png" alt="image-20220303164252344"></p>
+<h4 id="基于redis">基于redis</h4>
+<p>除了导入的包以及设置redis存储之外；其他的都和基于cookie的用法一致。可以实现分布式部署。</p>
+<p>示例：</p>
+<p>main.go中导入包，并且设置基于redis存储的session</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;StudyGin/routers&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#a6e22e">_</span><span style="color:#e6db74">&#34;github.com/gin-contrib/sessions/cookie&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;html/template&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-contrib/sessions&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-contrib/sessions/redis&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Role</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Privilege</span> <span style="color:#66d9ef">string</span>
+}
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Hiredate</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Person</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>	<span style="color:#e6db74">`json:&#34;name&#34; form:&#34;username&#34; xml:&#34;username&#34;`</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>	<span style="color:#e6db74">`json:&#34;age&#34; form:&#34;age&#34; xml:&#34;age&#34;`</span>
+	<span style="color:#a6e22e">Password</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;password&#34; form:&#34;password&#34; xml:&#34;password&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//设置默认路由引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#75715e">//全局中间件
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//r.Use(MiddleWare.Middle01,MiddleWare.Middle02)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">SetFuncMap</span>(<span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">FuncMap</span>{
+		<span style="color:#e6db74">&#34;unixToTime&#34;</span>:<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">UnixToTime</span>,
+		<span style="color:#e6db74">&#34;printstr&#34;</span>:<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">PrintStr</span>,
+	})
+	<span style="color:#75715e">//配置session中间件
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//创建基于cookie的存储引擎
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//store := cookie.NewStore([]byte(&#34;abinsecret18&#34;))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//基于redis的存储引擎
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">store</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewStore</span>(<span style="color:#ae81ff">10</span>, <span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#e6db74">&#34;localhost:6379&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, []byte(<span style="color:#e6db74">&#34;abinsecret&#34;</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;设置redis存储引擎失败：&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#75715e">//配置session中间件，store可以替换成其他的比如redis
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Use</span>(<span style="color:#a6e22e">sessions</span>.<span style="color:#a6e22e">Sessions</span>(<span style="color:#e6db74">&#34;mysession&#34;</span>,<span style="color:#a6e22e">store</span>))
+
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">LoadHTMLGlob</span>(<span style="color:#e6db74">&#34;templates/**/*&#34;</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Static</span>(<span style="color:#e6db74">&#34;/static&#34;</span>,<span style="color:#e6db74">&#34;./static&#34;</span>)
+	<span style="color:#75715e">//设置路由
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//设置默认路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">routers</span>.<span style="color:#a6e22e">DefaultRoutersInit</span>(<span style="color:#a6e22e">r</span>)
+	<span style="color:#75715e">//设置后台管理路由
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">routers</span>.<span style="color:#a6e22e">AdminRoutersInit</span>(<span style="color:#a6e22e">r</span>)
+
+	<span style="color:#75715e">//启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9099&#34;</span>)
+}
+
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303165114692.png" alt="image-20220303165114692"></p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303165141085.png" alt="image-20220303165141085"></p>
+<h2 id="gin-gorm">Gin GORM</h2>
+<p>GORM是使用go实现的Object Relation Mapping；</p>
+<p>这边主要实现基于mysql的增、删、改、查功能。</p>
+<h3 id="准备工作">准备工作</h3>
+<p>建表</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">database</span> gingorm;
+<span style="color:#66d9ef">use</span> gingorm;
+<span style="color:#66d9ef">create</span> <span style="color:#66d9ef">table</span> <span style="color:#66d9ef">user</span>(
+	id <span style="color:#66d9ef">int</span> primary_key <span style="color:#66d9ef">auto_increment</span>,
+	username <span style="color:#66d9ef">varchar</span>(<span style="color:#ae81ff">20</span>),
+	age <span style="color:#66d9ef">int</span>,
+	email <span style="color:#66d9ef">varchar</span>(<span style="color:#ae81ff">30</span>),
+	add_time <span style="color:#66d9ef">int</span>
+);
+
+</code></pre></div><p>准备数据库的连接Models/db.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">Models</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;gorm.io/driver/mysql&#34;</span>
+	<span style="color:#e6db74">&#34;gorm.io/gorm&#34;</span>
+)
+
+<span style="color:#75715e">//设置全局数据库
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">DB</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">DB</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">init</span>(){
+	<span style="color:#a6e22e">dsn</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;root:trsadmin@tcp(127.0.0.1:3306)/gingorm?charset=utf8mb4&amp;parseTime=True&amp;loc=Local&#34;</span>
+	<span style="color:#a6e22e">DB</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">mysql</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">dsn</span>), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">gorm</span>.<span style="color:#a6e22e">Config</span>{})
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+	}
+}
+
+</code></pre></div><p>准备和数据库表一致的结构体；Models/user.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">Models</span>
+
+<span style="color:#75715e">//结构体名称首字母大写
+</span><span style="color:#75715e">//结构体字段首字母大写
+</span><span style="color:#75715e">//数据库中有add_time格式的；结构体中要用驼峰式命名
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">Id</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Username</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Age</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Email</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">AddTime</span> <span style="color:#66d9ef">int</span>
+}
+<span style="color:#75715e">//配置操作的数据库表名称
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">TableName</span>() <span style="color:#66d9ef">string</span>{
+	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;user&#34;</span>
+}
+</code></pre></div><h3 id="查询">查询：</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserController</span> <span style="color:#66d9ef">struct</span>{}
+
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Index</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//查询全部数据库
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">userList</span><span style="color:#f92672">:=</span>[]<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">User</span>{}
+	<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">userList</span>)
+
+	<span style="color:#75715e">//根据条件查询
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;age&gt;20&#34;</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">userList</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+		<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;用户列表&#34;</span>,
+		<span style="color:#e6db74">&#34;result&#34;</span>:<span style="color:#a6e22e">userList</span>,
+	})
+}
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303173525602.png" alt="image-20220303173525602"></p>
+<h3 id="增加">增加</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserController</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//c.HTML(http.StatusOK,&#34;admin/user/add.html&#34;,gin.H{})
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">User</span>{
+		<span style="color:#a6e22e">Username</span>: <span style="color:#e6db74">&#34;lisi&#34;</span>,
+		<span style="color:#a6e22e">Age</span>:      <span style="color:#ae81ff">20</span>,
+		<span style="color:#a6e22e">Email</span>:    <span style="color:#e6db74">&#34;lisi@qq.com&#34;</span>,
+		<span style="color:#a6e22e">AddTime</span>:  <span style="color:#ae81ff">1234567890</span>,
+	}
+	<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;增加用户成功&#34;</span>)
+}
+
+
+</code></pre></div><p>效果：</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303174617365.png" alt="image-20220303174617365"></p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303174629591.png" alt="image-20220303174629591"></p>
+<h3 id="修改">修改</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserController</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Edit</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//方式一：先获取数据，再更新所有数据
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//user:=Models.User{Id:5}
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//Models.DB.Find(&amp;user)
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//user.Username=&#34;hahaha&#34;
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//user.Email=&#34;hahaha@qq.com&#34;
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//Models.DB.Save(&amp;user)
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//c.String(http.StatusOK,&#34;修改用户成功&#34;)
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//方式二：更新单列或者多列
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//user:=Models.User{}
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//Models.DB.Model(&amp;user).Where(&#34;id = ?&#34;,6).Update(&#34;username&#34;,&#34;萧炎&#34;)
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//c.String(http.StatusOK,&#34;修改用户成功&#34;)
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//方式三：先获取再修改
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">User</span>{}
+	<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;id = ?&#34;</span>,<span style="color:#ae81ff">6</span>).<span style="color:#a6e22e">Find</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>)
+	<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Username</span>=<span style="color:#e6db74">&#34;恐怖如斯&#34;</span>
+	<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">Age</span>=<span style="color:#ae81ff">1000</span>
+	<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">AddTime</span>=int(<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">GetUnix</span>())
+	<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Save</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{
+		<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;修改用户成功&#34;</span>,
+		<span style="color:#e6db74">&#34;result&#34;</span>:<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>,
+	})
+
+
+	<span style="color:#75715e">//c.JSON(http.StatusOK,gin.H{&#34;msg&#34;:&#34;编辑用户&#34;})
+</span><span style="color:#75715e"></span>}
+
+
+</code></pre></div><p>效果一：id为5的用户，已经修改为hahaha</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303175109382.png" alt="image-20220303175109382"></p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303175126074.png" alt="image-20220303175126074"></p>
+<p>效果二：id为6的用户，已经修改为萧炎</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303175610274.png" alt="image-20220303175610274"></p>
+<p>效果三：id为6的用户，已经修改为恐怖如斯。</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303180210410.png" alt="image-20220303180210410"></p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303180223616.png" alt="image-20220303180223616"></p>
+<h3 id="删除">删除</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGin/Models&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UserController</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">con</span> <span style="color:#a6e22e">UserController</span>)<span style="color:#a6e22e">Delete</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>){
+	<span style="color:#75715e">//user:=Models.User{Id:5}
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//Models.DB.Delete(&amp;user)
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//c.String(http.StatusOK,&#34;删除用户成功&#34;)
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">user</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">User</span>{}
+	<span style="color:#a6e22e">Models</span>.<span style="color:#a6e22e">DB</span>.<span style="color:#a6e22e">Where</span>(<span style="color:#e6db74">&#34;username = ?&#34;</span>,<span style="color:#e6db74">&#34;hello&#34;</span>).<span style="color:#a6e22e">Delete</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">user</span>)
+	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#e6db74">&#34;删除用户成功&#34;</span>)
+}
+
+</code></pre></div><p>效果:</p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303180516224.png" alt="image-20220303180516224"></p>
+<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303180525608.png" alt="image-20220303180525608"></p>
+<h2 id="参考文献">参考文献</h2>
+<blockquote>
+<p>1、gin入门  <a href="https://www.bilibili.com/video/BV1fA411F7aM">https://www.bilibili.com/video/BV1fA411F7aM</a></p>
+<p>2、gin官网  <a href="https://gin-gonic.com/docs/examples/">https://gin-gonic.com/docs/examples/</a></p>
+<p>3、session <a href="https://github.com/gin-contrib/sessions#">https://github.com/gin-contrib/sessions#</a></p>
+<p>4、gorm <a href="https://gorm.io/zh_CN/docs/">https://gorm.io/zh_CN/docs/</a></p>
+</blockquote>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

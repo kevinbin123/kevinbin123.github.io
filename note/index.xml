@@ -6,7 +6,30 @@
     <description>Recent content in Notes on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 28 Feb 2022 20:54:45 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 04 Mar 2022 20:36:19 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gin框架笔记</title>
+      <link>/note/go/gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Fri, 04 Mar 2022 20:36:19 +0800</pubDate>
+      
+      <guid>/note/go/gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</guid>
+      <description>Gin框架笔记 初识gin 通过go mod init xxx 来管理包，只需要引入包即可，会自动下载包；不需要手动 go get了
+步骤：
+1、通过gin.Default()创建默认路由引擎
+2、设置路由，支持restful风格的api
+3、启动web服务
+简单示例代码：
+package main import &amp;#34;github.com/gin-gonic/gin&amp;#34; func main(){ r:=gin.Default() r.GET(&amp;#34;/&amp;#34;,func(c *gin.Context){ c.String(200,&amp;#34;hello&amp;#34;) }) r.Run() } 浏览器访问效果：
+实现热加载的方式：借助其他工具，比如fresh
+1、下载fresh工具：go get github.com/pilu/fresh
+2、使用fresh命令启动
+gin的路由 使用Restful风格的API 常见的有GET/POST/PUT/DELETE
+GET 使用get方式访问指定的路由；一般用来请求数据
+package main import ( &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main(){ //创建默认的路由引擎 	//设置路由 	//启动web服务 	r:=gin.Default() r.GET(&amp;#34;/users&amp;#34;,func(c *gin.Context){ c.String(200,&amp;#34;我是用户页面&amp;#34;) }) } 使用postman，用get方式请求路径效果：
+POST 使用post方式来请求指定的路由，一般用来增加数据
+package main import ( &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main(){ //创建默认的路由引擎 	//设置路由 	//启动web服务 	r:=gin.</description>
+    </item>
+    
     <item>
       <title>Golang小案例 获取成语并查询</title>
       <link>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</link>
