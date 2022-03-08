@@ -6,7 +6,35 @@
     <description>Recent content on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 04 Mar 2022 20:36:19 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 08 Mar 2022 22:47:51 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gin框架案例</title>
+      <link>/note/go/gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</link>
+      <pubDate>Tue, 08 Mar 2022 22:47:51 +0800</pubDate>
+      
+      <guid>/note/go/gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</guid>
+      <description>Gin框架案例 案例实现目标：使用Gin框架开发一个api项目，实现外卖应用的后端的api，前端通过调用这些api；本案例不涉及到前端。
+前端启动 项目包含前端、后端两部分，实现前后端分离。
+前端地址：https://github.com/Teanix/shop_client
+需要安装有nodejs；
+运行命令：npm start
+运行后效果如下：
+项目初始化 创建CloudRestaurant项目。
+引入gin包:go get github.com/gin-gonic/gin
+使用配置文件，将项目的一些需要配置的地方进行配置，然后解析到项目中
+采用分层思想；
+config文件夹：存放一些配置文件
+controller文件夹：实现路由控制器等流程控制功能
+dao文件夹：实现具体操作数据库的方法
+model文件夹：是各个对象的定义
+param文件夹：是传递参数的解析
+services文件夹：是对象的功能实现
+tools文件夹：一些工具方法的实现
+1、建立config/app.json文件
+{ &amp;#34;app_name&amp;#34;: &amp;#34;cloudrestaurant&amp;#34;, &amp;#34;app_mode&amp;#34;: &amp;#34;dev&amp;#34;, &amp;#34;app_host&amp;#34;: &amp;#34;localhost&amp;#34;, &amp;#34;app_port&amp;#34;: &amp;#34;8090&amp;#34; } 2、创建tools/Config.go解析配置文件
+package tools import ( &amp;#34;bufio&amp;#34; &amp;#34;encoding/json&amp;#34; &amp;#34;os&amp;#34; ) type Config struct { AppName string `json:&amp;#34;app_name&amp;#34;` AppMode string `json:&amp;#34;app_mode&amp;#34;` AppHost string `json:&amp;#34;app_host&amp;#34;` AppPort string `json:&amp;#34;app_port&amp;#34;` } var _Cfg *Config = nil func GetConfig() *Config { return _Cfg } func ParseConfig(path string) (*Config, error) { file, err := os.</description>
+    </item>
+    
     <item>
       <title>Gin框架笔记</title>
       <link>/note/go/gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</link>
