@@ -3,12 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>/</loc>
-    <lastmod>2022-03-08T22:47:51+08:00</lastmod>
+    <lastmod>2022-03-27T16:34:46+08:00</lastmod>
   </url><url>
-    <loc>/note/go/gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</loc>
-    <lastmod>2022-03-08T22:47:51+08:00</lastmod>
+    <loc>/note/go/go-micro%E6%A1%88%E4%BE%8B/</loc>
+    <lastmod>2022-03-27T16:34:46+08:00</lastmod>
   </url><url>
     <loc>/note/</loc>
+    <lastmod>2022-03-27T16:34:46+08:00</lastmod>
+  </url><url>
+    <loc>/note/go/go-micro%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2022-03-27T16:34:31+08:00</lastmod>
+  </url><url>
+    <loc>/note/go/grpc%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2022-03-27T16:34:18+08:00</lastmod>
+  </url><url>
+    <loc>/note/go/rpc%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2022-03-27T16:33:57+08:00</lastmod>
+  </url><url>
+    <loc>/note/go/protobuf%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2022-03-27T16:33:43+08:00</lastmod>
+  </url><url>
+    <loc>/note/go/golang%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%89%E9%A1%B9%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2022-03-27T16:33:29+08:00</lastmod>
+  </url><url>
+    <loc>/note/go/gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</loc>
     <lastmod>2022-03-08T22:47:51+08:00</lastmod>
   </url><url>
     <loc>/note/go/gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</loc>

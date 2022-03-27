@@ -177,7 +177,7 @@ P和M的数量：
 <p>​	G: goroutine协程</p>
 <p>​	P：processor处理器，用来处理goroutine协程，和GOMAXPROCS个数一致</p>
 <p>​	M：thread线程</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220203000744838.png" alt="image-20220203000744838"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220203000744838.png" alt="image-20220203000744838"></p>
 <p>全局队列：存放等待运行的G</p>
 <p>P的本地队列：存放等待运行的G；数量有限制一般不超过256个G；优先将新创建的G放在P的本地队列，如果满了会放在全局队列中</p>
 <p>P列表：程序启动时创建，最多有GOMAXPROCS个（可配置）</p>

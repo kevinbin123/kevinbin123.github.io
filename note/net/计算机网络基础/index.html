@@ -321,7 +321,7 @@ $$
 <p><strong>封装成帧是指数据链路层给上层交付的协议数据单元添加帧头和帧尾使之成为帧</strong>。</p>
 <p>​	帧头和帧尾中包含有重要的控制信息</p>
 <p>​	帧头和帧尾的作用之一就是<strong>帧定界</strong></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130171829272.png" alt="image-20220130171829272"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130171829272.png" alt="image-20220130171829272"></p>
 <p>​		以太网V2的MAC帧的帧头没有定界符，是物理层会添加前导码（8字节：前7个字节时钟同步，后面1个字节是帧开始定界符，表明后面就是MAC帧）；以太网还规定了帧间间隔为96比特的发送时间</p>
 <p><strong>透明传输</strong>是指数据链路层对上层交付的数据没有任何限制</p>
 <p>​	<strong>面向字节</strong>的物理连接使用<strong>字节填充</strong>（或称字符填充）的方法实现透明传输：一般插入转移字符，一个字节，十进制值27</p>
@@ -336,7 +336,7 @@ $$
 <p>​		收发双方约定好一个生成多项式G(x)</p>
 <p>​		发送方基于待发送的数据和生成多项式计算出差错检测码（冗余码），将其添加到待传输数据的后面一起传输；</p>
 <p>​		接收方通过生成多项式来计算收到的数据是否产生了误码</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130181633993.png" alt="image-20220130181633993"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130181633993.png" alt="image-20220130181633993"></p>
 <p><strong>检错码</strong>只能检测出差错，但不能定位错误，因此<strong>无法纠正错误</strong>；想要纠正错误，可以使用前向纠错，但是开销比较大，一般比较少使用。</p>
 <p><strong>CRC有很好的检错能力，漏检率非常低</strong>，易于用硬件实现，被广泛用于数据链路层</p>
 <p>检错重传来纠正传输中的差错，或者仅仅是丢弃检测到差错的帧，取决于上层提供的是可靠传输服务还是不可靠传输服务。</p>
@@ -409,7 +409,7 @@ $$
 <p>​	面向字节的异步链路使用字节填充法（插入转义字符）</p>
 <p>​	面向比特的同步链路使用比特填充法（零比特填充）</p>
 <p><strong>PPP协议的工作状态</strong></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130164933836.png" alt="image-20220130164933836"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130164933836.png" alt="image-20220130164933836"></p>
 <h3 id="媒体接入控制">媒体接入控制</h3>
 <h4 id="概述">概述</h4>
 <p>共享信道需要考虑如何协调多个发送和接收站点对一个传输媒体的占用，即媒体接入控制MAC（Medium Access Control）</p>
@@ -448,7 +448,7 @@ S·\overline{T}≡ 0 \
 S· \overline{S} ≡ -1
 $$</p>
 <p><strong>应用举例</strong>：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130001237169.png" alt="image-20220130001237169"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130001237169.png" alt="image-20220130001237169"></p>
 <h3 id="随机接入">随机接入</h3>
 <h4 id="csmacd协议">CSMA/CD协议</h4>
 <p><strong>CSMA/CD（Carrier Sense Multiple Access/Collision Detection）载波监听多址接入/碰撞检测协议的工作原理</strong></p>
@@ -473,8 +473,8 @@ S_{max} ↑= \frac{1}{1+a↓} 参数a的值尽量小，以提高信道利用率 
 a↓ = \frac{τ↓}{T_0↑} 以太网端到端的距离收到限制，以太网帧的长度应尽量长些
 $$
 CSMA/CD协议曾经用于各种总线结构以太网和双绞线以太网的早期版本中。现在的以太网基于交换机和全双工连接，不会有碰撞，因此没有必要使用CSMA/CD协议。</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220129222500917.png" alt="image-20220129222500917"></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220129222500917.png" alt=""></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220129222500917.png" alt="image-20220129222500917"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220129222500917.png" alt=""></p>
 <h4 id="csmaca协议">CSMA/CA协议</h4>
 <p><strong>CSMA/CA（Carrier Sense Multiple Access/Collision Avoidance）载波监听多址接入/碰撞避免</strong></p>
 <p>802.11无线局域网在MAC层使用CSMA/CA协议，用来减少碰撞发生的概率，不能使用CSMA/CD协议的原因是<strong>无线局域网无法实现碰撞检测</strong>。在使用CSMA/CA协议的同时，还使用<strong>停止-等待协议</strong>来实现可靠传输。</p>
@@ -486,7 +486,7 @@ CSMA/CD协议曾经用于各种总线结构以太网和双绞线以太网的早�
 <p>​		当退避计时器的时间减小为0时，开始发送数据</p>
 <p>​		当退避计时器的时间还没有到0，信道又变成忙状态，就冻结退避计时器的数值，重新等待信道变成空闲，在经过DIFS后，继续启动退避计时器</p>
 <p>​	在进行第i次推闭十，退避时间在时隙编号{0,1,…2<!-- raw HTML omitted -->2+i<!-- raw HTML omitted -->-1}中随机选择一个，然后乘以基本退避时间（也就是一个时隙的长度）就可以得到随机的退避时间，这样可以使得不同的站点选择相同的退避时间的概率减小。当时隙编号到达255时（对应于第6次退避）就不再增加</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220129225701397.png" alt="image-20220129225701397"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220129225701397.png" alt="image-20220129225701397"></p>
 <p><strong>CSMA/CA协议的信道预约：</strong></p>
 <p>​	为了尽可能减少碰撞的概率和降低碰撞的影响，802.11标准允许要发送数据的站点对<strong>信道进行预约</strong>。</p>
 <p>​		1、源站先发一个短的控制帧，叫做<strong>请求发送RTS</strong>（Request To Send）,它包含了原地址、目的地址以及这次通信（包括相应的确认帧）所需的持续时间。</p>
@@ -874,7 +874,7 @@ CSMA/CD协议曾经用于各种总线结构以太网和双绞线以太网的早�
 <p>​		中间系统到中间系统IS-IS：<strong>基于链路状态</strong>，集成化IS-IS是ISP骨干网上最常用的IGP协议</p>
 <p>​	外部网关协议EGP：边界网关协议BGP</p>
 <p>路由器的基本结构：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130201724077.png" alt="image-20220130201724077"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130201724077.png" alt="image-20220130201724077"></p>
 <p>​	路由器基本可以分为两个部分：<strong>路由选择部分</strong>、<strong>分组转发部分</strong></p>
 <p>​		路由选择部分的核心是路由选择处理机，根据不同的路由选择协议，周期性的与其他路由器交换路由信息。</p>
 <p>​		分组转发部分：包含<strong>输入端口</strong>、<strong>交换结构</strong>、<strong>输出端口</strong>；</p>
@@ -951,7 +951,7 @@ CSMA/CD协议曾经用于各种总线结构以太网和双绞线以太网的早�
 <p>​	OSPF -&gt; IP(协议字段值=89)</p>
 <p>​	BGP -&gt;TCP（179端口号） -&gt; IP(协议字段值=6)</p>
 <h3 id="ipv4数据报的首部格式">IPv4数据报的首部格式</h3>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130200919584.png" alt="image-20220130200919584"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130200919584.png" alt="image-20220130200919584"></p>
 <p>版本：占4比特，IP协议的版本，比如IPV4，通信双方需要使用一致的版本</p>
 <p>首部长度：占4比特，IP数据报首部的长度，以4字节为单位，比如固定长度20个字节，他的值为0101，十进制值为5。</p>
 <p>区分服务：占8比特，不同数值可提供不同等级的服务质量。</p>
@@ -1069,7 +1069,7 @@ CSMA/CD协议曾经用于各种总线结构以太网和双绞线以太网的早�
 <p>​	发送方一旦收到3个重复的确认，就知道丢失了个别的报文段，于是不启用慢开始算法，而是使用快恢复算法</p>
 <p>​	发送方将慢开始门限ssthresh和拥塞窗口cwnd调整为当前窗口的一般；并开始执行拥塞避免算法；</p>
 <p>​	也有一些快恢复的实现是ssthresh调整为当前窗口的一般，但是cwnd=ssthresh+3；因为收到了3个重复的确认，说明已经有3个报文已经到了对方，不在网络里面，网络中减少了3个报文段，因此可以把拥塞窗口扩大一些。</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130201039170.png" alt="image-20220130201039170"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130201039170.png" alt="image-20220130201039170"></p>
 <h3 id="tcp超时重传时间的选择">TCP超时重传时间的选择</h3>
 <p>超时重传的时间RTO的选择的计算公式：
 $$
@@ -1104,7 +1104,7 @@ $$</p>
 <p><strong>TCP通信是全双工通信</strong>，每一方都在发送和接收，都有自己的发送窗口和接收窗口，需要搞清楚是哪一方的窗口</p>
 <h3 id="tcp的运输连接管理-tcp的连接与释放">TCP的运输连接管理-TCP的连接与释放</h3>
 <h4 id="tcp连接">TCP连接</h4>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130201228705.png" alt="image-20220130201228705"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130201228705.png" alt="image-20220130201228705"></p>
 <p>​	TCP连接建立主要解决如下问题：</p>
 <pre><code>	1. 使TCP双方能够知道对方的存在
 	2. 使TCP双方能够协商一些参数（如最大窗口值、是否使用窗口扩大选项和时间戳选项以及服务质量等）
@@ -1118,7 +1118,7 @@ $$</p>
 <p>​	注意：TCP标准规定，SYN=1的报文不能携带数据，但是要消耗一个序号。普通的确认报文如果不携带数据，则不消耗序号</p>
 <p>​	最后一步TCP连接请求的确认的确认，不多余，为了防止已经失效的链接请求报文突然又传到TCP服务器，导致错误。</p>
 <h4 id="tcp释放">TCP释放</h4>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130201338712.png" alt="image-20220130201338712"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130201338712.png" alt="image-20220130201338712"></p>
 <p>假设TCP客户端需要向TCP服务端断开连接</p>
 <p>TCP客户端发送释放连接的TCP报文FIN=1,ACK=1,seq=u,ack=v；自身的状态从ESTABLISHED转变为FIN-WAIT-1</p>
 <p>TCP服务端收到释放连接报文后，发送ACK=1,seq=v,ack=u+1的响应报文，自身状态从ESTABLISHED转变为CLOSE-WAIT状态</p>
@@ -1133,7 +1133,7 @@ $$</p>
 <p>在发送数据时，从发送缓存取出一部分或者全部字节给其添加一个首部使之成为TCP报文段后进行发送</p>
 <p>​	一个TCP报文段由<strong>首部</strong>和<strong>数据载荷</strong>两部分构成</p>
 <p>​	TCP的全部功能体现在首部的各个字段的作用</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220130201450357.png" alt="image-20220130201450357"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220130201450357.png" alt="image-20220130201450357"></p>
 <p>​	源端口：占16比特，用来标识发送该TCP报文段的应用进程</p>
 <p>​	目的端口：占16比特，用来标识接收该TCP报文段的应用进程</p>
 <p>​	序号：占32比特，取值[0,2<!-- raw HTML omitted -->32<!-- raw HTML omitted -->-1],序列号增加到最后一个，下一个序列号又回到0。用来指出本TCP报文数据载荷的第一个字节的序号。</p>

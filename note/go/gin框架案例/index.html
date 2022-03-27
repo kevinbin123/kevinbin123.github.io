@@ -126,7 +126,7 @@ package tools import ( &#34;bufio&#34; &#34;encoding/json&#34; &#34;os&#34; ) ty
 <p>需要安装有nodejs；</p>
 <p>运行命令：<code>npm start</code></p>
 <p>运行后效果如下：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220308154439322.png" alt="image-20220308154439322"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220308154439322.png" alt="image-20220308154439322"></p>
 <h2 id="项目初始化">项目初始化</h2>
 <p>创建CloudRestaurant项目。</p>
 <p>引入gin包:<code>go get github.com/gin-gonic/gin</code></p>
@@ -256,9 +256,9 @@ package tools import ( &#34;bufio&#34; &#34;encoding/json&#34; &#34;os&#34; ) ty
 }
 
 </code></pre></div><p>6、设置热加载</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220306154642416.png" alt="image-20220306154642416"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220306154642416.png" alt="image-20220306154642416"></p>
 <p>运行效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220308155455997.png" alt="image-20220308155455997"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220308155455997.png" alt="image-20220308155455997"></p>
 <h2 id="集成第三方短信">集成第三方短信</h2>
 <p>实现<code>/api/sendcode</code>功能</p>
 <p>1、创建controller/MemberController.go路由控制器</p>
@@ -420,7 +420,7 @@ package tools import ( &#34;bufio&#34; &#34;encoding/json&#34; &#34;os&#34; ) ty
 <p>安装xorm:<code>go get github.com/go-xorm/xorm</code></p>
 <p>安装mysql：<code>go get github.com/go-sql-driver/mysql</code></p>
 <p>1、使用的mysql数据库，先创建数据库</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220307150535635.png" alt="image-20220307150535635"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220307150535635.png" alt="image-20220307150535635"></p>
 <p>2、在配置文件config/中添加database相关内容</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
   <span style="color:#f92672">&#34;app_name&#34;</span>: <span style="color:#e6db74">&#34;cloudrestaurant&#34;</span>,
@@ -645,7 +645,7 @@ package tools import ( &#34;bufio&#34; &#34;encoding/json&#34; &#34;os&#34; ) ty
 	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
 }
 </code></pre></div><p>效果演示：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220308162604112.png" alt="image-20220308162604112"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220308162604112.png" alt="image-20220308162604112"></p>
 <h2 id="手机号码登录">手机号码登录</h2>
 <p>实现<code>/api/login_sms</code>路由</p>
 <p>1、在model/Member.go中定义会员数据结构</p>
@@ -1205,7 +1205,7 @@ package tools import ( &#34;bufio&#34; &#34;encoding/json&#34; &#34;os&#34; ) ty
 
 }
 </code></pre></div><p>效果：验证码被验证之后，就会失效</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220308170600074.png" alt="image-20220308170600074"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220308170600074.png" alt="image-20220308170600074"></p>
 <h2 id="用户名密码登录">用户名密码登录</h2>
 <p>实现<code>/api/login_pwd</code>路由</p>
 <p>1、在controller/MemberController.go中添加路由</p>
@@ -1654,7 +1654,7 @@ maxConns=100
 	new(<span style="color:#a6e22e">controller</span>.<span style="color:#a6e22e">FoodCategoryController</span>).<span style="color:#a6e22e">Router</span>(<span style="color:#a6e22e">r</span>)
 }
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220308173246579.png" alt="image-20220308173246579"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220308173246579.png" alt="image-20220308173246579"></p>
 <h2 id="根据经纬度获取商家数据">根据经纬度获取商家数据</h2>
 <p>实现<code>/api/shops</code>路由</p>
 <p>1、在model/Shop.go中定义商店的数据结构</p>
@@ -1897,7 +1897,7 @@ maxConns=100
 	new(<span style="color:#a6e22e">controller</span>.<span style="color:#a6e22e">ShopController</span>).<span style="color:#a6e22e">Router</span>(<span style="color:#a6e22e">r</span>)
 }
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220308174510240.png" alt="image-20220308174510240"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220308174510240.png" alt="image-20220308174510240"></p>
 <h2 id="关键词搜索商家">关键词搜索商家</h2>
 <p>实现：<code>/api/search_shops</code>路由</p>
 <p>1、在controller/ShopController.go中添加路由</p>
@@ -1951,7 +1951,7 @@ maxConns=100
 
 }
 </code></pre></div><p>效果</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220308175323727.png" alt="image-20220308175323727"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220308175323727.png" alt="image-20220308175323727"></p>
 <h2 id="用户信息查询">用户信息查询</h2>
 <p>实现<code>/api/userinfo</code>路由</p>
 <p>1、在controller/MemberController.go中添加路由</p>
@@ -2396,7 +2396,7 @@ maxConns=100
 	new(<span style="color:#a6e22e">controller</span>.<span style="color:#a6e22e">GoodController</span>).<span style="color:#a6e22e">Router</span>(<span style="color:#a6e22e">r</span>)
 }
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220308181916315.png" alt="image-20220308181916315"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220308181916315.png" alt="image-20220308181916315"></p>
 <h2 id="代码">代码</h2>
 <p><a href="https://gitee.com/kevinbin/cloud-restaurant">https://gitee.com/kevinbin/cloud-restaurant</a></p>
 <h2 id="参考文献">参考文献</h2>

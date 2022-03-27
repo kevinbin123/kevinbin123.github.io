@@ -131,12 +131,12 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
    <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>()
 }
 </code></pre></div><p>浏览器访问效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301154142338.png" alt="image-20220301154142338"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301154142338.png" alt="image-20220301154142338"></p>
 <p>实现热加载的方式：借助其他工具，比如fresh</p>
 <p>1、下载fresh工具：<code>go get github.com/pilu/fresh</code></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301154901132.png" alt="image-20220301154901132"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301154901132.png" alt="image-20220301154901132"></p>
 <p>2、使用fresh命令启动</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301154938700.png" alt="image-20220301154938700"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301154938700.png" alt="image-20220301154938700"></p>
 <h2 id="gin的路由">gin的路由</h2>
 <h3 id="使用restful风格的api">使用Restful风格的API</h3>
 <p>常见的有GET/POST/PUT/DELETE</p>
@@ -160,7 +160,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 }
 
 </code></pre></div><p>使用postman，用get方式请求路径效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301170843806.png" alt="image-20220301170843806"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301170843806.png" alt="image-20220301170843806"></p>
 <h4 id="post">POST</h4>
 <p>使用post方式来请求指定的路由，一般用来增加数据</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -182,7 +182,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 
 }
 </code></pre></div><p>使用postman，用post方式请求路径效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301170900318.png" alt="image-20220301170900318"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301170900318.png" alt="image-20220301170900318"></p>
 <h4 id="put">PUT</h4>
 <p>使用put方式来请求指定的路由，一般用来修改数据</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -203,7 +203,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 
 }
 </code></pre></div><p>使用postman，用put方式请求路径效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301170915834.png" alt="image-20220301170915834"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301170915834.png" alt="image-20220301170915834"></p>
 <h4 id="delete">DELETE</h4>
 <p>使用delete方式来请求指定的路由，一般用来删除数据</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -224,7 +224,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 
 }
 </code></pre></div><p>使用postman，用delete方式请求路径效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301170930394.png" alt="image-20220301170930394"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301170930394.png" alt="image-20220301170930394"></p>
 <h3 id="gin数据格式的响应">Gin数据格式的响应</h3>
 <p>​	Gin数据格式的响应常见的有：c.String()、c.JSON()、c.JSONP()、c.XML()、c.HTML()、c.protobuf()</p>
 <h4 id="cstring">c.String()</h4>
@@ -249,7 +249,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 
 }
 </code></pre></div><p>访问效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171758952.png" alt="image-20220301171758952"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301171758952.png" alt="image-20220301171758952"></p>
 <h4 id="cjson">c.JSON()</h4>
 <p>返回json类型的数据；可以自定义map[string]interface{}；也可以使用gin.H(本质上也是一个map[string]interface{});也可以返回一个结构体。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -295,7 +295,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 
 }
 </code></pre></div><p>访问效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171829024.png" alt="image-20220301171829024"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301171829024.png" alt="image-20220301171829024"></p>
 <h4 id="cjsonp">C.JSONP()</h4>
 <p>为了解决json数据跨域的问题，可以访问jsonp格式；在前端请求的时候加上callback参数。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -329,7 +329,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 
 }
 </code></pre></div><p>访问效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171849871.png" alt="image-20220301171849871"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301171849871.png" alt="image-20220301171849871"></p>
 <h4 id="cxml">c.XML()</h4>
 <p>返回xml格式数据。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -354,7 +354,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 
 }
 </code></pre></div><p>访问效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171905179.png" alt="image-20220301171905179"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301171905179.png" alt="image-20220301171905179"></p>
 <h4 id="chtml">c.HTML()</h4>
 <p>返回html格式的数据：</p>
 <p>步骤：</p>
@@ -407,7 +407,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 
 }
 </code></pre></div><p>访问效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301171922271.png" alt="image-20220301171922271"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301171922271.png" alt="image-20220301171922271"></p>
 <h4 id="cprotobuf">c.protobuf()</h4>
 <p>返回protobuf格式的数据。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -438,11 +438,11 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 }
 
 </code></pre></div><p>访问效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220301172534944.png" alt="image-20220301172534944"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220301172534944.png" alt="image-20220301172534944"></p>
 <h2 id="gin模板渲染">Gin模板渲染</h2>
 <h3 id="基本使用">基本使用</h3>
 <p>1、创建几个模板</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302100927948.png" alt="image-20220302100927948"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302100927948.png" alt="image-20220302100927948"></p>
 <p>2、模板中写入内容；比如admin下的index.html内容如下：</p>
 <p>{{define}}和{{end}}成对出现</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;admin/index.html&#34;}}
@@ -499,7 +499,7 @@ package main import ( &#34;github.com/gin-gonic/gin&#34; ) func main(){ //创建
 }
 
 </code></pre></div><p>效果</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302101411869.png" alt="image-20220302101411869"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302101411869.png" alt="image-20220302101411869"></p>
 <h3 id="gin模板基本语法">Gin模板基本语法</h3>
 <p><strong>基本内容：</strong></p>
 <p>​	绑定数据：{{.xxx}}</p>
@@ -666,7 +666,7 @@ With:结构结构体
 &lt;/<span style="color:#f92672">html</span>&gt;
 {{end }}
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302101750491.png" alt="image-20220302101750491"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302101750491.png" alt="image-20220302101750491"></p>
 <h2 id="gin数据解析和绑定">Gin数据解析和绑定</h2>
 <h3 id="解析url参数">解析Url参数</h3>
 <p>通过Query可以获取url里面的参数；DefaultQuery可以获取参数，如果没有获取到，可以指定默认值；</p>
@@ -710,7 +710,7 @@ With:结构结构体
 </span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>)
 }
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302143401041.png" alt="image-20220302143401041"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302143401041.png" alt="image-20220302143401041"></p>
 <h3 id="解析表单参数">解析表单参数</h3>
 <p>通过PostForm可以获取到表单的参数；DefaultPostForm可以获取到表单的参数值，如果没有获取到，可以使用指定的参数值；</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -774,7 +774,7 @@ With:结构结构体
     &lt;/<span style="color:#f92672">form</span>&gt;
 {{end}}
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302143616914.png" alt="image-20220302143616914"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302143616914.png" alt="image-20220302143616914"></p>
 <h3 id="动态参数">动态参数</h3>
 <p>通过Param可以获取动态的参数值</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -801,7 +801,7 @@ With:结构结构体
 }
 
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302143727194.png" alt="image-20220302143727194"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302143727194.png" alt="image-20220302143727194"></p>
 <h3 id="xml">xml</h3>
 <p>将xml格式的数据，通过GetRawData获得切片；然后通过xml.Unmarshal解析到结构体。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
@@ -840,12 +840,12 @@ With:结构结构体
 }
 
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302115448345.png" alt="image-20220302115448345"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302115448345.png" alt="image-20220302115448345"></p>
 <h2 id="gin-路由分组">Gin 路由分组</h2>
 <h3 id="路由分组">路由分组</h3>
 <p>通过Group来进行路由分组：</p>
 <p>比如，这里创建routers包含后端路由adminRouters和前端路由defaultRouters；</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302145933767.png" alt="image-20220302145933767"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302145933767.png" alt="image-20220302145933767"></p>
 <p>routers/DefaultRouters.go包含了前端的一些路由</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">routers</span>
 
@@ -931,7 +931,7 @@ With:结构结构体
 <p>之前的例子中，路由的的控制器方法都紧在后面，我们进行抽离，使用自定义控制器；</p>
 <p>controllers里面包含各种路由控制的方法；admin里面是后端路由的控制器；front是前端路由的控制器；</p>
 <p>admin中的indexController里面是后端首页路由的控制器；userController是后端用户路由的控制器等。</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302154504593.png" alt="image-20220302154504593"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302154504593.png" alt="image-20220302154504593"></p>
 <p>front/newsController.go包含了访问首页的时候的Default控制器；以及访问新闻页面的News控制器；</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">front</span>
 
@@ -1027,7 +1027,7 @@ With:结构结构体
 </code></pre></div><h3 id="实现控制器的继承">实现控制器的继承</h3>
 <p>由于控制器方法的实现都是基于结构体；我们也可以进行继承；</p>
 <p>定义一个基础控制器；这里叫做baseController</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302161448372.png" alt="image-20220302161448372"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302161448372.png" alt="image-20220302161448372"></p>
 <p>Base/baseController.go ；包含两个方法。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">Base</span>
 
@@ -1062,7 +1062,7 @@ With:结构结构体
 </span><span style="color:#75715e"></span>	<span style="color:#a6e22e">con</span>.<span style="color:#a6e22e">Success</span>(<span style="color:#a6e22e">c</span>)
 }
 </code></pre></div><p>效果</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302161556501.png" alt="image-20220302161556501"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302161556501.png" alt="image-20220302161556501"></p>
 <h2 id="gin中间件">Gin中间件</h2>
 <p>中间件包含了全局中间件、路由中间件等；gin.Default()本身其实就使用了两个中间件：Logger(), Recovery()；如果不想使用这些中间件的话；可以用gin.New()来设置默认路由引擎。</p>
 <p>中间件的顺序默认是从按照顺序执行的；也可以在中间件中使用Next()方法，来实现递归调用。</p>
@@ -1196,7 +1196,7 @@ With:结构结构体
 }
 
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302174254157.png" alt="image-20220302174254157"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302174254157.png" alt="image-20220302174254157"></p>
 <p>注意：在中间件使用协程的时候，需要将上下文复制后，再使用;c.Copy()</p>
 <p>在MiddleWare/middleware.go中设置一个goroutine；需要将上下文复制后，再使用：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">MiddleWare</span>
@@ -1221,7 +1221,7 @@ With:结构结构体
 	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;您好，您已经离开了Middle01中间件&#34;</span>)
 }
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220302174323188.png" alt="image-20220302174323188"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220302174323188.png" alt="image-20220302174323188"></p>
 <h2 id="gin-上传文件">Gin 上传文件</h2>
 <p>通过gin上传文件的步骤：</p>
 <p>1、在html模板中设置对应的上传字段；form表单中需要加入<code>enctype=&quot;multipart/form-data&quot;</code></p>
@@ -1387,8 +1387,8 @@ With:结构结构体
 	<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">H</span>{<span style="color:#e6db74">&#34;msg&#34;</span>:<span style="color:#e6db74">&#34;编辑用户&#34;</span>})
 }
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303105049767.png" alt="image-20220303105049767"></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303144444594.png" alt="image-20220303144444594"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303105049767.png" alt="image-20220303105049767"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303144444594.png" alt="image-20220303144444594"></p>
 <h2 id="gin-会话控制">Gin 会话控制</h2>
 <h3 id="cookie">Cookie</h3>
 <p>通过SetCookie来设置；Cookie来获取；</p>
@@ -1451,9 +1451,9 @@ httpOnly：是否允许前端修改</p>
 }
 </code></pre></div><p>效果：</p>
 <p>通过首页设置cookie</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303154346450.png" alt="image-20220303154346450"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303154346450.png" alt="image-20220303154346450"></p>
 <p>访问用户列表页面获取cookie</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303154357473.png" alt="image-20220303154357473"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303154357473.png" alt="image-20220303154357473"></p>
 <p>删除Cookie的方式就是将有效期设置为-1;</p>
 <p>controllers/admin/indexController.go使用Delete来删除Cookie。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
@@ -1655,7 +1655,7 @@ httpOnly：是否允许前端修改</p>
 	})
 }
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303164252344.png" alt="image-20220303164252344"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303164252344.png" alt="image-20220303164252344"></p>
 <h4 id="基于redis">基于redis</h4>
 <p>除了导入的包以及设置redis存储之外；其他的都和基于cookie的用法一致。可以实现分布式部署。</p>
 <p>示例：</p>
@@ -1724,8 +1724,8 @@ httpOnly：是否允许前端修改</p>
 }
 
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303165114692.png" alt="image-20220303165114692"></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303165141085.png" alt="image-20220303165141085"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303165114692.png" alt="image-20220303165114692"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303165141085.png" alt="image-20220303165141085"></p>
 <h2 id="gin-gorm">Gin GORM</h2>
 <p>GORM是使用go实现的Object Relation Mapping；</p>
 <p>这边主要实现基于mysql的增、删、改、查功能。</p>
@@ -1808,7 +1808,7 @@ httpOnly：是否允许前端修改</p>
 	})
 }
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303173525602.png" alt="image-20220303173525602"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303173525602.png" alt="image-20220303173525602"></p>
 <h3 id="增加">增加</h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
 
@@ -1838,8 +1838,8 @@ httpOnly：是否允许前端修改</p>
 
 
 </code></pre></div><p>效果：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303174617365.png" alt="image-20220303174617365"></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303174629591.png" alt="image-20220303174629591"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303174617365.png" alt="image-20220303174617365"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303174629591.png" alt="image-20220303174629591"></p>
 <h3 id="修改">修改</h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
 
@@ -1887,13 +1887,13 @@ httpOnly：是否允许前端修改</p>
 
 
 </code></pre></div><p>效果一：id为5的用户，已经修改为hahaha</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303175109382.png" alt="image-20220303175109382"></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303175126074.png" alt="image-20220303175126074"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303175109382.png" alt="image-20220303175109382"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303175126074.png" alt="image-20220303175126074"></p>
 <p>效果二：id为6的用户，已经修改为萧炎</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303175610274.png" alt="image-20220303175610274"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303175610274.png" alt="image-20220303175610274"></p>
 <p>效果三：id为6的用户，已经修改为恐怖如斯。</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303180210410.png" alt="image-20220303180210410"></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303180223616.png" alt="image-20220303180223616"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303180210410.png" alt="image-20220303180210410"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303180223616.png" alt="image-20220303180223616"></p>
 <h3 id="删除">删除</h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">admin</span>
 
@@ -1920,8 +1920,8 @@ httpOnly：是否允许前端修改</p>
 }
 
 </code></pre></div><p>效果:</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303180516224.png" alt="image-20220303180516224"></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220303180525608.png" alt="image-20220303180525608"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303180516224.png" alt="image-20220303180516224"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220303180525608.png" alt="image-20220303180525608"></p>
 <h2 id="参考文献">参考文献</h2>
 <blockquote>
 <p>1、gin入门  <a href="https://www.bilibili.com/video/BV1fA411F7aM">https://www.bilibili.com/video/BV1fA411F7aM</a></p>

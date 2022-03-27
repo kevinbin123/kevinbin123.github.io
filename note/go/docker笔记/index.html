@@ -213,7 +213,7 @@ ac738d8df5ef   training/webapp   <span style="color:#e6db74">&#34;python app.py&
 </code></pre></div><p>指定端口映射(前面的是主机的端口，后面的是容器的端口)</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d -p 5000:5000 training/webapp python app.py</span>
 </code></pre></div><p>如果发生了类似的错误;则重启docker<code> systemctl restart docker</code></p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220224131527231.png" alt="image-20220224131527231"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220224131527231.png" alt="image-20220224131527231"></p>
 <p><img src="C:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20220224131519996.png" alt="image-20220224131519996"></p>
 <p>查看容器端口映射情况</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker port 5154359f47ce</span>
@@ -295,9 +295,9 @@ nameserver 114.114.114.114
 </code></pre></div><p>删除镜像</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker rmi httpd</span>
 </code></pre></div><p>删除镜像的时候如果遇到了错误；</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220224144132453.png" alt="image-20220224144132453"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220224144132453.png" alt="image-20220224144132453"></p>
 <p>则需要先删除容器，再删除镜像</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220224144442221.png" alt="image-20220224144442221"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220224144442221.png" alt="image-20220224144442221"></p>
 <p>创建镜像</p>
 <p>方式一：更新现有镜像</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -t -i ubuntu:15.10 /bin/bash</span>
@@ -486,7 +486,7 @@ app.py  docker-compose.yml  Dockerfile  requirements.txt
 </code></pre></div><p>7、运行</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost composetest<span style="color:#f92672">]</span><span style="color:#75715e"># docker-compose up</span>
 </code></pre></div><p>8、效果，在浏览器中访问：</p>
-<p><img src="https://gitee.com/kevinbin/pics/raw/master/imgs/image-20220224175724756.png" alt="image-20220224175724756"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220224175724756.png" alt="image-20220224175724756"></p>
 <h2 id="docker-machine">Docker Machine</h2>
 <h3 id="安装-2">安装</h3>
 <p>由于github网络访问的问题，使用国内的镜像</p>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Protobuf笔记 // abin の 成长之路</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.89.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abin" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Protobuf笔记"/>
+<meta name="twitter:description" content="protobuf笔记 protobuf全程是Google Protocol Buffers;是一种与平台、语言无关的结构化数据表示方法；
+环境准备 1、下载protoc
+下载地址：
+https://github.com/protocolbuffers/protobuf/releases/download/v3.20.0-rc1/protoc-3.20.0-rc-1-win64.zip
+2、下载protoc-gen-go
+protoc-gen-go是protobuf编译插件里面Go的版本：
+可以通过go get方式下载；下载后在gopath中会生成protoc-gen-go.exe。
+ go get -u github.com/golang/protobuf/protoc-gen-go
+如果下载不下来，可以先git clone
+然后build一下
+3、下载protoc-gen-micro （这一步不是必须的，在使用go-micro的时候才需要）
+go get -u github.com/micro/protoc-gen-micro
+或者人工build
+4、添加到环境变量
+使用 1、准备proto文件（go）
+syntax = &#34;proto3&#34;;package pb;enum Week{ //枚举必须从0开始  Monday=0; Tuesday=1;}message Student{ string name=1; int32 age=2;	 People p=3;	//自定义类型  repeated int32 score=4; //数组  Week w=5;	//枚举类型  oneof data{ //联合体  string teacher=6; string class=7; }}message People{ int32 weight=1;}service testS { rpc Say(People) returns (Student);}2、编译protoc --go_out=."/>
+
+    <meta property="og:title" content="Protobuf笔记" />
+<meta property="og:description" content="protobuf笔记 protobuf全程是Google Protocol Buffers;是一种与平台、语言无关的结构化数据表示方法；
+环境准备 1、下载protoc
+下载地址：
+https://github.com/protocolbuffers/protobuf/releases/download/v3.20.0-rc1/protoc-3.20.0-rc-1-win64.zip
+2、下载protoc-gen-go
+protoc-gen-go是protobuf编译插件里面Go的版本：
+可以通过go get方式下载；下载后在gopath中会生成protoc-gen-go.exe。
+ go get -u github.com/golang/protobuf/protoc-gen-go
+如果下载不下来，可以先git clone
+然后build一下
+3、下载protoc-gen-micro （这一步不是必须的，在使用go-micro的时候才需要）
+go get -u github.com/micro/protoc-gen-micro
+或者人工build
+4、添加到环境变量
+使用 1、准备proto文件（go）
+syntax = &#34;proto3&#34;;package pb;enum Week{ //枚举必须从0开始  Monday=0; Tuesday=1;}message Student{ string name=1; int32 age=2;	 People p=3;	//自定义类型  repeated int32 score=4; //数组  Week w=5;	//枚举类型  oneof data{ //联合体  string teacher=6; string class=7; }}message People{ int32 weight=1;}service testS { rpc Say(People) returns (Student);}2、编译protoc --go_out=." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/note/go/protobuf%E7%AC%94%E8%AE%B0/" /><meta property="article:section" content="note" />
+<meta property="article:published_time" content="2022-03-27T16:33:43+08:00" />
+<meta property="article:modified_time" content="2022-03-27T16:33:43+08:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/avatar.jpg" alt="abin" /></a>
+      <h1>abin の 成长之路</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">首页</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tecs/">学习</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/note/">笔记</a>
+      </nav>
+      <p>A man as good as me should have lived a glorious life</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/kevinbin123" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="http://ecoder.xyz:520/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-cloud">
+  <title>mySite</title>
+  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Protobuf笔记</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Mar 27, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          1 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="protobuf笔记">protobuf笔记</h1>
+<p>protobuf全程是Google Protocol Buffers;是一种与平台、语言无关的结构化数据表示方法；</p>
+<h2 id="环境准备">环境准备</h2>
+<p>1、下载protoc</p>
+<p>下载地址：</p>
+<p><a href="https://github.com/protocolbuffers/protobuf/releases/download/v3.20.0-rc1/protoc-3.20.0-rc-1-win64.zip">https://github.com/protocolbuffers/protobuf/releases/download/v3.20.0-rc1/protoc-3.20.0-rc-1-win64.zip</a></p>
+<p>2、下载protoc-gen-go</p>
+<p>protoc-gen-go是protobuf编译插件里面Go的版本：</p>
+<p>可以通过go get方式下载；下载后在gopath中会生成protoc-gen-go.exe。</p>
+<p><code> go get -u github.com/golang/protobuf/protoc-gen-go</code></p>
+<p>如果下载不下来，可以先<code>git clone</code></p>
+<p>然后build一下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220314112324323.png" alt="image-20220314112324323"></p>
+<p>3、下载protoc-gen-micro （这一步不是必须的，在使用go-micro的时候才需要）</p>
+<p><code>go get -u github.com/micro/protoc-gen-micro</code></p>
+<p>或者人工build</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220325143635177.png" alt="image-20220325143635177"></p>
+<p>4、添加到环境变量</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220314114348734.png" alt="image-20220314114348734"></p>
+<h2 id="使用">使用</h2>
+<p>1、准备proto文件（go）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-protobuf" data-lang="protobuf">syntax <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;proto3&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#f92672">package</span> pb;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">enum</span> Week{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#75715e">//枚举必须从0开始
+</span><span style="color:#75715e"></span>    Monday<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    Tuesday<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">Student</span>{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">string</span> name<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">int32</span> age<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;		<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    People p<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>;			<span style="color:#75715e">//自定义类型
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">repeated</span> <span style="color:#66d9ef">int32</span> score<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>; <span style="color:#75715e">//数组
+</span><span style="color:#75715e"></span>    Week w<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>;	<span style="color:#75715e">//枚举类型
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">oneof</span> data{   <span style="color:#75715e">//联合体
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">string</span> teacher<span style="color:#f92672">=</span><span style="color:#ae81ff">6</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>        <span style="color:#66d9ef">string</span> class<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    }<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">People</span>{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">int32</span> weight<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">service</span> testS {<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">rpc</span> Say(People) <span style="color:#66d9ef">returns</span> (Student);<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>2、编译<code>protoc --go_out=./ *.proto</code></p>
+<p>如果报错：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">D</span>:<span style="color:#960050;background-color:#1e0010">\</span><span style="color:#a6e22e">Program</span> <span style="color:#a6e22e">Files</span><span style="color:#960050;background-color:#1e0010">\</span><span style="color:#a6e22e">go_code</span><span style="color:#960050;background-color:#1e0010">\</span><span style="color:#a6e22e">src</span><span style="color:#960050;background-color:#1e0010">\</span><span style="color:#a6e22e">StudyGRPC</span><span style="color:#960050;background-color:#1e0010">\</span><span style="color:#a6e22e">pb</span>&gt;<span style="color:#a6e22e">protoc</span> <span style="color:#f92672">--</span><span style="color:#a6e22e">go_out</span>=.<span style="color:#f92672">/</span> <span style="color:#f92672">*</span>.<span style="color:#a6e22e">proto</span>
+<span style="color:#a6e22e">protoc</span><span style="color:#f92672">-</span><span style="color:#a6e22e">gen</span><span style="color:#f92672">-</span><span style="color:#66d9ef">go</span>: <span style="color:#a6e22e">unable</span> <span style="color:#a6e22e">to</span> <span style="color:#a6e22e">determine</span> <span style="color:#a6e22e">Go</span> <span style="color:#f92672">import</span> <span style="color:#a6e22e">path</span> <span style="color:#66d9ef">for</span> <span style="color:#e6db74">&#34;myproto.proto&#34;</span>
+
+<span style="color:#a6e22e">Please</span> <span style="color:#a6e22e">specify</span> <span style="color:#a6e22e">either</span>:
+        <span style="color:#960050;background-color:#1e0010">•</span> <span style="color:#a6e22e">a</span> <span style="color:#e6db74">&#34;go_package&#34;</span> <span style="color:#a6e22e">option</span> <span style="color:#a6e22e">in</span> <span style="color:#a6e22e">the</span> .<span style="color:#a6e22e">proto</span> <span style="color:#a6e22e">source</span> <span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">or</span>
+        <span style="color:#960050;background-color:#1e0010">•</span> <span style="color:#a6e22e">a</span> <span style="color:#e6db74">&#34;M&#34;</span> <span style="color:#a6e22e">argument</span> <span style="color:#a6e22e">on</span> <span style="color:#a6e22e">the</span> <span style="color:#a6e22e">command</span> <span style="color:#a6e22e">line</span>.
+
+<span style="color:#a6e22e">See</span> <span style="color:#a6e22e">https</span>:<span style="color:#75715e">//developers.google.com/protocol-buffers/docs/reference/go-generated#package for more information.
+</span><span style="color:#75715e"></span>
+<span style="color:#f92672">--</span><span style="color:#a6e22e">go_out</span>: <span style="color:#a6e22e">protoc</span><span style="color:#f92672">-</span><span style="color:#a6e22e">gen</span><span style="color:#f92672">-</span><span style="color:#66d9ef">go</span>: <span style="color:#a6e22e">Plugin</span> <span style="color:#a6e22e">failed</span> <span style="color:#a6e22e">with</span> <span style="color:#a6e22e">status</span> <span style="color:#a6e22e">code</span> <span style="color:#ae81ff">1.</span>
+</code></pre></div><p>需要在proto文件中添加<code>option go_package = &quot;./;protos&quot;;</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-protobuf" data-lang="protobuf">syntax <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;proto3&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#f92672">package</span> pb;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">option</span> go_package <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;./;protos&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">enum</span> Week{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#75715e">//枚举必须从0开始
+</span><span style="color:#75715e"></span>    Monday<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    Tuesday<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">Student</span>{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">string</span> name<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">int32</span> age<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    People p<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">repeated</span> <span style="color:#66d9ef">int32</span> score<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    Week w<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">oneof</span> data{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>        <span style="color:#66d9ef">string</span> teacher<span style="color:#f92672">=</span><span style="color:#ae81ff">6</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>        <span style="color:#66d9ef">string</span> class<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    }<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">People</span>{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">int32</span> weight<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">service</span> testS {<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>    <span style="color:#66d9ef">rpc</span> Say(People) <span style="color:#66d9ef">returns</span> (Student);<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>3、protbuf不编译服务；如果要编译服务，需要使用grpc</p>
+<p><code>protoc --go_out=plugins=grpc:./ *.proto</code></p>
+<h2 id="参考文档">参考文档：</h2>
+<blockquote>
+<p>1、使用 <a href="https://www.cnblogs.com/jkko123/p/7161843.html">https://www.cnblogs.com/jkko123/p/7161843.html</a></p>
+<p>2、编译报错 <a href="https://www.cnblogs.com/heris/p/15673865.html">https://www.cnblogs.com/heris/p/15673865.html</a></p>
+</blockquote>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
