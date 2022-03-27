@@ -6,7 +6,25 @@
     <description>Recent content in Notes on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 27 Mar 2022 16:34:46 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 27 Mar 2022 17:09:26 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang小案例 爬取豆瓣电影</title>
+      <link>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/</link>
+      <pubDate>Sun, 27 Mar 2022 17:09:26 +0800</pubDate>
+      
+      <guid>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/</guid>
+      <description>Golang小案例-爬取豆瓣电影 在之前有学习过其他的爬虫案例，这个要实现的这个案例不一样的地方在于用到了第三方选择器、以及持久化存储是使用数据库
+案例来源：
+ 小生凡一的博客：Go语言并发爬虫
+https://blog.csdn.net/weixin_45304503/article/details/121885673
+ 功能 1、通过url访问豆瓣的网址
+2、通过第三方解析器解析内容；
+3、持久化到本地数据库中
+实现 1、定义要保存的电影的数据结构
+type MovieData struct { Title string `json:&amp;#34;title&amp;#34;` Director string `json:&amp;#34;director&amp;#34;` Picture string `json:&amp;#34;picture&amp;#34;` Actor string `json:&amp;#34;actor&amp;#34;` Year string `json:&amp;#34;year&amp;#34;` Score string `json:&amp;#34;score&amp;#34;` Quote string `json:&amp;#34;quote&amp;#34;` } 2、初始化数据库
+var DB *sql.DB const ( USERNAME = &amp;#34;root&amp;#34; PASSWORD = &amp;#34;123456&amp;#34; HOST = &amp;#34;localhost&amp;#34; PORT = &amp;#34;3306&amp;#34; DBNAME = &amp;#34;douban_movie&amp;#34; ) func InitDB() { //数据库连接格式：root:123456@tcp(127.0.0.1:3306)/douban_movie?charset=utf8 	path := strings.Join([]string{USERNAME, &amp;#34;:&amp;#34;, PASSWORD, &amp;#34;@tcp(&amp;#34;, HOST, &amp;#34;:&amp;#34;, PORT, &amp;#34;)/&amp;#34;, DBNAME, &amp;#34;?</description>
+    </item>
+    
     <item>
       <title>Go Micro案例</title>
       <link>/note/go/go-micro%E6%A1%88%E4%BE%8B/</link>
