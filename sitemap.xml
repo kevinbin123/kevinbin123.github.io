@@ -3,12 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>/</loc>
-    <lastmod>2022-03-27T17:09:26+08:00</lastmod>
+    <lastmod>2022-04-11T21:03:47+08:00</lastmod>
   </url><url>
-    <loc>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/</loc>
-    <lastmod>2022-03-27T17:09:26+08:00</lastmod>
+    <loc>/note/go/golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2022-04-11T21:03:47+08:00</lastmod>
   </url><url>
     <loc>/note/</loc>
+    <lastmod>2022-04-11T21:03:47+08:00</lastmod>
+  </url><url>
+    <loc>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/</loc>
     <lastmod>2022-03-27T17:09:26+08:00</lastmod>
   </url><url>
     <loc>/note/go/go-micro%E6%A1%88%E4%BE%8B/</loc>
