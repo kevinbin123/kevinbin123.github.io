@@ -6,7 +6,25 @@
     <description>Recent content in Notes on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 Apr 2022 21:03:47 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 27 Apr 2022 00:09:36 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PWA笔记</title>
+      <link>/note/go/pwa%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Wed, 27 Apr 2022 00:09:36 +0800</pubDate>
+      
+      <guid>/note/go/pwa%E7%AC%94%E8%AE%B0/</guid>
+      <description>PWA笔记 PWA全称是：Progressive Web App；渐进式的web应用；完全不影响现有的web应用，但是可以让你渐渐的拥有更加好的体验。
+用到的技术 一个普通的web应用要改造成一个PWA，需要用到的技术有：
+manifest	应用清单 service worker	服务器与浏览器之间的中间人 promise	ES6新增的构造函数 fetch	为web异步获取资源的api caches	主要用于请求的缓存 notification	浏览器通知
+先准备一个普通的web应用 开始改造 1、在项目根目录准备一个manifest.json文件
+{ &amp;#34;name&amp;#34;:&amp;#34;testrobot&amp;#34;, &amp;#34;short_name&amp;#34;:&amp;#34;robot&amp;#34;, &amp;#34;start_url&amp;#34;:&amp;#34;index.htm&amp;#34;, &amp;#34;display&amp;#34;:&amp;#34;standalone&amp;#34;, &amp;#34;background_color&amp;#34;:&amp;#34;#fff&amp;#34;, &amp;#34;icons&amp;#34;:[{ &amp;#34;src&amp;#34;: &amp;#34;logo.png&amp;#34;, &amp;#34;sizes&amp;#34;: &amp;#34;52x52&amp;#34;, &amp;#34;type&amp;#34;: &amp;#34;image/png&amp;#34; },{ &amp;#34;src&amp;#34;: &amp;#34;logo.png&amp;#34;, &amp;#34;sizes&amp;#34;: &amp;#34;144x144&amp;#34;, &amp;#34;type&amp;#34;: &amp;#34;image/png&amp;#34; }] } 注：icons图片要注意，如果空着，后续可能不会出现安装的按钮。
+并在我们的web页面中添加这个manifest.json
+&amp;lt;link rel=&amp;quot;manifest&amp;quot; href=&amp;quot;manifest.json&amp;quot;&amp;gt;
+manifest更多的相关知识可以查看：https://developer.mozilla.org/zh-CN/docs/Web/Manifest
+2、判断浏览器是否支持service Worker
+&amp;lt;script&amp;gt; window.addEventListener(&amp;#39;load&amp;#39;,async ()=&amp;gt;{ if (&amp;#39;serviceWorker&amp;#39; in navigator){ try{ const registration = await navigator.serviceWorker.register(&amp;#39;./sw.js&amp;#39;) console.log(&amp;#34;注册成功&amp;#34;) }catch(e){ console.log(&amp;#34;注册失败&amp;#34;) } } }) &amp;lt;/script&amp;gt; service worker更多的相关的知识可以查看：https://developer.</description>
+    </item>
+    
     <item>
       <title>Golang案例 Zinx轻量级服务器框架学习笔记</title>
       <link>/note/go/golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>

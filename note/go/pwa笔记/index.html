@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>PWA笔记 // abin の 成长之路</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.89.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abin" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PWA笔记"/>
+<meta name="twitter:description" content="PWA笔记 PWA全称是：Progressive Web App；渐进式的web应用；完全不影响现有的web应用，但是可以让你渐渐的拥有更加好的体验。
+用到的技术 一个普通的web应用要改造成一个PWA，需要用到的技术有：
+manifest	应用清单 service worker	服务器与浏览器之间的中间人 promise	ES6新增的构造函数 fetch	为web异步获取资源的api caches	主要用于请求的缓存 notification	浏览器通知
+先准备一个普通的web应用 开始改造 1、在项目根目录准备一个manifest.json文件
+{ &#34;name&#34;:&#34;testrobot&#34;, &#34;short_name&#34;:&#34;robot&#34;, &#34;start_url&#34;:&#34;index.htm&#34;, &#34;display&#34;:&#34;standalone&#34;, &#34;background_color&#34;:&#34;#fff&#34;, &#34;icons&#34;:[{ &#34;src&#34;: &#34;logo.png&#34;, &#34;sizes&#34;: &#34;52x52&#34;, &#34;type&#34;: &#34;image/png&#34; },{ &#34;src&#34;: &#34;logo.png&#34;, &#34;sizes&#34;: &#34;144x144&#34;, &#34;type&#34;: &#34;image/png&#34; }] } 注：icons图片要注意，如果空着，后续可能不会出现安装的按钮。
+并在我们的web页面中添加这个manifest.json
+&lt;link rel=&quot;manifest&quot; href=&quot;manifest.json&quot;&gt;
+manifest更多的相关知识可以查看：https://developer.mozilla.org/zh-CN/docs/Web/Manifest
+2、判断浏览器是否支持service Worker
+&lt;script&gt; window.addEventListener(&#39;load&#39;,async ()=&gt;{ if (&#39;serviceWorker&#39; in navigator){ try{ const registration = await navigator.serviceWorker.register(&#39;./sw.js&#39;) console.log(&#34;注册成功&#34;) }catch(e){ console.log(&#34;注册失败&#34;) } } }) &lt;/script&gt; service worker更多的相关的知识可以查看：https://developer."/>
+
+    <meta property="og:title" content="PWA笔记" />
+<meta property="og:description" content="PWA笔记 PWA全称是：Progressive Web App；渐进式的web应用；完全不影响现有的web应用，但是可以让你渐渐的拥有更加好的体验。
+用到的技术 一个普通的web应用要改造成一个PWA，需要用到的技术有：
+manifest	应用清单 service worker	服务器与浏览器之间的中间人 promise	ES6新增的构造函数 fetch	为web异步获取资源的api caches	主要用于请求的缓存 notification	浏览器通知
+先准备一个普通的web应用 开始改造 1、在项目根目录准备一个manifest.json文件
+{ &#34;name&#34;:&#34;testrobot&#34;, &#34;short_name&#34;:&#34;robot&#34;, &#34;start_url&#34;:&#34;index.htm&#34;, &#34;display&#34;:&#34;standalone&#34;, &#34;background_color&#34;:&#34;#fff&#34;, &#34;icons&#34;:[{ &#34;src&#34;: &#34;logo.png&#34;, &#34;sizes&#34;: &#34;52x52&#34;, &#34;type&#34;: &#34;image/png&#34; },{ &#34;src&#34;: &#34;logo.png&#34;, &#34;sizes&#34;: &#34;144x144&#34;, &#34;type&#34;: &#34;image/png&#34; }] } 注：icons图片要注意，如果空着，后续可能不会出现安装的按钮。
+并在我们的web页面中添加这个manifest.json
+&lt;link rel=&quot;manifest&quot; href=&quot;manifest.json&quot;&gt;
+manifest更多的相关知识可以查看：https://developer.mozilla.org/zh-CN/docs/Web/Manifest
+2、判断浏览器是否支持service Worker
+&lt;script&gt; window.addEventListener(&#39;load&#39;,async ()=&gt;{ if (&#39;serviceWorker&#39; in navigator){ try{ const registration = await navigator.serviceWorker.register(&#39;./sw.js&#39;) console.log(&#34;注册成功&#34;) }catch(e){ console.log(&#34;注册失败&#34;) } } }) &lt;/script&gt; service worker更多的相关的知识可以查看：https://developer." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/note/go/pwa%E7%AC%94%E8%AE%B0/" /><meta property="article:section" content="note" />
+<meta property="article:published_time" content="2022-04-27T00:09:36+08:00" />
+<meta property="article:modified_time" content="2022-04-27T00:09:36+08:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/avatar.jpg" alt="abin" /></a>
+      <h1>abin の 成长之路</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">首页</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/note/">笔记</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tecs/">学习</a>
+      </nav>
+      <p>冉冉升起的小code神</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/kevinbin123" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="http://ecoder.xyz:520/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-cloud">
+  <title>mySite</title>
+  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">PWA笔记</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Apr 27, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="pwa笔记">PWA笔记</h1>
+<p>PWA全称是：Progressive Web App；渐进式的web应用；完全不影响现有的web应用，但是可以让你渐渐的拥有更加好的体验。</p>
+<h2 id="用到的技术">用到的技术</h2>
+<p>一个普通的web应用要改造成一个PWA，需要用到的技术有：</p>
+<p><strong>manifest</strong>	应用清单
+<strong>service worker</strong>	服务器与浏览器之间的中间人
+<strong>promise</strong>	ES6新增的构造函数
+<strong>fetch</strong>	为web异步获取资源的api
+<strong>caches</strong>	主要用于请求的缓存
+<strong>notification</strong>	浏览器通知</p>
+<h2 id="先准备一个普通的web应用">先准备一个普通的web应用</h2>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261756653.png" alt="image-20220426175655605"></p>
+<h2 id="开始改造">开始改造</h2>
+<p>1、在项目根目录准备一个manifest.json文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+	<span style="color:#f92672">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;testrobot&#34;</span>,
+	<span style="color:#f92672">&#34;short_name&#34;</span>:<span style="color:#e6db74">&#34;robot&#34;</span>,
+	<span style="color:#f92672">&#34;start_url&#34;</span>:<span style="color:#e6db74">&#34;index.htm&#34;</span>,
+	<span style="color:#f92672">&#34;display&#34;</span>:<span style="color:#e6db74">&#34;standalone&#34;</span>,
+	<span style="color:#f92672">&#34;background_color&#34;</span>:<span style="color:#e6db74">&#34;#fff&#34;</span>,
+	<span style="color:#f92672">&#34;icons&#34;</span>:[{
+      <span style="color:#f92672">&#34;src&#34;</span>: <span style="color:#e6db74">&#34;logo.png&#34;</span>,
+      <span style="color:#f92672">&#34;sizes&#34;</span>: <span style="color:#e6db74">&#34;52x52&#34;</span>,
+      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;image/png&#34;</span>
+    },{
+       <span style="color:#f92672">&#34;src&#34;</span>: <span style="color:#e6db74">&#34;logo.png&#34;</span>,
+       <span style="color:#f92672">&#34;sizes&#34;</span>: <span style="color:#e6db74">&#34;144x144&#34;</span>,
+       <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;image/png&#34;</span>
+    }]
+}
+</code></pre></div><p>注：icons图片要注意，如果空着，后续可能不会出现安装的按钮。</p>
+<p>并在我们的web页面中添加这个manifest.json</p>
+<p><code>&lt;link rel=&quot;manifest&quot; href=&quot;manifest.json&quot;&gt;</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261714871.png" alt="image-20220426171411746"></p>
+<p>manifest更多的相关知识可以查看：<code>https://developer.mozilla.org/zh-CN/docs/Web/Manifest</code></p>
+<p>2、判断浏览器是否支持service Worker</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">script</span>&gt;
+window.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;load&#39;</span>,<span style="color:#66d9ef">async</span> ()=&gt;{
+		<span style="color:#66d9ef">if</span> (<span style="color:#e6db74">&#39;serviceWorker&#39;</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">navigator</span>){
+			<span style="color:#66d9ef">try</span>{
+				<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">registration</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">navigator</span>.<span style="color:#a6e22e">serviceWorker</span>.<span style="color:#a6e22e">register</span>(<span style="color:#e6db74">&#39;./sw.js&#39;</span>)
+				<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;注册成功&#34;</span>)
+			}<span style="color:#66d9ef">catch</span>(<span style="color:#a6e22e">e</span>){
+				<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;注册失败&#34;</span>)
+			}
+		}
+		
+})
+&lt;/<span style="color:#f92672">script</span>&gt;
+</code></pre></div><p>service worker更多的相关的知识可以查看：<code>https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API</code></p>
+<p>3、在sw.js中添加逻辑代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">//加载缓存
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">CACHE_NAME</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cache_v1&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resurls</span><span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;./&#39;</span>,<span style="color:#e6db74">&#39;./mh.txt&#39;</span>,<span style="color:#e6db74">&#39;./bootstrap.min.css&#39;</span>,<span style="color:#e6db74">&#39;./manifest.json&#39;</span>]
+<span style="color:#a6e22e">self</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;install&#39;</span>,<span style="color:#66d9ef">async</span> <span style="color:#a6e22e">e</span>=&gt;{
+	<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;开始加载缓存&#39;</span>)
+	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cache</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">caches</span>.<span style="color:#a6e22e">open</span>(<span style="color:#a6e22e">CACHE_NAME</span>)
+	<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">addAll</span>(<span style="color:#a6e22e">resurls</span>)
+	<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">self</span>.<span style="color:#a6e22e">skipWaiting</span>()
+})
+<span style="color:#75715e">//删除旧缓存
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">self</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;activate&#39;</span>,<span style="color:#66d9ef">async</span> <span style="color:#a6e22e">e</span>=&gt;{
+	<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;开始删除旧缓存&#39;</span>)
+	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">keys</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">caches</span>.<span style="color:#a6e22e">keys</span>()
+	<span style="color:#a6e22e">keys</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">key</span> =&gt;{
+		<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">key</span><span style="color:#f92672">!==</span><span style="color:#a6e22e">CACHE_NAME</span>){
+			<span style="color:#a6e22e">caches</span>.<span style="color:#66d9ef">delete</span>(<span style="color:#a6e22e">key</span>)
+		}
+	})
+	<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">self</span>.<span style="color:#a6e22e">clients</span>.<span style="color:#a6e22e">claim</span>()
+})
+<span style="color:#75715e">//fetch请求
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">self</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;fetch&#39;</span>,<span style="color:#66d9ef">async</span> <span style="color:#a6e22e">e</span>=&gt;{
+	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">req</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">request</span>
+	<span style="color:#75715e">//只缓存同源的内容
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">URL</span>(<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">url</span>)
+	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">origin</span><span style="color:#f92672">!==</span><span style="color:#a6e22e">self</span>.<span style="color:#a6e22e">origin</span>){
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#75715e">//如果是api接口，使用网络优先
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">includes</span>(<span style="color:#e6db74">&#39;/api&#39;</span>)){
+		<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">networkFirst</span>(<span style="color:#a6e22e">req</span>))
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">cacheFirst</span>(<span style="color:#a6e22e">req</span>))
+	}
+	
+})
+
+<span style="color:#75715e">//网络优先
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">networkFirst</span>(<span style="color:#a6e22e">req</span>){
+	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cache</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">caches</span>.<span style="color:#a6e22e">open</span>(<span style="color:#a6e22e">CACHE_NAME</span>)
+	<span style="color:#66d9ef">try</span>{
+		<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">fresh</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span>	<span style="color:#a6e22e">fetch</span>(<span style="color:#a6e22e">req</span>)
+		<span style="color:#75715e">//获取到数据后，应该放到缓存一份
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">put</span>(<span style="color:#a6e22e">req</span>,<span style="color:#a6e22e">fresh</span>.<span style="color:#a6e22e">clone</span>())
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fresh</span>
+	}<span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">e</span>){
+		<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cached</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">match</span>(<span style="color:#a6e22e">req</span>)
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cached</span>
+	}
+}
+
+<span style="color:#75715e">//缓存优先
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">cacheFirst</span>(<span style="color:#a6e22e">req</span>){
+	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cache</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">caches</span>.<span style="color:#a6e22e">open</span>(<span style="color:#a6e22e">CACHE_NAME</span>)
+	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cached</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">match</span>(<span style="color:#a6e22e">req</span>)
+	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">cached</span>){
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cached</span>
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">fresh</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">fetch</span>(<span style="color:#a6e22e">req</span>)
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fresh</span>
+	}
+}
+</code></pre></div><p>fetch更多的相关知识可以查看：<code>https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API</code></p>
+<p>cache更多的相关知识可以查看：<code>https://developer.mozilla.org/zh-CN/docs/Web/API/Cache</code></p>
+<p>4、使用弹窗通知</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">script</span>&gt;
+	<span style="color:#75715e">//申请弹窗权限
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">Notification</span>.<span style="color:#a6e22e">permission</span><span style="color:#f92672">===</span><span style="color:#e6db74">&#39;default&#39;</span>){
+		<span style="color:#a6e22e">Notification</span>.<span style="color:#a6e22e">requestPermission</span>()
+	}
+	<span style="color:#75715e">//检测用户是否断网
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">navigator</span>.<span style="color:#a6e22e">onLine</span>){
+		<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Notification</span>(<span style="color:#e6db74">&#39;提示&#39;</span>,{<span style="color:#a6e22e">body</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;网络未连接，此时访问的是缓存&#34;</span>})
+	}
+	<span style="color:#75715e">//检测网络是否已经联网
+</span><span style="color:#75715e"></span>	window.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;online&#39;</span>,()=&gt;{
+		<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Notification</span>(<span style="color:#e6db74">&#39;提示&#39;</span>,{
+			<span style="color:#a6e22e">body</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;网络已恢复，请刷新访问最新数据&#34;</span>
+		})
+	})
+&lt;/<span style="color:#f92672">script</span>&gt;
+</code></pre></div><p>notification更多的相关知识可以查看：<code>https://developer.mozilla.org/zh-CN/docs/Web/API/notification</code></p>
+<h2 id="使用效果">使用效果：</h2>
+<p>可以在cache Storage中看到缓存：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261723166.png" alt="image-20220426172356021"></p>
+<p>当脱机后会提示网络未连接：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261744405.png" alt="image-20220426174424255"></p>
+<p>联网后可以正常网络已恢复：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261734931.png" alt="image-20220426173436816"></p>
+<p>浏览器也出现安装应用的图标</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261743783.png" alt="image-20220426174320707"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261746561.png" alt="image-20220426174635519"></p>
+<p>桌面上也出现了我们设置的图标：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261747043.png" alt="image-20220426174745012"></p>
+<p>访问也可以使用pwa的方式进行访问：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202204261753739.png" alt="image-20220426175347673"></p>
+<h2 id="参考">参考</h2>
+<blockquote>
+<p>PWA <a href="https://www.bilibili.com/video/BV1wt411E7QD">https://www.bilibili.com/video/BV1wt411E7QD</a></p>
+</blockquote>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
