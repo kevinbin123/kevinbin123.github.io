@@ -6,7 +6,43 @@
     <description>Recent content on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 Apr 2022 00:09:36 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 14 Aug 2022 23:44:09 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gin&#43;vue2博客笔记（前端）</title>
+      <link>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</link>
+      <pubDate>Sun, 14 Aug 2022 23:44:09 +0800</pubDate>
+      
+      <guid>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</guid>
+      <description>gin+vue2博客笔记（前端） 写在前面 记录一下，这个是一个博客系统，后端使用的是gin框架编写；前端包含管理页面和前台展示页面，使用的是vue2版本；
+参考的是B站的一位大佬的视频：
+ https://www.bilibili.com/video/BV1AA411v7e6
+ 管理页面 搭建环境 使用的环境：
+ npm : 6.14.17
+node : 14.20.0
+yarn : 1.22.19
+vue/cli : 5.0.8
+ 1、vue create admin 使用脚手架创建管理页面的项目
+2、ui框架使用的是ant-design-vue；yarn add ant-design-vue
+修改脚手架默认页面 1、删除App.vue原先的内容，修改如下：
+&amp;lt;template&amp;gt; &amp;lt;a-config-provider :locale=&amp;#34;locale&amp;#34;&amp;gt; &amp;lt;div id=&amp;#34;app&amp;#34;&amp;gt; &amp;lt;router-view/&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/a-config-provider&amp;gt; &amp;lt;/template&amp;gt; &amp;lt;script&amp;gt; import zhCN from &amp;#39;ant-design-vue/lib/locale-provider/zh_CN&amp;#39; export default { data () { return { locale: zhCN } } } &amp;lt;/script&amp;gt; &amp;lt;style&amp;gt; &amp;lt;/style&amp;gt; 2、修改main.js
+import Vue from &amp;#39;vue&amp;#39; import App from &amp;#39;.</description>
+    </item>
+    
+    <item>
+      <title>Gin&#43;vue2博客笔记（后端）</title>
+      <link>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/</link>
+      <pubDate>Sun, 14 Aug 2022 23:44:00 +0800</pubDate>
+      
+      <guid>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/</guid>
+      <description>gin+vue2博客笔记（后端） 写在前面 记录一下，这个是一个博客系统，后端使用的是gin框架编写；前端包含管理页面和前台展示页面，使用的是vue2版本；
+参考的是B站的一位大佬的视频：
+ https://www.bilibili.com/video/BV1AA411v7e6
+ 搭建框架 1、创建ginblog的项目
+2、创建相关文件夹
+├─ main.go //主程序 ├─api //路由 ├─config // 项目配置入口 ├─database // 数据库备份文件（初始化） ├─log // 项目日志 ├─middleware // 中间件 ├─model // 数据模型层 ├─routes //路由路口 ├─static // 打包静态文件 ├─upload ├─utils // 项目公用工具库 └─web // 前端开发源码 加载配置和链接数据库 1、创建config/config.ini配置文件
+[server] AppMode = debug HttpPort = :3000 JwtKey = abcd3efg [database] DB = mysql DbHost = localhost DbPort = 3306 DbUser = root DbPassWord = 123456 DbName = ginblog 2、加载配置，创建utils/setting.</description>
+    </item>
+    
     <item>
       <title>PWA笔记</title>
       <link>/note/go/pwa%E7%AC%94%E8%AE%B0/</link>
