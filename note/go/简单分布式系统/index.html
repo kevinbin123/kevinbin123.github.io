@@ -1,0 +1,1607 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>简单分布式系统 // abin の 成长之路</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.89.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="abin" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="简单分布式系统"/>
+<meta name="twitter:description" content="简单分布式系统 简介 常见的分布式模型：Hub&amp;Spoke、Peer to Peer、Message Queues
+这个案例使用的是混合模型。
+创建一个Distribute项目，包含：
+服务注册：服务注册、健康检查
+用户门户：Web应用 、API网关
+日志服务：集中式日志
+业务服务：业务逻辑 、数据持久化
+服务注册 日志服务log ​	用来接收post请求，并把请求写入到log里面
+ Distribute/log/server.go
+ package log import ( &#34;io/ioutil&#34; stlog &#34;log&#34; &#34;net/http&#34; &#34;os&#34; ) var log *stlog.Logger type fileLog string func (fl fileLog) Write(data []byte) (int, error) { f, err := os.OpenFile(string(fl), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600) if err != nil { return 0, err } defer f.Close() return f.Write(data) } func Run(destination string) { log = stlog."/>
+
+    <meta property="og:title" content="简单分布式系统" />
+<meta property="og:description" content="简单分布式系统 简介 常见的分布式模型：Hub&amp;Spoke、Peer to Peer、Message Queues
+这个案例使用的是混合模型。
+创建一个Distribute项目，包含：
+服务注册：服务注册、健康检查
+用户门户：Web应用 、API网关
+日志服务：集中式日志
+业务服务：业务逻辑 、数据持久化
+服务注册 日志服务log ​	用来接收post请求，并把请求写入到log里面
+ Distribute/log/server.go
+ package log import ( &#34;io/ioutil&#34; stlog &#34;log&#34; &#34;net/http&#34; &#34;os&#34; ) var log *stlog.Logger type fileLog string func (fl fileLog) Write(data []byte) (int, error) { f, err := os.OpenFile(string(fl), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600) if err != nil { return 0, err } defer f.Close() return f.Write(data) } func Run(destination string) { log = stlog." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/note/go/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" /><meta property="article:section" content="note" />
+<meta property="article:published_time" content="2022-10-07T20:40:21+08:00" />
+<meta property="article:modified_time" content="2022-10-07T20:40:21+08:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="/avatar.jpg" alt="abin" /></a>
+      <h1>abin の 成长之路</h1>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">首页</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/note/">笔记</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tecs/">学习</a>
+      </nav>
+      <p>冉冉升起的小code神</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/kevinbin123" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="http://ecoder.xyz:520/" target="_blank" rel="noreferrer noopener">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-cloud">
+  <title>mySite</title>
+  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">简单分布式系统</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Oct 7, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          16 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h1 id="简单分布式系统">简单分布式系统</h1>
+<h2 id="简介">简介</h2>
+<p>常见的分布式模型：Hub&amp;Spoke、Peer to Peer、Message Queues</p>
+<p>这个案例使用的是混合模型。</p>
+<p>创建一个Distribute项目，包含：</p>
+<p><strong>服务注册</strong>：服务注册、健康检查</p>
+<p><strong>用户门户</strong>：Web应用 、API网关</p>
+<p><strong>日志服务</strong>：集中式日志</p>
+<p><strong>业务服务</strong>：业务逻辑 、数据持久化</p>
+<h2 id="服务注册">服务注册</h2>
+<h3 id="日志服务log">日志服务log</h3>
+<p>​	用来接收post请求，并把请求写入到log里面</p>
+<blockquote>
+<p>Distribute/log/server.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">log</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;io/ioutil&#34;</span>
+	<span style="color:#a6e22e">stlog</span> <span style="color:#e6db74">&#34;log&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">log</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">Logger</span>
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">fileLog</span> <span style="color:#66d9ef">string</span>
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">fl</span> <span style="color:#a6e22e">fileLog</span>) <span style="color:#a6e22e">Write</span>(<span style="color:#a6e22e">data</span> []<span style="color:#66d9ef">byte</span>) (<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">OpenFile</span>(string(<span style="color:#a6e22e">fl</span>), <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">O_CREATE</span>|<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">O_WRONLY</span>|<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">O_APPEND</span>, <span style="color:#ae81ff">0600</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Write</span>(<span style="color:#a6e22e">data</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">destination</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">log</span> = <span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">fileLog</span>(<span style="color:#a6e22e">destination</span>), <span style="color:#e6db74">&#34;[go] &#34;</span>, <span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">LstdFlags</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RegisterHandlers</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/log&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Method</span> {
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodPost</span>:
+			<span style="color:#a6e22e">msg</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> <span style="color:#f92672">||</span> len(<span style="color:#a6e22e">msg</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+				<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>)
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#a6e22e">write</span>(string(<span style="color:#a6e22e">msg</span>))
+		<span style="color:#66d9ef">default</span>:
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusMethodNotAllowed</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+
+	})
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">write</span>(<span style="color:#a6e22e">message</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v\n&#34;</span>, <span style="color:#a6e22e">message</span>)
+}
+
+</code></pre></div><p>​	把log服务作为一个webService进行注册</p>
+<h3 id="集中管理service">集中管理Service</h3>
+<blockquote>
+<p>Distribute\service\service.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">service</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;log&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">ServiceName</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">registerHandlersFunc</span> <span style="color:#66d9ef">func</span>()) (<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">registerHandlersFunc</span>()
+	<span style="color:#a6e22e">ctx</span> = <span style="color:#a6e22e">startService</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">ServiceName</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ctx</span>, <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">startService</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">serviceName</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span> {
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">ctx</span>)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">srv</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>
+	<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Addr</span> = <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">port</span>
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">ListenAndServe</span>())
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v started, Press any key to stop. \n&#34;</span>, <span style="color:#a6e22e">serviceName</span>)
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+		<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Shutdown</span>(<span style="color:#a6e22e">ctx</span>)
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ctx</span>
+}
+
+</code></pre></div><h3 id="创建log的二进制logservice启动运行">创建log的二进制logservice，启动运行</h3>
+<blockquote>
+<p>Distribute/cmd/logservice/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/log&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/service&#34;</span>
+	<span style="color:#a6e22e">stlog</span> <span style="color:#e6db74">&#34;log&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;./distributed.log&#34;</span>)
+	<span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#e6db74">&#34;4000&#34;</span>
+	<span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;http://%s:%s&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>)
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#e6db74">&#34;Log Service&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>, <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">RegisterHandlers</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">Fatalln</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Shutting down log service.&#34;</span>)
+}
+
+</code></pre></div><p>​	运行后，可以查看distributed.log的内容</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">[go] 2022/06/30 23:47:25 {&#34;phone&#34;:&#34;13860130xxx&#34;,&#34;code&#34;:&#34;415002&#34;}
+</code></pre></div><p>​	目前为止log提供了记录日志的服务、service提供了启动公共service的功能、cmd/logservice调用service的函数，启动log包的功能，进行记录日志。</p>
+<pre><code>### 服务注册registry
+</code></pre>
+<blockquote>
+<p>Distribute/registry/registration.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">registry</span>
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Registration</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">ServiceName</span>      <span style="color:#a6e22e">ServiceName</span>
+	<span style="color:#a6e22e">ServiceURL</span>       <span style="color:#66d9ef">string</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ServiceName</span> <span style="color:#66d9ef">string</span>
+
+<span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">LogService</span>     = <span style="color:#a6e22e">ServiceName</span>(<span style="color:#e6db74">&#34;LogService&#34;</span>)
+)
+</code></pre></div><blockquote>
+<p>Distribute/registry/server.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">ServerPort</span> = <span style="color:#e6db74">&#34;:3000&#34;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">ServicesURL</span> = <span style="color:#e6db74">&#34;http://localhost&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">ServerPort</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/services&#34;</span>
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">registry</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">registrations</span> []<span style="color:#a6e22e">Registration</span>
+	<span style="color:#a6e22e">mutex</span>         <span style="color:#f92672">*</span><span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">RWMutex</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">reg</span> <span style="color:#a6e22e">Registration</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span> = append(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span>, <span style="color:#a6e22e">reg</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Unlock</span>()
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+}
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">reg</span> = <span style="color:#a6e22e">registry</span>{
+	<span style="color:#a6e22e">registrations</span>: make([]<span style="color:#a6e22e">Registration</span>, <span style="color:#ae81ff">0</span>),
+	<span style="color:#a6e22e">mutex</span>:         new(<span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">RWMutex</span>),
+}
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RegistryService</span> <span style="color:#66d9ef">struct</span>{}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">RegistryService</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Request received&#34;</span>)
+	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Method</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodPost</span>:
+		<span style="color:#a6e22e">dec</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">r</span> <span style="color:#a6e22e">Registration</span>
+		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dec</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">r</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Add service:%v with URL:%s \n&#34;</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ServiceName</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ServiceURL</span>)
+		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">r</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusMethodNotAllowed</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+}
+</code></pre></div><h3 id="创建registry的二进制registryservice启动运行">创建registry的二进制registryservice，启动运行</h3>
+<blockquote>
+<p>Distribute/cmd/registryservice/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/registry&#34;</span>
+	<span style="color:#e6db74">&#34;log&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/services&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">RegistryService</span>{})
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>())
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">cancel</span>()
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">srv</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>
+	<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Addr</span> = <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServerPort</span>
+
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">ListenAndServe</span>())
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Registry service started,Press any key to stop.&#34;</span>)
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+		<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Shutdown</span>(<span style="color:#a6e22e">ctx</span>)
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Shutting down registry service&#34;</span>)
+}
+
+</code></pre></div><p>​	封装一个registry的函数，其他logservice调用这个函数，就能注册</p>
+<blockquote>
+<p>Distribute/registry/client.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RegisterService</span>(<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">Registration</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">buf</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">Buffer</span>)
+	<span style="color:#a6e22e">enc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#a6e22e">buf</span>)
+	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">enc</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">r</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#a6e22e">resp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Post</span>(<span style="color:#a6e22e">ServicesURL</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>, <span style="color:#a6e22e">buf</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">StatusCode</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Failed to register service.Registry service&#34;</span><span style="color:#f92672">+</span>
+			<span style="color:#e6db74">&#34;responded with code %v&#34;</span>, <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">StatusCode</span>)
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+</code></pre></div><p>​	调整service下StartService的函数签名</p>
+<blockquote>
+<p>Distribute/service/service.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">reg</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">registerHandlersFunc</span> <span style="color:#66d9ef">func</span>()) (<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">registerHandlersFunc</span>()
+	<span style="color:#a6e22e">ctx</span> = <span style="color:#a6e22e">startService</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">ServiceName</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>)
+    <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">RegisterService</span>(<span style="color:#a6e22e">reg</span>) <span style="color:#75715e">//注册函数
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ctx</span>, <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">startService</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">serviceName</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span> {
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">ctx</span>)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">srv</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>
+	<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Addr</span> = <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">port</span>
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">ListenAndServe</span>())
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v started, Press any key to stop. \n&#34;</span>, <span style="color:#a6e22e">serviceName</span>)
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+		<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Shutdown</span>(<span style="color:#a6e22e">ctx</span>)
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ctx</span>
+}
+</code></pre></div><p>​	对应的cmd/logservice/main.go中的调用方法也要调整</p>
+<blockquote>
+<p>Distribute/cmd/logservice/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;./distributed.log&#34;</span>)
+	<span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#e6db74">&#34;4000&#34;</span>
+	<span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;http://%s:%s&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>)
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>{
+		<span style="color:#a6e22e">ServiceName</span>:      <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>,
+		<span style="color:#a6e22e">ServiceURL</span>:       <span style="color:#a6e22e">serviceAddress</span>,
+	}
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>, <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">RegisterHandlers</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">Fatalln</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Shutting down log service.&#34;</span>)
+}
+</code></pre></div><p>​	目前逻辑是cmd的logservice通过service启动的时候，会调用registry的client.go向registryservice进行一个服务注册。</p>
+<h3 id="取消注册服务">取消注册服务</h3>
+<p>​	在registry的server.go中add是添加注册，要取消注册，就实现一个remove方法</p>
+<blockquote>
+<p>Distribute/registry/server.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">remove</span>(<span style="color:#a6e22e">url</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">ServiceURL</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">url</span> {
+			<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Lock</span>()
+			<span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span> = append(<span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span>[:<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:]<span style="color:#f92672">...</span>)
+			<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Unlock</span>()
+			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+		}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Service at URL %s not found&#34;</span>, <span style="color:#a6e22e">url</span>)
+}
+</code></pre></div><p>​	同时要要修改一个RegistryService的ServeHTTP；注册使用的是Post请求，取消注册使用Delete</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">RegistryService</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Request received&#34;</span>)
+	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Method</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodPost</span>:
+		<span style="color:#a6e22e">dec</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">r</span> <span style="color:#a6e22e">Registration</span>
+		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dec</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">r</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Add service:%v with URL:%s \n&#34;</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ServiceName</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ServiceURL</span>)
+		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">r</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+    <span style="color:#75715e">// 取消注册
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodDelete</span>:
+		<span style="color:#a6e22e">payload</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">url</span> <span style="color:#f92672">:=</span> string(<span style="color:#a6e22e">payload</span>)
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Removing service at URL: %s&#34;</span>, <span style="color:#a6e22e">url</span>)
+		<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">remove</span>(<span style="color:#a6e22e">url</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusMethodNotAllowed</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+}
+</code></pre></div><p>​	在registry/client.go中也要提供取消服务的函数</p>
+<blockquote>
+<p>Distribute/registry/client.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ShutdownService</span>(<span style="color:#a6e22e">url</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodDelete</span>, <span style="color:#a6e22e">ServicesURL</span>, <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewBuffer</span>([]byte(<span style="color:#a6e22e">url</span>)))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Header</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;Content-Type&#34;</span>, <span style="color:#e6db74">&#34;text/plain&#34;</span>)
+	<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultClient</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">req</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">StatusCode</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Failed to deregister service. Registry &#34;</span><span style="color:#f92672">+</span>
+			<span style="color:#e6db74">&#34;service responded with code %v&#34;</span>, <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">StatusCode</span>)
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><p>​	在service的service.go中添加取消注册的逻辑</p>
+<blockquote>
+<p>Distribute/service/service.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">startService</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">serviceName</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span> {
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">ctx</span>)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">srv</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>
+	<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Addr</span> = <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">port</span>
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">ListenAndServe</span>())
+        <span style="color:#75715e">//如果启动没起来，注册已经发送成功了，需要取消注册
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ShutdownService</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;http://%s:%s&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>))
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+		}
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v started, Press any key to stop. \n&#34;</span>, <span style="color:#a6e22e">serviceName</span>)
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Scanln</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+        <span style="color:#75715e">//如果服务已经停止，需要取消注册
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ShutdownService</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;http://%s:%s&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>))
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+		}
+		<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Shutdown</span>(<span style="color:#a6e22e">ctx</span>)
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ctx</span>
+}
+</code></pre></div><h2 id="添加一个业务">添加一个业务</h2>
+<p>​	这是一个学生成绩的业务，作为一个服务，要注册到registry中，同时也要用到log日志服务；这个业务替换成其他的业务也可以。</p>
+<blockquote>
+<p>Distribute/grades/grades.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">grades</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;sync&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Student</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">ID</span>        <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">FirstName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">LastName</span>  <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Grades</span>    []<span style="color:#a6e22e">Grade</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Student</span>) <span style="color:#a6e22e">Average</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">result</span> <span style="color:#66d9ef">float32</span>
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">grade</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Grades</span> {
+		<span style="color:#a6e22e">result</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">grade</span>.<span style="color:#a6e22e">Score</span>
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">/</span> float32(len(<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Grades</span>))
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Students</span> []<span style="color:#a6e22e">Student</span>
+
+<span style="color:#66d9ef">var</span> (
+	<span style="color:#a6e22e">students</span>      <span style="color:#a6e22e">Students</span>
+	<span style="color:#a6e22e">studentsMutex</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Mutex</span>
+)
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ss</span> <span style="color:#a6e22e">Students</span>) <span style="color:#a6e22e">GetById</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">Student</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">ss</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ss</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">ID</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">id</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ss</span>[<span style="color:#a6e22e">i</span>], <span style="color:#66d9ef">nil</span>
+		}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Student with ID %d not found&#34;</span>, <span style="color:#a6e22e">id</span>)
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">GradeType</span> <span style="color:#66d9ef">string</span>
+
+<span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">GradeQuiz</span> = <span style="color:#a6e22e">GradeType</span>(<span style="color:#e6db74">&#34;Quiz&#34;</span>)  <span style="color:#75715e">//小考
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">GradeTest</span> = <span style="color:#a6e22e">GradeType</span>(<span style="color:#e6db74">&#34;Test&#34;</span>)	<span style="color:#75715e">//单元测试
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">GradeExam</span> = <span style="color:#a6e22e">GradeType</span>(<span style="color:#e6db74">&#34;Exam&#34;</span>)	<span style="color:#75715e">//期末考试
+</span><span style="color:#75715e"></span>)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Grade</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Title</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Type</span>  <span style="color:#a6e22e">GradeType</span>
+	<span style="color:#a6e22e">Score</span> <span style="color:#66d9ef">float32</span>
+}
+</code></pre></div><p>​	创建一些数据</p>
+<blockquote>
+<p>Distribute/grades/mockdata.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">grades</span>
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">init</span>() {
+	<span style="color:#a6e22e">students</span> = []<span style="color:#a6e22e">Student</span>{
+		{
+			<span style="color:#a6e22e">ID</span>:        <span style="color:#ae81ff">1</span>,
+			<span style="color:#a6e22e">FirstName</span>: <span style="color:#e6db74">&#34;Nick&#34;</span>,
+			<span style="color:#a6e22e">LastName</span>:  <span style="color:#e6db74">&#34;Carter&#34;</span>,
+			<span style="color:#a6e22e">Grades</span>: []<span style="color:#a6e22e">Grade</span>{
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 1&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">85</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Final Exam&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeExam</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">94</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 2&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">82</span>,
+				},
+			},
+		},
+		{
+			<span style="color:#a6e22e">ID</span>:        <span style="color:#ae81ff">2</span>,
+			<span style="color:#a6e22e">FirstName</span>: <span style="color:#e6db74">&#34;Roberto&#34;</span>,
+			<span style="color:#a6e22e">LastName</span>:  <span style="color:#e6db74">&#34;Baggio&#34;</span>,
+			<span style="color:#a6e22e">Grades</span>: []<span style="color:#a6e22e">Grade</span>{
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 1&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">100</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Final Exam&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeExam</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">100</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 2&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">81</span>,
+				},
+			},
+		},
+		{
+			<span style="color:#a6e22e">ID</span>:        <span style="color:#ae81ff">3</span>,
+			<span style="color:#a6e22e">FirstName</span>: <span style="color:#e6db74">&#34;Emma&#34;</span>,
+			<span style="color:#a6e22e">LastName</span>:  <span style="color:#e6db74">&#34;Stone&#34;</span>,
+			<span style="color:#a6e22e">Grades</span>: []<span style="color:#a6e22e">Grade</span>{
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 1&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">67</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Final Exam&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeExam</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">0</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 2&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">75</span>,
+				},
+			},
+		},
+		{
+			<span style="color:#a6e22e">ID</span>:        <span style="color:#ae81ff">4</span>,
+			<span style="color:#a6e22e">FirstName</span>: <span style="color:#e6db74">&#34;Rachel&#34;</span>,
+			<span style="color:#a6e22e">LastName</span>:  <span style="color:#e6db74">&#34;MaAdams&#34;</span>,
+			<span style="color:#a6e22e">Grades</span>: []<span style="color:#a6e22e">Grade</span>{
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 1&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">96</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Final Exam&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeExam</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">99</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 2&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">94</span>,
+				},
+			},
+		},
+		{
+			<span style="color:#a6e22e">ID</span>:        <span style="color:#ae81ff">5</span>,
+			<span style="color:#a6e22e">FirstName</span>: <span style="color:#e6db74">&#34;Kelly&#34;</span>,
+			<span style="color:#a6e22e">LastName</span>:  <span style="color:#e6db74">&#34;Clarkson&#34;</span>,
+			<span style="color:#a6e22e">Grades</span>: []<span style="color:#a6e22e">Grade</span>{
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 1&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">95</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Final Exam&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeExam</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">100</span>,
+				},
+				{
+					<span style="color:#a6e22e">Title</span>: <span style="color:#e6db74">&#34;Quiz 2&#34;</span>,
+					<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">GradeQuiz</span>,
+					<span style="color:#a6e22e">Score</span>: <span style="color:#ae81ff">97</span>,
+				},
+			},
+		},
+	}
+}
+
+</code></pre></div><p>​	把这个业务做成一个webservice</p>
+<blockquote>
+<p>Distribute/grades/server.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">grades</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;bytes&#34;</span>
+	<span style="color:#e6db74">&#34;encoding/json&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;log&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RegisterHandlers</span>() {
+	<span style="color:#a6e22e">handler</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">studentHandler</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/students&#34;</span>, <span style="color:#a6e22e">handler</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/students/&#34;</span>, <span style="color:#a6e22e">handler</span>)
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">studentHandler</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#75715e">// /students
+</span><span style="color:#75715e">// /students/{id}
+</span><span style="color:#75715e">// /students/{id}/grades
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sh</span> <span style="color:#a6e22e">studentHandler</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">pathSegments</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>, <span style="color:#e6db74">&#34;/&#34;</span>)
+	<span style="color:#66d9ef">switch</span> len(<span style="color:#a6e22e">pathSegments</span>) {
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>:
+		<span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">getAll</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">3</span>:
+		<span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">pathSegments</span>[<span style="color:#ae81ff">2</span>])
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">getOne</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">id</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">4</span>:
+		<span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">pathSegments</span>[<span style="color:#ae81ff">2</span>])
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">addGrade</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">id</span>)
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+	}
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sh</span> <span style="color:#a6e22e">studentHandler</span>) <span style="color:#a6e22e">getAll</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">studentsMutex</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">studentsMutex</span>.<span style="color:#a6e22e">Unlock</span>()
+
+	<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">toJSON</span>(<span style="color:#a6e22e">students</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;Content-Type&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>(<span style="color:#a6e22e">data</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sh</span> <span style="color:#a6e22e">studentHandler</span>) <span style="color:#a6e22e">toJSON</span>(<span style="color:#a6e22e">obj</span> <span style="color:#66d9ef">interface</span>{}) ([]<span style="color:#66d9ef">byte</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">Buffer</span>
+	<span style="color:#a6e22e">enc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">b</span>)
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">enc</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">obj</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Failed to serialize students: %q&#34;</span>, <span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Bytes</span>(), <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sh</span> <span style="color:#a6e22e">studentHandler</span>) <span style="color:#a6e22e">getOne</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) {
+	<span style="color:#a6e22e">studentsMutex</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">studentsMutex</span>.<span style="color:#a6e22e">Unlock</span>()
+	<span style="color:#a6e22e">student</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">students</span>.<span style="color:#a6e22e">GetById</span>(<span style="color:#a6e22e">id</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+
+	<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">toJSON</span>(<span style="color:#a6e22e">student</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Failed to serialize student: %q&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;Content-Type&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>(<span style="color:#a6e22e">data</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sh</span> <span style="color:#a6e22e">studentHandler</span>) <span style="color:#a6e22e">addGrade</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) {
+	<span style="color:#a6e22e">studentsMutex</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">studentsMutex</span>.<span style="color:#a6e22e">Unlock</span>()
+
+	<span style="color:#a6e22e">student</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">students</span>.<span style="color:#a6e22e">GetById</span>(<span style="color:#a6e22e">id</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Grade</span>
+	<span style="color:#a6e22e">dec</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">dec</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">g</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>)
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">student</span>.<span style="color:#a6e22e">Grades</span> = append(<span style="color:#a6e22e">student</span>.<span style="color:#a6e22e">Grades</span>, <span style="color:#a6e22e">g</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusCreated</span>)
+	<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">toJSON</span>(<span style="color:#a6e22e">g</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;Content-Type&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>(<span style="color:#a6e22e">data</span>)
+}
+</code></pre></div><p>​	将这个业务添加到registration.go中进行标记</p>
+<blockquote>
+<p>Distribute/registry/registration.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">LogService</span>     = <span style="color:#a6e22e">ServiceName</span>(<span style="color:#e6db74">&#34;LogService&#34;</span>)
+	<span style="color:#a6e22e">GradingService</span> = <span style="color:#a6e22e">ServiceName</span>(<span style="color:#e6db74">&#34;GradingService&#34;</span>)
+)
+</code></pre></div><p>​	创建gradingservice的二进制，启动运行这个业务</p>
+<blockquote>
+<p>Distribute/cmd/gradingservice.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/grades&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/log&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/registry&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/service&#34;</span>
+	<span style="color:#a6e22e">stlog</span> <span style="color:#e6db74">&#34;log&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#e6db74">&#34;6000&#34;</span>
+	<span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;http://%v:%v&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>)
+
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>{
+		<span style="color:#a6e22e">ServiceName</span>:      <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GradingService</span>,
+		<span style="color:#a6e22e">ServiceURL</span>:       <span style="color:#a6e22e">serviceAddress</span>,
+	}
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>, <span style="color:#a6e22e">grades</span>.<span style="color:#a6e22e">RegisterHandlers</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Shutting down grading service&#34;</span>)
+}
+
+</code></pre></div><h2 id="服务发现">服务发现</h2>
+<p>​	服务注册需要添加服务依赖项，修改registry的registration.go</p>
+<blockquote>
+<p>Distribute/registry/registration.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Registration</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">ServiceName</span>      <span style="color:#a6e22e">ServiceName</span>
+	<span style="color:#a6e22e">ServiceURL</span>       <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">RequiredServices</span> []<span style="color:#a6e22e">ServiceName</span>  <span style="color:#75715e">//需要依赖的service，比如grade需要log
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ServiceUpdateURL</span> <span style="color:#66d9ef">string</span>			<span style="color:#75715e">//用来通知
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">patchEntry</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Name</span> <span style="color:#a6e22e">ServiceName</span>
+	<span style="color:#a6e22e">URL</span>  <span style="color:#66d9ef">string</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">patch</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Added</span>   []<span style="color:#a6e22e">patchEntry</span>
+	<span style="color:#a6e22e">Removed</span> []<span style="color:#a6e22e">patchEntry</span>
+}
+
+</code></pre></div><p>​	在服务注册的时候，在add里面添加依赖是最佳时机</p>
+<blockquote>
+<p>Distribute/registry/server.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">reg</span> <span style="color:#a6e22e">Registration</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span> = append(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span>, <span style="color:#a6e22e">reg</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Unlock</span>()
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">sendRequiredServices</span>(<span style="color:#a6e22e">reg</span>) <span style="color:#75715e">//添加依赖项
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">sendRequiredServices</span>(<span style="color:#a6e22e">reg</span> <span style="color:#a6e22e">Registration</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">RLock</span>()
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">RUnlock</span>()
+
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">p</span> <span style="color:#a6e22e">patch</span>
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">serviceReg</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span> {
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">reqService</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">RequiredServices</span> {
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">serviceReg</span>.<span style="color:#a6e22e">ServiceName</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">reqService</span> {  <span style="color:#75715e">//如果注册服务里面有依赖的服务
+</span><span style="color:#75715e"></span>				<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Added</span> = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Added</span>, <span style="color:#a6e22e">patchEntry</span>{
+					<span style="color:#a6e22e">Name</span>: <span style="color:#a6e22e">serviceReg</span>.<span style="color:#a6e22e">ServiceName</span>,
+					<span style="color:#a6e22e">URL</span>:  <span style="color:#a6e22e">serviceReg</span>.<span style="color:#a6e22e">ServiceURL</span>,
+				})
+			}
+		}
+	}
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">sendPatch</span>(<span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">ServiceUpdateURL</span>)  <span style="color:#75715e">//把path发给updateURL
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">sendPatch</span>(<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">patch</span>, <span style="color:#a6e22e">url</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">d</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#a6e22e">p</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Post</span>(<span style="color:#a6e22e">url</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>, <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewBuffer</span>(<span style="color:#a6e22e">d</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><p>​	每个服务有自己依赖的服务，他们向注册中心请求这些服务，需要有一个地方存储这些请求的服务，创建一个providers来记录</p>
+<blockquote>
+<p>Distribute/registry/client.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">providers</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">services</span> <span style="color:#66d9ef">map</span>[<span style="color:#a6e22e">ServiceName</span>][]<span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">mutex</span>    <span style="color:#f92672">*</span><span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">RWMutex</span>
+}
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">prov</span> = <span style="color:#a6e22e">providers</span>{
+	<span style="color:#a6e22e">services</span>: make(<span style="color:#66d9ef">map</span>[<span style="color:#a6e22e">ServiceName</span>][]<span style="color:#66d9ef">string</span>),
+	<span style="color:#a6e22e">mutex</span>:    new(<span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">RWMutex</span>),
+}
+<span style="color:#a6e22e">unc</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">providers</span>) <span style="color:#a6e22e">Update</span>(<span style="color:#a6e22e">pat</span> <span style="color:#a6e22e">patch</span>) {
+	<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Unlock</span>()
+
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">patchEntry</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">pat</span>.<span style="color:#a6e22e">Added</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">services</span>[<span style="color:#a6e22e">patchEntry</span>.<span style="color:#a6e22e">Name</span>]; !<span style="color:#a6e22e">ok</span> {
+			<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">services</span>[<span style="color:#a6e22e">patchEntry</span>.<span style="color:#a6e22e">Name</span>] = make([]<span style="color:#66d9ef">string</span>, <span style="color:#ae81ff">0</span>)
+		}
+		<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">services</span>[<span style="color:#a6e22e">patchEntry</span>.<span style="color:#a6e22e">Name</span>] = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">services</span>[<span style="color:#a6e22e">patchEntry</span>.<span style="color:#a6e22e">Name</span>], <span style="color:#a6e22e">patchEntry</span>.<span style="color:#a6e22e">URL</span>)
+	}
+
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">patchEntry</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">pat</span>.<span style="color:#a6e22e">Removed</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">providerURLs</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">services</span>[<span style="color:#a6e22e">patchEntry</span>.<span style="color:#a6e22e">Name</span>]; <span style="color:#a6e22e">ok</span> {
+			<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">providerURLs</span> {
+				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">providerURLs</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">patchEntry</span>.<span style="color:#a6e22e">URL</span> {
+					<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">services</span>[<span style="color:#a6e22e">patchEntry</span>.<span style="color:#a6e22e">Name</span>] = append(<span style="color:#a6e22e">providerURLs</span>[:<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">providerURLs</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:]<span style="color:#f92672">...</span>)
+				}
+			}
+		}
+	}
+}
+<span style="color:#75715e">//通过服务的名称，找到服务的url，可能是多个，这里只返回一个
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">providers</span>) <span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">name</span> <span style="color:#a6e22e">ServiceName</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">providers</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">services</span>[<span style="color:#a6e22e">name</span>]
+	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;No providers available for service %v&#34;</span>, <span style="color:#a6e22e">name</span>)
+	}
+	<span style="color:#a6e22e">idx</span> <span style="color:#f92672">:=</span> int(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Float32</span>() <span style="color:#f92672">*</span> float32(len(<span style="color:#a6e22e">providers</span>)))
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">providers</span>[<span style="color:#a6e22e">idx</span>], <span style="color:#66d9ef">nil</span>
+}
+<span style="color:#75715e">//对外提供服务
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetProvider</span>(<span style="color:#a6e22e">name</span> <span style="color:#a6e22e">ServiceName</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">prov</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">name</span>)
+}
+
+<span style="color:#75715e">//服务注册中心向UpdateURL更新一些信息
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RegisterService</span>(<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">Registration</span>) <span style="color:#66d9ef">error</span> {
+	
+	<span style="color:#a6e22e">serviceUpdateURL</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">Parse</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ServiceUpdateURL</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#a6e22e">serviceUpdateURL</span>.<span style="color:#a6e22e">Path</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">serviceUpdateHandler</span>{})
+
+	<span style="color:#f92672">...</span>
+}
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">serviceUpdateHandler</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">suh</span> <span style="color:#a6e22e">serviceUpdateHandler</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Method</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodPost</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusMethodNotAllowed</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">dec</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">p</span> <span style="color:#a6e22e">patch</span>
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dec</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">p</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusBadRequest</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Updated received %v \n&#34;</span>, <span style="color:#a6e22e">p</span>)
+	<span style="color:#a6e22e">prov</span>.<span style="color:#a6e22e">Update</span>(<span style="color:#a6e22e">p</span>)
+}
+</code></pre></div><p>​	为了方便客户端使用log的service；创建client.go</p>
+<blockquote>
+<p>Distribute/log/client.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">SetClientLogger</span>(<span style="color:#a6e22e">serviceURL</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">clientService</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>) {
+	<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">SetPrefix</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;[%v] - &#34;</span>, <span style="color:#a6e22e">clientService</span>))
+	<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">SetFlags</span>(<span style="color:#ae81ff">0</span>)
+	<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">SetOutput</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">clientLogger</span>{<span style="color:#a6e22e">url</span>: <span style="color:#a6e22e">serviceURL</span>})
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">clientLogger</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">url</span> <span style="color:#66d9ef">string</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cl</span> <span style="color:#a6e22e">clientLogger</span>) <span style="color:#a6e22e">Write</span>(<span style="color:#a6e22e">data</span> []<span style="color:#66d9ef">byte</span>) (<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewBuffer</span>([]byte(<span style="color:#a6e22e">data</span>))
+	<span style="color:#a6e22e">resp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Post</span>(<span style="color:#a6e22e">cl</span>.<span style="color:#a6e22e">url</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#34;/log&#34;</span>, <span style="color:#e6db74">&#34;text/plain&#34;</span>, <span style="color:#a6e22e">b</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">StatusCode</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Failed to send log message. Service respondes %v&#34;</span>, <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">StatusCode</span>)
+	}
+	<span style="color:#66d9ef">return</span> len(<span style="color:#a6e22e">data</span>), <span style="color:#66d9ef">nil</span>
+}
+
+</code></pre></div><p>​	在grade的客户端里面使用一下log服务</p>
+<blockquote>
+<p>Distribute/cmd/gradingservice/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#e6db74">&#34;6000&#34;</span>
+	<span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;http://%v:%v&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>)
+
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>{
+		<span style="color:#a6e22e">ServiceName</span>:      <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GradingService</span>,
+		<span style="color:#a6e22e">ServiceURL</span>:       <span style="color:#a6e22e">serviceAddress</span>,
+		<span style="color:#a6e22e">RequiredServices</span>: []<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>{<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>}, <span style="color:#75715e">//添加需要依赖的log服务
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">ServiceUpdateURL</span>: <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/services&#34;</span>,
+	}
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>, <span style="color:#a6e22e">grades</span>.<span style="color:#a6e22e">RegisterHandlers</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+	}
+    <span style="color:#75715e">//通过getprovider找到logservice的url，然后客户端服务的名称传入。
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">logProvider</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GetProvider</span>(<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Logging service found at: %s\n&#34;</span>, <span style="color:#a6e22e">logProvider</span>)
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">SetClientLogger</span>(<span style="color:#a6e22e">logProvider</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ServiceName</span>)
+	}
+
+	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Shutting down grading service&#34;</span>)
+}
+</code></pre></div><p>​	logservice也可能依赖其他的，但是这个项目并没有</p>
+<blockquote>
+<p>Distribute/cmd/logservice/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#e6db74">&#34;./distributed.log&#34;</span>)
+	<span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#e6db74">&#34;4000&#34;</span>
+	<span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;http://%s:%s&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>)
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>{
+		<span style="color:#a6e22e">ServiceName</span>:      <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>,
+		<span style="color:#a6e22e">ServiceURL</span>:       <span style="color:#a6e22e">serviceAddress</span>,
+		<span style="color:#a6e22e">RequiredServices</span>: make([]<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>, <span style="color:#ae81ff">0</span>),
+		<span style="color:#a6e22e">ServiceUpdateURL</span>: <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/services&#34;</span>,
+	}
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>, <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">RegisterHandlers</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">Fatalln</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Shutting down log service.&#34;</span>)
+}
+
+</code></pre></div><p>​	当依赖的服务发生变化的时候，进行通知；当依赖项出现的时候，可以通知需求方</p>
+<blockquote>
+<p>Distribute/registry/server.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">reg</span> <span style="color:#a6e22e">Registration</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Lock</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span> = append(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span>, <span style="color:#a6e22e">reg</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Unlock</span>()
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">sendRequiredServices</span>(<span style="color:#a6e22e">reg</span>)
+    <span style="color:#75715e">// 进行通知
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">notify</span>(<span style="color:#a6e22e">patch</span>{
+		<span style="color:#a6e22e">Added</span>: []<span style="color:#a6e22e">patchEntry</span>{
+			<span style="color:#a6e22e">patchEntry</span>{
+				<span style="color:#a6e22e">Name</span>: <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">ServiceName</span>,
+				<span style="color:#a6e22e">URL</span>:  <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">ServiceURL</span>,
+			},
+		},
+	})
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">notify</span>(<span style="color:#a6e22e">fullPatch</span> <span style="color:#a6e22e">patch</span>) {
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">RLock</span>()
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">RUnlock</span>()
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">reg</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span> {
+		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">reg</span> <span style="color:#a6e22e">Registration</span>) {
+			<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">reqService</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">RequiredServices</span> {
+				<span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">patch</span>{<span style="color:#a6e22e">Added</span>: []<span style="color:#a6e22e">patchEntry</span>{}, <span style="color:#a6e22e">Removed</span>: []<span style="color:#a6e22e">patchEntry</span>{}}
+				<span style="color:#a6e22e">sendUpdate</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">false</span>
+				<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">added</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">fullPatch</span>.<span style="color:#a6e22e">Added</span> {
+					<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">added</span>.<span style="color:#a6e22e">Name</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">reqService</span> {
+						<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Added</span> = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Added</span>, <span style="color:#a6e22e">added</span>)
+						<span style="color:#a6e22e">sendUpdate</span> = <span style="color:#66d9ef">true</span>
+					}
+				}
+				<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">removed</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">fullPatch</span>.<span style="color:#a6e22e">Removed</span> {
+					<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">removed</span>.<span style="color:#a6e22e">Name</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">reqService</span> {
+						<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Removed</span> = append(<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Removed</span>, <span style="color:#a6e22e">removed</span>)
+						<span style="color:#a6e22e">sendUpdate</span> = <span style="color:#66d9ef">true</span>
+					}
+				}
+				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">sendUpdate</span> {
+					<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">sendPatch</span>(<span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">ServiceUpdateURL</span>)
+					<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+						<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+						<span style="color:#66d9ef">return</span>
+					}
+				}
+			}
+		}(<span style="color:#a6e22e">reg</span>)
+	}
+}
+<span style="color:#75715e">//依赖的服务停止的时候，要接收到通知
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">remove</span>(<span style="color:#a6e22e">url</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">ServiceURL</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">url</span> {
+            <span style="color:#75715e">//进行通知
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">notify</span>(<span style="color:#a6e22e">patch</span>{
+				<span style="color:#a6e22e">Removed</span>: []<span style="color:#a6e22e">patchEntry</span>{
+					{
+						<span style="color:#a6e22e">Name</span>: <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">ServiceName</span>,
+						<span style="color:#a6e22e">URL</span>:  <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">ServiceURL</span>,
+					},
+				},
+			})
+			<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Lock</span>()
+			<span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span> = append(<span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span>[:<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">registrations</span>[<span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:]<span style="color:#f92672">...</span>)
+			<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">mutex</span>.<span style="color:#a6e22e">Unlock</span>()
+			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+		}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;Service at URL %s not found&#34;</span>, <span style="color:#a6e22e">url</span>)
+}
+</code></pre></div><h2 id="准备一个web应用">准备一个Web应用</h2>
+<blockquote>
+<p>Distribute/portal/student.html</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#75715e">&lt;!DOCTYPE html&gt;</span>
+&lt;<span style="color:#f92672">html</span> <span style="color:#a6e22e">lang</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+&lt;<span style="color:#f92672">head</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;viewport&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width=device-width,initial-scale=1.0&#34;</span>&gt;
+    &lt;<span style="color:#f92672">title</span>&gt;Student&lt;/<span style="color:#f92672">title</span>&gt;
+&lt;/<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">body</span>&gt;
+    &lt;<span style="color:#f92672">h1</span>&gt;
+        &lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/students&#34;</span>&gt;Grade Book&lt;/<span style="color:#f92672">a</span>&gt;
+        - {{.LastName}},{{.FirstName}}
+    &lt;/<span style="color:#f92672">h1</span>&gt;
+
+    {{if gt (len .Grades) 0}}
+    &lt;<span style="color:#f92672">table</span>&gt;
+        &lt;<span style="color:#f92672">tr</span>&gt;
+            &lt;<span style="color:#f92672">th</span>&gt;Title&lt;/<span style="color:#f92672">th</span>&gt;
+            &lt;<span style="color:#f92672">th</span>&gt;Type&lt;/<span style="color:#f92672">th</span>&gt;
+            &lt;<span style="color:#f92672">th</span>&gt;Score&lt;/<span style="color:#f92672">th</span>&gt;
+        &lt;/<span style="color:#f92672">tr</span>&gt;
+        {{range .Grades}}
+        &lt;<span style="color:#f92672">tr</span>&gt;
+            &lt;<span style="color:#f92672">td</span>&gt;{{.Title}}&lt;/<span style="color:#f92672">td</span>&gt;
+            &lt;<span style="color:#f92672">td</span>&gt;{{.Type}}&lt;/<span style="color:#f92672">td</span>&gt;
+            &lt;<span style="color:#f92672">td</span>&gt;{{.Score}}&lt;/<span style="color:#f92672">td</span>&gt;
+        &lt;/<span style="color:#f92672">tr</span>&gt;
+        {{end}}
+    &lt;/<span style="color:#f92672">table</span>&gt;
+    {{else}}
+    &lt;<span style="color:#f92672">em</span>&gt;No grades available&lt;/<span style="color:#f92672">em</span>&gt;
+    {{end}}
+
+    &lt;<span style="color:#f92672">fieldset</span>&gt;
+        &lt;<span style="color:#f92672">legend</span>&gt;Add a Grade&lt;/<span style="color:#f92672">legend</span>&gt;
+        &lt;<span style="color:#f92672">form</span> <span style="color:#a6e22e">action</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/students/{{.ID}}/grades&#34;</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;POST&#34;</span>&gt;
+            &lt;<span style="color:#f92672">table</span>&gt;
+                &lt;<span style="color:#f92672">tr</span>&gt;
+                    &lt;<span style="color:#f92672">td</span>&gt;Title&lt;/<span style="color:#f92672">td</span>&gt;
+                    &lt;<span style="color:#f92672">td</span>&gt;
+                        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Title&#34;</span>&gt;
+                    &lt;/<span style="color:#f92672">td</span>&gt;
+                &lt;/<span style="color:#f92672">tr</span>&gt;
+                &lt;<span style="color:#f92672">tr</span>&gt;
+                    &lt;<span style="color:#f92672">td</span>&gt;Type&lt;/<span style="color:#f92672">td</span>&gt;
+                    &lt;<span style="color:#f92672">td</span>&gt;
+                        &lt;<span style="color:#f92672">select</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Type&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Type&#34;</span>&gt;
+                            &lt;<span style="color:#f92672">option</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Test&#34;</span>&gt;Test&lt;/<span style="color:#f92672">option</span>&gt;
+                            &lt;<span style="color:#f92672">option</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Quiz&#34;</span>&gt;Quiz&lt;/<span style="color:#f92672">option</span>&gt;
+                            &lt;<span style="color:#f92672">option</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Homework&#34;</span>&gt;Homework&lt;/<span style="color:#f92672">option</span>&gt;
+                        &lt;/<span style="color:#f92672">select</span>&gt;
+                    &lt;/<span style="color:#f92672">td</span>&gt;
+                &lt;/<span style="color:#f92672">tr</span>&gt;
+                &lt;<span style="color:#f92672">tr</span>&gt;
+                    &lt;<span style="color:#f92672">td</span>&gt;Score&lt;/<span style="color:#f92672">td</span>&gt;
+                    &lt;<span style="color:#f92672">td</span>&gt;
+                        &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;number&#34;</span> <span style="color:#a6e22e">min</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#a6e22e">max</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;100&#34;</span> <span style="color:#a6e22e">step</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Score&#34;</span>&gt;
+                    &lt;/<span style="color:#f92672">td</span>&gt;
+                &lt;/<span style="color:#f92672">tr</span>&gt;
+            &lt;/<span style="color:#f92672">table</span>&gt;
+            &lt;<span style="color:#f92672">button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;submit&#34;</span>&gt;Submit&lt;/<span style="color:#f92672">button</span>&gt;
+        &lt;/<span style="color:#f92672">form</span>&gt;
+    &lt;/<span style="color:#f92672">fieldset</span>&gt;
+&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;
+</code></pre></div><blockquote>
+<p>Distribute/portal/students.html</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"><span style="color:#75715e">&lt;!DOCTYPE html&gt;</span>
+&lt;<span style="color:#f92672">html</span> <span style="color:#a6e22e">lang</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+&lt;<span style="color:#f92672">head</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;viewport&#34;</span> <span style="color:#a6e22e">content</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width=device-width,initial-scale=1.0&#34;</span>&gt;
+    &lt;<span style="color:#f92672">title</span>&gt;Students&lt;/<span style="color:#f92672">title</span>&gt;
+&lt;/<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">body</span>&gt;
+    &lt;<span style="color:#f92672">h1</span>&gt;Grade Book&lt;/<span style="color:#f92672">h1</span>&gt;
+    {{if len .}}
+    &lt;<span style="color:#f92672">table</span>&gt;
+        &lt;<span style="color:#f92672">tr</span>&gt;
+            &lt;<span style="color:#f92672">th</span>&gt;Name&lt;/<span style="color:#f92672">th</span>&gt;
+            &lt;<span style="color:#f92672">th</span>&gt;Average [%]&lt;/<span style="color:#f92672">th</span>&gt;
+        &lt;/<span style="color:#f92672">tr</span>&gt;
+        {{range .}}
+        &lt;<span style="color:#f92672">tr</span>&gt;
+            &lt;<span style="color:#f92672">td</span>&gt;
+                &lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/students/{{.ID}}&#34;</span>&gt;{{.LastName}},{{.FirstName}}&lt;/<span style="color:#f92672">a</span>&gt;
+            &lt;/<span style="color:#f92672">td</span>&gt;
+            &lt;<span style="color:#f92672">td</span>&gt;
+                {{printf &#34;%.1f%%&#34; .Average}}
+            &lt;/<span style="color:#f92672">td</span>&gt;
+        &lt;/<span style="color:#f92672">tr</span>&gt;
+        {{end}}
+    &lt;/<span style="color:#f92672">table</span>&gt;
+    {{else}}
+    &lt;<span style="color:#f92672">em</span>&gt;No students found&lt;/<span style="color:#f92672">em</span>&gt;
+    {{end}}
+&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;
+</code></pre></div><blockquote>
+<p>Distribute/portal/templates.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">portal</span>
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;html/template&#34;</span>
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">rootTemplate</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">Template</span>
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ImportTemplates</span>() <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+	<span style="color:#a6e22e">rootTemplate</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(
+		<span style="color:#e6db74">&#34;../../portal/students.html&#34;</span>,
+		<span style="color:#e6db74">&#34;../../portal/student.html&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><blockquote>
+<p>Distribute/portal/handlers.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">portal</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;bytes&#34;</span>
+	<span style="color:#e6db74">&#34;encoding/json&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/grades&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/registry&#34;</span>
+	<span style="color:#e6db74">&#34;log&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;strings&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RegisterHandlers</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">RedirectHandler</span>(<span style="color:#e6db74">&#34;/students&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusPermanentRedirect</span>))
+	<span style="color:#a6e22e">h</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">studentsHandler</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/students&#34;</span>, <span style="color:#a6e22e">h</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/students/&#34;</span>, <span style="color:#a6e22e">h</span>)
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">studentsHandler</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sh</span> <span style="color:#a6e22e">studentsHandler</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">pathSegments</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>, <span style="color:#e6db74">&#34;/&#34;</span>)
+	<span style="color:#66d9ef">switch</span> len(<span style="color:#a6e22e">pathSegments</span>) {
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>:
+		<span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">renderStudents</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">3</span>:
+		<span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">pathSegments</span>[<span style="color:#ae81ff">2</span>])
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">renderStudent</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">id</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">4</span>:
+		<span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Atoi</span>(<span style="color:#a6e22e">pathSegments</span>[<span style="color:#ae81ff">2</span>])
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">ToLower</span>(<span style="color:#a6e22e">pathSegments</span>[<span style="color:#ae81ff">3</span>]) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;grades&#34;</span> {
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">renderGrades</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">id</span>)
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+	}
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">studentsHandler</span>) <span style="color:#a6e22e">renderStudents</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Error retrieving students: &#34;</span>, <span style="color:#a6e22e">err</span>)
+		}
+	}()
+
+	<span style="color:#a6e22e">serviceURL</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GetProvider</span>(<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GradingService</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">serviceURL</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/students&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">grades</span>.<span style="color:#a6e22e">Students</span>
+	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">Body</span>).<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">rootTemplate</span>.<span style="color:#a6e22e">Lookup</span>(<span style="color:#e6db74">&#34;students.html&#34;</span>).<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">s</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">studentsHandler</span>) <span style="color:#a6e22e">renderStudent</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>
+	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+			<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Error retrieving students: &#34;</span>, <span style="color:#a6e22e">err</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+	}()
+
+	<span style="color:#a6e22e">serviceURL</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GetProvider</span>(<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GradingService</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%v/students/%v&#34;</span>, <span style="color:#a6e22e">serviceURL</span>, <span style="color:#a6e22e">id</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">grades</span>.<span style="color:#a6e22e">Student</span>
+	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">Body</span>).<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">rootTemplate</span>.<span style="color:#a6e22e">Lookup</span>(<span style="color:#e6db74">&#34;student.html&#34;</span>).<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">s</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">studentsHandler</span>) <span style="color:#a6e22e">renderGrades</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Method</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodPost</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusMethodNotAllowed</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;location&#34;</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;/students/%v&#34;</span>, <span style="color:#a6e22e">id</span>))
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusTemporaryRedirect</span>)
+	}()
+	<span style="color:#a6e22e">title</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">FormValue</span>(<span style="color:#e6db74">&#34;Title&#34;</span>)
+	<span style="color:#a6e22e">gradeType</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">FormValue</span>(<span style="color:#e6db74">&#34;Type&#34;</span>)
+	<span style="color:#a6e22e">score</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseFloat</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">FormValue</span>(<span style="color:#e6db74">&#34;Score&#34;</span>), <span style="color:#ae81ff">32</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Failed to parse score: &#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">g</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grades</span>.<span style="color:#a6e22e">Grade</span>{
+		<span style="color:#a6e22e">Title</span>: <span style="color:#a6e22e">title</span>,
+		<span style="color:#a6e22e">Type</span>:  <span style="color:#a6e22e">grades</span>.<span style="color:#a6e22e">GradeType</span>(<span style="color:#a6e22e">gradeType</span>),
+		<span style="color:#a6e22e">Score</span>: float32(<span style="color:#a6e22e">score</span>),
+	}
+	<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#a6e22e">g</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Failed to convert grade to JSON: &#34;</span>, <span style="color:#a6e22e">g</span>, <span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#a6e22e">serviceURL</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GetProvider</span>(<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GradingService</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Failed to retrieve instance of Grading Service&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Post</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%v/students/%v/grades&#34;</span>, <span style="color:#a6e22e">serviceURL</span>, <span style="color:#a6e22e">id</span>), <span style="color:#e6db74">&#34;application/json&#34;</span>, <span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewBuffer</span>(<span style="color:#a6e22e">data</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Failed to save grade to Grading Service&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">StatusCode</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusCreated</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Failed to save grade to Grading Service. Status: &#34;</span>, <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">StatusCode</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+}
+</code></pre></div><p>​	在registry的registration.go里面添加portal服务的标识</p>
+<blockquote>
+<p>Distribute/registry/registration.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">LogService</span>     = <span style="color:#a6e22e">ServiceName</span>(<span style="color:#e6db74">&#34;LogService&#34;</span>)
+	<span style="color:#a6e22e">GradingService</span> = <span style="color:#a6e22e">ServiceName</span>(<span style="color:#e6db74">&#34;GradingService&#34;</span>)
+	<span style="color:#a6e22e">PortalService</span>  = <span style="color:#a6e22e">ServiceName</span>(<span style="color:#e6db74">&#34;Portald&#34;</span>)
+)
+</code></pre></div><p>​	在cmd中创建portal的客户端</p>
+<blockquote>
+<p>Distribute/cmd/portal/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/log&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/portal&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/registry&#34;</span>
+	<span style="color:#e6db74">&#34;learn_go/Distribute/service&#34;</span>
+	<span style="color:#a6e22e">stlog</span> <span style="color:#e6db74">&#34;log&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">portal</span>.<span style="color:#a6e22e">ImportTemplates</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#e6db74">&#34;5000&#34;</span>
+	<span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;http://%s:%s&#34;</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>)
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>{
+		<span style="color:#a6e22e">ServiceName</span>: <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">PortalService</span>,
+		<span style="color:#a6e22e">ServiceURL</span>:  <span style="color:#a6e22e">serviceAddress</span>,
+		<span style="color:#a6e22e">RequiredServices</span>: []<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>{
+			<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>,
+			<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GradingService</span>,
+		},
+		<span style="color:#a6e22e">ServiceUpdateURL</span>: <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/services&#34;</span>,
+	}
+
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">host</span>, <span style="color:#a6e22e">port</span>, <span style="color:#a6e22e">portal</span>.<span style="color:#a6e22e">RegisterHandlers</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">stlog</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">logProvider</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GetProvider</span>(<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">SetClientLogger</span>(<span style="color:#a6e22e">logProvider</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ServiceName</span>)
+	}
+	<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Shutting down portal.&#34;</span>)
+}
+
+</code></pre></div><h2 id="状态监测">状态监测</h2>
+<p>​	监视服务，如果有服务不可用了，进行通知</p>
+<p>​	在registry的registration.go中添加一个心跳检测的URL</p>
+<blockquote>
+<p>Distribute/registry/registration.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Registration</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">ServiceName</span>      <span style="color:#a6e22e">ServiceName</span>
+	<span style="color:#a6e22e">ServiceURL</span>       <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">RequiredServices</span> []<span style="color:#a6e22e">ServiceName</span>
+	<span style="color:#a6e22e">ServiceUpdateURL</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">HeartbeatURL</span>     <span style="color:#66d9ef">string</span> <span style="color:#75715e">//心跳检查的URL
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>​	在registry的server.go中添加一个心跳检测的方法</p>
+<blockquote>
+<p>Distribute/registry/server.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">registry</span>) <span style="color:#a6e22e">heartbeat</span>(<span style="color:#a6e22e">freq</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) {
+	<span style="color:#66d9ef">for</span> {
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">wg</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span>
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">reg</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">registrations</span> {
+			<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#ae81ff">1</span>)
+			<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">reg</span> <span style="color:#a6e22e">Registration</span>) {
+				<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Done</span>()
+				<span style="color:#a6e22e">success</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">true</span>
+				<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">attemps</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">attemps</span> &lt; <span style="color:#ae81ff">3</span>; <span style="color:#a6e22e">attemps</span><span style="color:#f92672">++</span> {
+					<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">HeartbeatURL</span>)
+					<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+						<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+					} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">StatusCode</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span> {
+						<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Heartbeat check passed for %v&#34;</span>, <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">ServiceName</span>)
+						<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">success</span> {
+							<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">reg</span>)
+						}
+						<span style="color:#66d9ef">break</span>
+					}
+					<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Heartbeat check failed for %v&#34;</span>, <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">ServiceName</span>)
+					<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">success</span> {
+						<span style="color:#a6e22e">success</span> = <span style="color:#66d9ef">false</span>
+						<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">remove</span>(<span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">ServiceURL</span>)
+					}
+					<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+				}
+			}(<span style="color:#a6e22e">reg</span>)
+			<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Wait</span>()
+			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">freq</span>)
+		}
+	}
+}
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">once</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Once</span>
+<span style="color:#75715e">// 启动健康检查
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">SetupRegistryService</span>() {
+	<span style="color:#a6e22e">once</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#66d9ef">func</span>() {
+		<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">reg</span>.<span style="color:#a6e22e">heartbeat</span>(<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	})
+}
+</code></pre></div><p>​	在cmd/registryservice/main.go中启动健康检查</p>
+<blockquote>
+<p>Distribute/cmd/registryservice/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">SetupRegistryService</span>()
+    <span style="color:#f92672">...</span>
+}
+</code></pre></div><p>​	在registry的client.go添加hearbeaturl的解析</p>
+<blockquote>
+<p>Distribute/registry/client.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RegisterService</span>(<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">Registration</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">heartbeatURL</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">Parse</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">HeartbeatURL</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#a6e22e">heartbeatURL</span>.<span style="color:#a6e22e">Path</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>)
+	})
+	<span style="color:#f92672">...</span>
+}
+</code></pre></div><p>​	在每一个service里面添加HeartBeatURL的初始化</p>
+<blockquote>
+<p>Distribute/cmd/gradingservice/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#f92672">...</span>
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>{
+		<span style="color:#a6e22e">ServiceName</span>:      <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GradingService</span>,
+		<span style="color:#a6e22e">ServiceURL</span>:       <span style="color:#a6e22e">serviceAddress</span>,
+		<span style="color:#a6e22e">RequiredServices</span>: []<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>{<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>},
+		<span style="color:#a6e22e">ServiceUpdateURL</span>: <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/services&#34;</span>,
+		<span style="color:#a6e22e">HeartbeatURL</span>:     <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/heartbeat&#34;</span>,
+	}
+    <span style="color:#f92672">...</span>
+}
+</code></pre></div><blockquote>
+<p>Distribute/cmd/logservice/main.go</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#f92672">...</span>
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>{
+		<span style="color:#a6e22e">ServiceName</span>:      <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>,
+		<span style="color:#a6e22e">ServiceURL</span>:       <span style="color:#a6e22e">serviceAddress</span>,
+		<span style="color:#a6e22e">RequiredServices</span>: make([]<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>, <span style="color:#ae81ff">0</span>),
+		<span style="color:#a6e22e">ServiceUpdateURL</span>: <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/services&#34;</span>,
+		<span style="color:#a6e22e">HeartbeatURL</span>:     <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/heartbeat&#34;</span>,
+	}
+	<span style="color:#f92672">...</span>
+}
+
+</code></pre></div><p>Distribute/cmd/portal/main.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#f92672">...</span>
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Registration</span>{
+		<span style="color:#a6e22e">ServiceName</span>: <span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">PortalService</span>,
+		<span style="color:#a6e22e">ServiceURL</span>:  <span style="color:#a6e22e">serviceAddress</span>,
+		<span style="color:#a6e22e">RequiredServices</span>: []<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">ServiceName</span>{
+			<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">LogService</span>,
+			<span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">GradingService</span>,
+		},
+		<span style="color:#a6e22e">ServiceUpdateURL</span>: <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/services&#34;</span>,
+		<span style="color:#a6e22e">HeartbeatURL</span>:     <span style="color:#a6e22e">serviceAddress</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/heartbeat&#34;</span>,
+	}
+    <span style="color:#f92672">...</span>
+}
+</code></pre></div><h2 id="效果演示">效果演示</h2>
+<p>服务关系：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202210061845675.png" alt="image-20221006184525474"></p>
+<p>​	演示效果：可以看到服务停止和开启的时候；心跳服务能检测到并作出对应的处理</p>
+<p><img src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202210061836223.png" alt="image-20221006183636801"></p>
+<h2 id="参考">参考</h2>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1ZU4y1577q">https://www.bilibili.com/video/BV1ZU4y1577q</a></p>
+</blockquote>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

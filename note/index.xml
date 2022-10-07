@@ -6,7 +6,54 @@
     <description>Recent content in Notes on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Aug 2022 23:44:09 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 07 Oct 2022 20:40:21 +0800</lastBuildDate><atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>简单分布式系统</title>
+      <link>/note/go/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/</link>
+      <pubDate>Fri, 07 Oct 2022 20:40:21 +0800</pubDate>
+      
+      <guid>/note/go/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/</guid>
+      <description>简单分布式系统 简介 常见的分布式模型：Hub&amp;amp;Spoke、Peer to Peer、Message Queues
+这个案例使用的是混合模型。
+创建一个Distribute项目，包含：
+服务注册：服务注册、健康检查
+用户门户：Web应用 、API网关
+日志服务：集中式日志
+业务服务：业务逻辑 、数据持久化
+服务注册 日志服务log ​	用来接收post请求，并把请求写入到log里面
+ Distribute/log/server.go
+ package log import ( &amp;#34;io/ioutil&amp;#34; stlog &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; &amp;#34;os&amp;#34; ) var log *stlog.Logger type fileLog string func (fl fileLog) Write(data []byte) (int, error) { f, err := os.OpenFile(string(fl), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600) if err != nil { return 0, err } defer f.Close() return f.Write(data) } func Run(destination string) { log = stlog.</description>
+    </item>
+    
+    <item>
+      <title>Fyne案例之音乐播放器</title>
+      <link>/note/go/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</link>
+      <pubDate>Fri, 07 Oct 2022 20:40:05 +0800</pubDate>
+      
+      <guid>/note/go/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</guid>
+      <description>使用Fyne实现音乐播放器 案例效果 ​	左侧有播放的列表；右边有播放的歌曲、进度、时间、上一曲、下一曲、暂停、音量、隐藏列表的按钮。
+案例实现 ​	准备：关于fyne框架的安装以及使用前的准备工作可以参考官网：
+ https://developer.fyne.io/started/
+ ​	音乐播放用到了开源库
+ https://github.com/faiface/beep
+ ​	完整代码
+package main import ( &amp;#34;fmt&amp;#34; &amp;#34;fyne.io/fyne/v2&amp;#34; &amp;#34;fyne.io/fyne/v2/app&amp;#34; &amp;#34;fyne.io/fyne/v2/container&amp;#34; &amp;#34;fyne.io/fyne/v2/data/binding&amp;#34; &amp;#34;fyne.io/fyne/v2/dialog&amp;#34; &amp;#34;fyne.io/fyne/v2/storage&amp;#34; &amp;#34;fyne.io/fyne/v2/theme&amp;#34; &amp;#34;fyne.io/fyne/v2/widget&amp;#34; &amp;#34;github.com/faiface/beep&amp;#34; &amp;#34;github.com/faiface/beep/effects&amp;#34; &amp;#34;github.com/faiface/beep/flac&amp;#34; &amp;#34;github.com/faiface/beep/mp3&amp;#34; &amp;#34;github.com/faiface/beep/speaker&amp;#34; &amp;#34;github.com/faiface/beep/vorbis&amp;#34; &amp;#34;github.com/faiface/beep/wav&amp;#34; &amp;#34;log&amp;#34; &amp;#34;os&amp;#34; &amp;#34;path/filepath&amp;#34; &amp;#34;time&amp;#34; ) var streamer beep.StreamSeekCloser var format beep.Format var volume *effects.Volume func main() { a := app.New() w := a.NewWindow(&amp;#34;fyne mp3 player&amp;#34;) w.Resize(fyne.NewSize(700, 610)) //txtPath := widget.NewEntry() 	//txtPath.Text = &amp;#34;a.</description>
+    </item>
+    
+    <item>
+      <title>Fyne案例之接住你小游戏</title>
+      <link>/note/go/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</link>
+      <pubDate>Fri, 07 Oct 2022 20:39:49 +0800</pubDate>
+      
+      <guid>/note/go/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</guid>
+      <description>使用Fyne实现【接住你】小游戏 案例效果 ​	有水果从上往下掉落，小车在下面接；左边有开始按钮，以及得分统计。
+案例实现 ​	准备：关于fyne框架的安装以及使用前的准备工作可以参考官网：
+ https://developer.fyne.io/started/
+ ​	1、自定义主题
+​	自定义一个myTheme.go的文件，然后用到了是微软雅黑的字体。
+package main import ( _ &amp;#34;embed&amp;#34; &amp;#34;fyne.io/fyne/v2&amp;#34; &amp;#34;image/color&amp;#34; &amp;#34;fyne.io/fyne/v2/theme&amp;#34; ) //go:embed msyh.ttc var font []byte var myfont = &amp;amp;fyne.StaticResource{ StaticName: &amp;#34;MSYH&amp;#34;, StaticContent: font, } type myTheme struct{} var _ fyne.Theme = (*myTheme)(nil) // return bundled font resource func (*myTheme) Font(s fyne.TextStyle) fyne.Resource { if s.Monospace { return theme.LightTheme().Font(s) // return theme.DefaultTheme().Font(s) 	} if s.Bold { if s.</description>
+    </item>
+    
     <item>
       <title>Gin&#43;vue2博客笔记（前端）</title>
       <link>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</link>
