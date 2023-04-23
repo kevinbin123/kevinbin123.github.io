@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Grpc笔记 | abin の 成长之路</title>
+    <meta property="og:title" content="Grpc笔记 - abin の 成长之路">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-03-27T16:34:18&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-03-27T16:34:18&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,博客,项目管理,软件架构">
+    <meta name="description" content="Grpc笔记">
+        
+    <meta name="author" content="abin">
+    <meta property="og:url" content="https://kevinbin123.github.io/post/grpc%E7%AC%94%E8%AE%B0/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/sidebar_menu.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kevinbin123.github.io/">
+                        abin の 成长之路
+                    </a>
+                
+                <p class="description">冉冉升起的码神</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kevinbin123.github.io/">首页</a>
+                    
+                    <a  href="https://kevinbin123.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://kevinbin123.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Grpc笔记</h1>
+        </header>
+        
+  <time datetime="2022-03-27T08:34:18Z" class="post-meta meta-date dt-published">
+    2022年3月27日
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/Golang' target="_blank">Golang</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>阅读</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="grpc笔记">grpc笔记</h1>
+<h2 id="安装">安装</h2>
+<p>方式一：</p>
+<p>要求能够访问google官网</p>
+<p><code> go get -u google.golang.org/grpc</code></p>
+<p>方式二：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/grpc/grpc-go.git $GOPATH/src/google.golang.org/grpc
+git clone https://github.com/golang/net.git $GOPATH/src/golang.org/x/net
+git clone https://github.com/golang/text.git $Goptah/src/golang.org/x/text
+git clone https://github.com/google/go-genproto.git $GOPATH/src/google.golang.org/genproto
+
+cd $GOPATH/src
+go install google.golang.org/grpc
+</code></pre></div><p>如果遇到too many arguments的问题：</p>
+<p>
+        <img class="mx-auto" alt="image-20220314165212297" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220314165212297.png" />   
+    </p>
+<p>可能是有空格；加上引号试试；只要能下载下来就行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/grpc/grpc-go.git <span style="color:#e6db74">&#34;D:\Program Files\go_code\google.golang.org\grpc&#34;</span>
+</code></pre></div><p>
+        <img class="mx-auto" alt="image-20220314170152686" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220314170152686.png" />   
+    </p>
+<p>下载后，安装一下</p>
+<p>
+        <img class="mx-auto" alt="image-20220314170737616" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220314170737616.png" />   
+    </p>
+<h2 id="使用">使用</h2>
+<p>准备proto文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-protobuf" data-lang="protobuf">syntax<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;proto3&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#f92672">package</span> pb;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">option</span> go_package<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/proto&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">Teacher</span>{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">int32</span> age<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">string</span> name<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">service</span> SayName{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">rpc</span> SayHello(Teacher) <span style="color:#66d9ef">returns</span>(Teacher);<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>执行命令来生成pb.go文件<code>protoc --go_out=plugins=grpc:./ *.proto</code></p>
+<p>调用：</p>
+<p><strong>服务端：</strong></p>
+<p>1、初始化一个grpc对象</p>
+<p>2、注册服务</p>
+<p>3、设置监听、指定IP、port</p>
+<p>4、启动服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;google.golang.org/grpc&#34;</span>
+	<span style="color:#a6e22e">pb</span> <span style="color:#e6db74">&#34;StudyGRPC/pb/proto&#34;</span>
+	<span style="color:#e6db74">&#34;net&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Children</span> <span style="color:#66d9ef">struct</span> {
+
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Children</span>) <span style="color:#a6e22e">SayHello</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>,<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Teacher</span>)(<span style="color:#f92672">*</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Teacher</span>,<span style="color:#66d9ef">error</span>){
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Name</span><span style="color:#f92672">+=</span><span style="color:#e6db74">&#34;is studying&#34;</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">t</span>,<span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//1、初始化一个grpc对象
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">grpcServer</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">NewServer</span>()
+	<span style="color:#75715e">//2、注册服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">RegisterSayNameServer</span>(<span style="color:#a6e22e">grpcServer</span>,new(<span style="color:#a6e22e">Children</span>))
+	<span style="color:#75715e">//3、设置监听
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">listen</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#e6db74">&#34;127.0.0.1:8080&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;监听失败：&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">listen</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;启动监听成功&#34;</span>)
+	<span style="color:#75715e">//4、启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">grpcServer</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">listen</span>)
+
+}
+
+</code></pre></div><p>效果：</p>
+<p>
+        <img class="mx-auto" alt="image-20220315105423981" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315105423981.png" />   
+    </p>
+<p><strong>客户端：</strong></p>
+<p>1、连接grpc服务</p>
+<p>2、初始化grpc客户端</p>
+<p>3、调用远程服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#a6e22e">pb</span> <span style="color:#e6db74">&#34;StudyGRPC/pb/proto&#34;</span>
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;google.golang.org/grpc&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//1、连接grpc服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">grpcConn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;127.0.0.1:8080&#34;</span>, <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">WithInsecure</span>())
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;连接grpc出错：&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">grpcConn</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#75715e">//2、初始化grpc客户端
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">grpcClient</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">NewSayNameClient</span>(<span style="color:#a6e22e">grpcConn</span>)
+	<span style="color:#75715e">//3、调用grpc服务
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">teacher</span> <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Teacher</span>
+	<span style="color:#a6e22e">teacher</span>.<span style="color:#a6e22e">Name</span>=<span style="color:#e6db74">&#34;abin&#34;</span>
+	<span style="color:#a6e22e">teacher</span>.<span style="color:#a6e22e">Age</span>=<span style="color:#ae81ff">18</span>
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpcClient</span>.<span style="color:#a6e22e">SayHello</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">teacher</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;grpc 调用出错:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">t</span>)
+}
+</code></pre></div><p>效果</p>
+<p>
+        <img class="mx-auto" alt="" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315105423981.png" />   
+    </p>
+<h2 id="参考文档">参考文档：</h2>
+<blockquote>
+<p>1、官方文档 <a href="https://www.grpc.io/docs/languages/go/quickstart/">https://www.grpc.io/docs/languages/go/quickstart/</a></p>
+<p>2、环境设置 <a href="https://blog.csdn.net/dmt742055597/article/details/106391336">https://blog.csdn.net/dmt742055597/article/details/106391336</a></p>
+</blockquote>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>相关文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/RPC%E7%AC%94%E8%AE%B0/">RPC笔记</a></li>
+        
+        <li><a href="/post/protobuf%E7%AC%94%E8%AE%B0/">Protobuf笔记</a></li>
+        
+        <li><a href="/post/Golang%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%89%E9%A1%B9%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">Golang设计模式 选项设计模式</a></li>
+        
+        <li><a href="/post/Gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/">Gin框架案例</a></li>
+        
+        <li><a href="/post/Gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/">Gin框架笔记</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/Golang' target="_blank">Golang</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div class="container">
+        &copy; 2023 <a href="https://kevinbin123.github.io/">abin の 成长之路 By abin</a>.本站博客未经授权禁止转载.
+		<br>
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="http://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>
+		       
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/bootstrap.min.js'></script>
+
+    <script src='/js/post_category.1.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kevinbin123.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kevinbin123.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" title="简单分布式系统" target="_blank">简单分布式系统</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/" title="Fyne案例之音乐播放器" target="_blank">Fyne案例之音乐播放器</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="Fyne案例之接住你小游戏" target="_blank">Fyne案例之接住你小游戏</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/" title="Gin&#43;vue2博客笔记（前端）" target="_blank">Gin&#43;vue2博客笔记（前端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/" title="Gin&#43;vue2博客笔记（后端）" target="_blank">Gin&#43;vue2博客笔记（后端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/" title="PWA笔记" target="_blank">PWA笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Golang案例 Zinx轻量级服务器框架学习笔记" target="_blank">Golang案例 Zinx轻量级服务器框架学习笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/" title="Golang小案例 爬取豆瓣电影" target="_blank">Golang小案例 爬取豆瓣电影</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/" title="Go Micro案例" target="_blank">Go Micro案例</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/" title="Go Micro笔记" target="_blank">Go Micro笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kevinbin123.github.io/categories/DB/">DB (2)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Golang/">Golang (19)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/JavaScript/">JavaScript (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Network/">Network (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/container/">container (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/other/">other (5)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kevinbin123.github.io/tags/DB/">DB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang/">Golang</a>
+    
+    <a href="https://kevinbin123.github.io/tags/JavaScript/">JavaScript</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Network/">Network</a>
+    
+    <a href="https://kevinbin123.github.io/tags/container/">container</a>
+    
+    <a href="https://kevinbin123.github.io/tags/other/">other</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.liwenzhou.com/" title="go语言学习之路">李文周的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://kevinbin123.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

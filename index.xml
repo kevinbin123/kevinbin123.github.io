@@ -2,726 +2,306 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>abin の 成长之路</title>
-    <link>/</link>
+    <link>https://kevinbin123.github.io/</link>
     <description>Recent content on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 07 Oct 2022 20:40:21 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 07 Oct 2022 20:40:21 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>简单分布式系统</title>
-      <link>/note/go/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/</link>
+      <link>https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/</link>
       <pubDate>Fri, 07 Oct 2022 20:40:21 +0800</pubDate>
       
-      <guid>/note/go/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/</guid>
-      <description>简单分布式系统 简介 常见的分布式模型：Hub&amp;amp;Spoke、Peer to Peer、Message Queues
-这个案例使用的是混合模型。
-创建一个Distribute项目，包含：
-服务注册：服务注册、健康检查
-用户门户：Web应用 、API网关
-日志服务：集中式日志
-业务服务：业务逻辑 、数据持久化
-服务注册 日志服务log ​	用来接收post请求，并把请求写入到log里面
- Distribute/log/server.go
- package log import ( &amp;#34;io/ioutil&amp;#34; stlog &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; &amp;#34;os&amp;#34; ) var log *stlog.Logger type fileLog string func (fl fileLog) Write(data []byte) (int, error) { f, err := os.OpenFile(string(fl), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600) if err != nil { return 0, err } defer f.Close() return f.Write(data) } func Run(destination string) { log = stlog.</description>
+      <guid>https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/</guid>
+      <description>简单的分布式系统</description>
     </item>
     
     <item>
       <title>Fyne案例之音乐播放器</title>
-      <link>/note/go/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</link>
+      <link>https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</link>
       <pubDate>Fri, 07 Oct 2022 20:40:05 +0800</pubDate>
       
-      <guid>/note/go/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</guid>
-      <description>使用Fyne实现音乐播放器 案例效果 ​	左侧有播放的列表；右边有播放的歌曲、进度、时间、上一曲、下一曲、暂停、音量、隐藏列表的按钮。
-案例实现 ​	准备：关于fyne框架的安装以及使用前的准备工作可以参考官网：
- https://developer.fyne.io/started/
- ​	音乐播放用到了开源库
- https://github.com/faiface/beep
- ​	完整代码
-package main import ( &amp;#34;fmt&amp;#34; &amp;#34;fyne.io/fyne/v2&amp;#34; &amp;#34;fyne.io/fyne/v2/app&amp;#34; &amp;#34;fyne.io/fyne/v2/container&amp;#34; &amp;#34;fyne.io/fyne/v2/data/binding&amp;#34; &amp;#34;fyne.io/fyne/v2/dialog&amp;#34; &amp;#34;fyne.io/fyne/v2/storage&amp;#34; &amp;#34;fyne.io/fyne/v2/theme&amp;#34; &amp;#34;fyne.io/fyne/v2/widget&amp;#34; &amp;#34;github.com/faiface/beep&amp;#34; &amp;#34;github.com/faiface/beep/effects&amp;#34; &amp;#34;github.com/faiface/beep/flac&amp;#34; &amp;#34;github.com/faiface/beep/mp3&amp;#34; &amp;#34;github.com/faiface/beep/speaker&amp;#34; &amp;#34;github.com/faiface/beep/vorbis&amp;#34; &amp;#34;github.com/faiface/beep/wav&amp;#34; &amp;#34;log&amp;#34; &amp;#34;os&amp;#34; &amp;#34;path/filepath&amp;#34; &amp;#34;time&amp;#34; ) var streamer beep.StreamSeekCloser var format beep.Format var volume *effects.Volume func main() { a := app.New() w := a.NewWindow(&amp;#34;fyne mp3 player&amp;#34;) w.Resize(fyne.NewSize(700, 610)) //txtPath := widget.NewEntry() 	//txtPath.Text = &amp;#34;a.</description>
+      <guid>https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</guid>
+      <description>使用Fyne实现音乐播放器</description>
     </item>
     
     <item>
       <title>Fyne案例之接住你小游戏</title>
-      <link>/note/go/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</link>
+      <link>https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</link>
       <pubDate>Fri, 07 Oct 2022 20:39:49 +0800</pubDate>
       
-      <guid>/note/go/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</guid>
-      <description>使用Fyne实现【接住你】小游戏 案例效果 ​	有水果从上往下掉落，小车在下面接；左边有开始按钮，以及得分统计。
-案例实现 ​	准备：关于fyne框架的安装以及使用前的准备工作可以参考官网：
- https://developer.fyne.io/started/
- ​	1、自定义主题
-​	自定义一个myTheme.go的文件，然后用到了是微软雅黑的字体。
-package main import ( _ &amp;#34;embed&amp;#34; &amp;#34;fyne.io/fyne/v2&amp;#34; &amp;#34;image/color&amp;#34; &amp;#34;fyne.io/fyne/v2/theme&amp;#34; ) //go:embed msyh.ttc var font []byte var myfont = &amp;amp;fyne.StaticResource{ StaticName: &amp;#34;MSYH&amp;#34;, StaticContent: font, } type myTheme struct{} var _ fyne.Theme = (*myTheme)(nil) // return bundled font resource func (*myTheme) Font(s fyne.TextStyle) fyne.Resource { if s.Monospace { return theme.LightTheme().Font(s) // return theme.DefaultTheme().Font(s) 	} if s.Bold { if s.</description>
+      <guid>https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</guid>
+      <description>使用Fyne实现【接住你】小游戏</description>
     </item>
     
     <item>
       <title>Gin&#43;vue2博客笔记（前端）</title>
-      <link>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</link>
+      <link>https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</link>
       <pubDate>Sun, 14 Aug 2022 23:44:09 +0800</pubDate>
       
-      <guid>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</guid>
-      <description>gin+vue2博客笔记（前端） 写在前面 记录一下，这个是一个博客系统，后端使用的是gin框架编写；前端包含管理页面和前台展示页面，使用的是vue2版本；
-参考的是B站的一位大佬的视频：
- https://www.bilibili.com/video/BV1AA411v7e6
- 管理页面 搭建环境 使用的环境：
- npm : 6.14.17
-node : 14.20.0
-yarn : 1.22.19
-vue/cli : 5.0.8
- 1、vue create admin 使用脚手架创建管理页面的项目
-2、ui框架使用的是ant-design-vue；yarn add ant-design-vue
-修改脚手架默认页面 1、删除App.vue原先的内容，修改如下：
-&amp;lt;template&amp;gt; &amp;lt;a-config-provider :locale=&amp;#34;locale&amp;#34;&amp;gt; &amp;lt;div id=&amp;#34;app&amp;#34;&amp;gt; &amp;lt;router-view/&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/a-config-provider&amp;gt; &amp;lt;/template&amp;gt; &amp;lt;script&amp;gt; import zhCN from &amp;#39;ant-design-vue/lib/locale-provider/zh_CN&amp;#39; export default { data () { return { locale: zhCN } } } &amp;lt;/script&amp;gt; &amp;lt;style&amp;gt; &amp;lt;/style&amp;gt; 2、修改main.js
-import Vue from &amp;#39;vue&amp;#39; import App from &amp;#39;.</description>
+      <guid>https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</guid>
+      <description>这个是一个博客系统，后端使用的是gin框架编写；前端包含管理页面和前台展示页面，使用的是vue2版本；</description>
     </item>
     
     <item>
       <title>Gin&#43;vue2博客笔记（后端）</title>
-      <link>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/</link>
+      <link>https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/</link>
       <pubDate>Sun, 14 Aug 2022 23:44:00 +0800</pubDate>
       
-      <guid>/note/go/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/</guid>
-      <description>gin+vue2博客笔记（后端） 写在前面 记录一下，这个是一个博客系统，后端使用的是gin框架编写；前端包含管理页面和前台展示页面，使用的是vue2版本；
-参考的是B站的一位大佬的视频：
- https://www.bilibili.com/video/BV1AA411v7e6
- 搭建框架 1、创建ginblog的项目
-2、创建相关文件夹
-├─ main.go //主程序 ├─api //路由 ├─config // 项目配置入口 ├─database // 数据库备份文件（初始化） ├─log // 项目日志 ├─middleware // 中间件 ├─model // 数据模型层 ├─routes //路由路口 ├─static // 打包静态文件 ├─upload ├─utils // 项目公用工具库 └─web // 前端开发源码 加载配置和链接数据库 1、创建config/config.ini配置文件
-[server] AppMode = debug HttpPort = :3000 JwtKey = abcd3efg [database] DB = mysql DbHost = localhost DbPort = 3306 DbUser = root DbPassWord = 123456 DbName = ginblog 2、加载配置，创建utils/setting.</description>
+      <guid>https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/</guid>
+      <description>这个是一个博客系统，后端使用的是gin框架编写；前端包含管理页面和前台展示页面，使用的是vue2版本；</description>
     </item>
     
     <item>
       <title>PWA笔记</title>
-      <link>/note/go/pwa%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Wed, 27 Apr 2022 00:09:36 +0800</pubDate>
       
-      <guid>/note/go/pwa%E7%AC%94%E8%AE%B0/</guid>
-      <description>PWA笔记 PWA全称是：Progressive Web App；渐进式的web应用；完全不影响现有的web应用，但是可以让你渐渐的拥有更加好的体验。
-用到的技术 一个普通的web应用要改造成一个PWA，需要用到的技术有：
-manifest	应用清单 service worker	服务器与浏览器之间的中间人 promise	ES6新增的构造函数 fetch	为web异步获取资源的api caches	主要用于请求的缓存 notification	浏览器通知
-先准备一个普通的web应用 开始改造 1、在项目根目录准备一个manifest.json文件
-{ &amp;#34;name&amp;#34;:&amp;#34;testrobot&amp;#34;, &amp;#34;short_name&amp;#34;:&amp;#34;robot&amp;#34;, &amp;#34;start_url&amp;#34;:&amp;#34;index.htm&amp;#34;, &amp;#34;display&amp;#34;:&amp;#34;standalone&amp;#34;, &amp;#34;background_color&amp;#34;:&amp;#34;#fff&amp;#34;, &amp;#34;icons&amp;#34;:[{ &amp;#34;src&amp;#34;: &amp;#34;logo.png&amp;#34;, &amp;#34;sizes&amp;#34;: &amp;#34;52x52&amp;#34;, &amp;#34;type&amp;#34;: &amp;#34;image/png&amp;#34; },{ &amp;#34;src&amp;#34;: &amp;#34;logo.png&amp;#34;, &amp;#34;sizes&amp;#34;: &amp;#34;144x144&amp;#34;, &amp;#34;type&amp;#34;: &amp;#34;image/png&amp;#34; }] } 注：icons图片要注意，如果空着，后续可能不会出现安装的按钮。
-并在我们的web页面中添加这个manifest.json
-&amp;lt;link rel=&amp;quot;manifest&amp;quot; href=&amp;quot;manifest.json&amp;quot;&amp;gt;
-manifest更多的相关知识可以查看：https://developer.mozilla.org/zh-CN/docs/Web/Manifest
-2、判断浏览器是否支持service Worker
-&amp;lt;script&amp;gt; window.addEventListener(&amp;#39;load&amp;#39;,async ()=&amp;gt;{ if (&amp;#39;serviceWorker&amp;#39; in navigator){ try{ const registration = await navigator.serviceWorker.register(&amp;#39;./sw.js&amp;#39;) console.log(&amp;#34;注册成功&amp;#34;) }catch(e){ console.log(&amp;#34;注册失败&amp;#34;) } } }) &amp;lt;/script&amp;gt; service worker更多的相关的知识可以查看：https://developer.</description>
+      <guid>https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/</guid>
+      <description>PWA全称是：Progressive Web App；渐进式的web应用；完全不影响现有的web应用，但是可以让你渐渐的拥有更加好的体验</description>
     </item>
     
     <item>
       <title>Golang案例 Zinx轻量级服务器框架学习笔记</title>
-      <link>/note/go/golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Mon, 11 Apr 2022 21:03:47 +0800</pubDate>
       
-      <guid>/note/go/golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
-      <description>Golang案例-zinx轻量级服务器框架学习笔记  案例来源：
-《zinx-Golang轻量级TCP服务器框架(适合Go语言自学-深入浅出)》
-https://www.bilibili.com/video/BV1wE411d7th
- ZinxV0.1-基础的Server服务器 Zinx分为ziface和znet模块；
-ziface是抽象层接口，znet为具体的实现。
- zinx/ziface/IServer.go
- package ziface //定义一个服务器接口 type IServer interface { //启动服务器 	Start() //停止服务器 	Stop() //运行服务器 	Serve() }  zinx/znet/server.go
- package znet import ( &amp;#34;fmt&amp;#34; &amp;#34;net&amp;#34; &amp;#34;zinx/ziface&amp;#34; ) //Iserver的接口实现，定义一个server的服务模块 type Server struct { //服务器名称 	Name string //服务器绑定的ip版本 	IPVersion string //服务器监听的IP 	IP string //服务器监听的端口 	Port int } //启动服务器 func (s *Server) Start() { fmt.Printf(&amp;#34;[Start] Server Listenner at IP:%s, Port %d, is starting\n&amp;#34;, s.</description>
+      <guid>https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+      <description>zinx轻量级服务器框架学习笔记</description>
     </item>
     
     <item>
       <title>Golang小案例 爬取豆瓣电影</title>
-      <link>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/</link>
+      <link>https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/</link>
       <pubDate>Sun, 27 Mar 2022 17:09:26 +0800</pubDate>
       
-      <guid>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/</guid>
-      <description>Golang小案例-爬取豆瓣电影 在之前有学习过其他的爬虫案例，这个要实现的这个案例不一样的地方在于用到了第三方选择器、以及持久化存储是使用数据库
-案例来源：
- 小生凡一的博客：Go语言并发爬虫
-https://blog.csdn.net/weixin_45304503/article/details/121885673
- 功能 1、通过url访问豆瓣的网址
-2、通过第三方解析器解析内容；
-3、持久化到本地数据库中
-实现 1、定义要保存的电影的数据结构
-type MovieData struct { Title string `json:&amp;#34;title&amp;#34;` Director string `json:&amp;#34;director&amp;#34;` Picture string `json:&amp;#34;picture&amp;#34;` Actor string `json:&amp;#34;actor&amp;#34;` Year string `json:&amp;#34;year&amp;#34;` Score string `json:&amp;#34;score&amp;#34;` Quote string `json:&amp;#34;quote&amp;#34;` } 2、初始化数据库
-var DB *sql.DB const ( USERNAME = &amp;#34;root&amp;#34; PASSWORD = &amp;#34;123456&amp;#34; HOST = &amp;#34;localhost&amp;#34; PORT = &amp;#34;3306&amp;#34; DBNAME = &amp;#34;douban_movie&amp;#34; ) func InitDB() { //数据库连接格式：root:123456@tcp(127.0.0.1:3306)/douban_movie?charset=utf8 	path := strings.Join([]string{USERNAME, &amp;#34;:&amp;#34;, PASSWORD, &amp;#34;@tcp(&amp;#34;, HOST, &amp;#34;:&amp;#34;, PORT, &amp;#34;)/&amp;#34;, DBNAME, &amp;#34;?</description>
+      <guid>https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/</guid>
+      <description>爬虫案例：爬取豆瓣电影</description>
     </item>
     
     <item>
       <title>Go Micro案例</title>
-      <link>/note/go/go-micro%E6%A1%88%E4%BE%8B/</link>
+      <link>https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/</link>
       <pubDate>Sun, 27 Mar 2022 16:34:46 +0800</pubDate>
       
-      <guid>/note/go/go-micro%E6%A1%88%E4%BE%8B/</guid>
-      <description>go-micro案例：简单备忘录  案例来源：[小生凡一]的博文
-https://blog.csdn.net/weixin_45304503/article/details/122286980?spm=1001.2014.3001.5501
- 案例的流程大概如下图所示：
-准备工作 protoc相关：
-1、protoc
-用于生成序列化结构的数据格式
-下载地址：https://github.com/protocolbuffers/protobuf/releases
-并将protoc下的bin目录路径添加到环境变量path中
-2、protobuf
-protoc-gen-go是protobuf编译插件系列中的go版本；
-通过go get github.com/golang/protobuf 进行下载；如果go get不下来，可以使用git clone源码；然后到protoc-gen-go目录下；go build生成protoc-gen-go.exe；然后将protoc-gen-go.exe复制到protoc下的bin目录中。
-3、go-micro
-使用的是v2这个版本；使用go get github.com/micro/go-micro/v2 进行下载
-4、protoc-gen-micro
-使用go get -u github.com/micro/protoc-gen-micro 进行下载；下载后进行build；然后将protoc-gen-micro.exe复制到protoc的bin目录下。
-5、etcd
-下载地址：https://github.com/etcd-io/etcd/releases
-6、etcdkeeper
-下载地址：https://github.com/evildecay/etcdkeeper/releases/tag/v0.7.6
-7、rabbitmq
-安装地址，参考https://blog.csdn.net/qq_47588845/article/details/107986373
-使用命令，参考https://blog.csdn.net/a18679016236/article/details/84965212
-rabbitmq的一些消息模型，参考https://blog.csdn.net/weixin_45304503/article/details/122405835?spm=1001.2014.3001.5502
-User模块（用户模块） 数据库相关配置 1、准备配置文件user/conf/conf.ini
-[service] AppMode = debug HttpPort = :3000 [mysql] Db = mysql DbHost = 127.0.0.1 DbPort = 3306 DbUser = root DbPassWord = 123456 DbName = micro_todo_list 2、读取配置文件</description>
+      <guid>https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/</guid>
+      <description>通过案例简单备忘录，来学习go-micro</description>
     </item>
     
     <item>
       <title>Go Micro笔记</title>
-      <link>/note/go/go-micro%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Sun, 27 Mar 2022 16:34:31 +0800</pubDate>
       
-      <guid>/note/go/go-micro%E7%AC%94%E8%AE%B0/</guid>
-      <description>go-micro笔记 go-micro/v2中已经剔除了consul服务发现，使用etcd了，这边为了还是先学习一下consul服务发现
-consul服务发现 安装： 1、下载：https://www.consul.io/downloads
-2、添加到环境变量
-3、测试
-输入consul agent -dev来启动
-输入consul leave 关闭
-效果：
-consul命令 使用consul agent -h 可以查看帮忙命令
-一些常用的参数有：
- -bind	指定consul所在ip地址
--client	表明哪些机器可以访问consul，0.0.0.0不受限
--config-dir	所有主动注册服务的描述信息
--data-dir	存储所有注册过来的srv机器的详细信息
--dev	开发者模式
--http-port	consul自带一个web访问的默认端口号：8500
--node	服务发现的名字
--rejoin	重新加入集群
--server	切换是否作为server模式；不加则作为client模式
--ui	使用内置UI静态web服务
- consul 使用： 带有一些参数启动
-#在终端键入 consul agent -server -bootstrap-expect 1 -data-dir=&amp;#34;D:\Program Files\consul_1.11.4_windows_amd64\temp&amp;#34; -node=n1 -bind=192.168.0.54 -ui -rejoin -config-dir=&amp;#34;D:\Program Files\consul_1.11.4_windows_amd64\conf&amp;#34; -client=0.0.0.0 #看到running表明启动成功 Consul agent running! 其他一些命令：
-consul member:查看成员
-consul info:查看详情信息
-consul leave:优雅关闭</description>
+      <guid>https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/</guid>
+      <description>学习go-micro</description>
     </item>
     
     <item>
       <title>Grpc笔记</title>
-      <link>/note/go/grpc%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/grpc%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Sun, 27 Mar 2022 16:34:18 +0800</pubDate>
       
-      <guid>/note/go/grpc%E7%AC%94%E8%AE%B0/</guid>
-      <description>grpc笔记 安装 方式一：
-要求能够访问google官网
- go get -u google.golang.org/grpc
-方式二：
-git clone https://github.com/grpc/grpc-go.git $GOPATH/src/google.golang.org/grpc git clone https://github.com/golang/net.git $GOPATH/src/golang.org/x/net git clone https://github.com/golang/text.git $Goptah/src/golang.org/x/text git clone https://github.com/google/go-genproto.git $GOPATH/src/google.golang.org/genproto cd $GOPATH/src go install google.golang.org/grpc 如果遇到too many arguments的问题：
-可能是有空格；加上引号试试；只要能下载下来就行。
-git clone https://github.com/grpc/grpc-go.git &amp;#34;D:\Program Files\go_code\google.golang.org\grpc&amp;#34; 下载后，安装一下
-使用 准备proto文件
-syntax=&amp;#34;proto3&amp;#34;;package pb;option go_package=&amp;#34;/proto&amp;#34;;message Teacher{ int32 age=1; string name=2;}service SayName{ rpc SayHello(Teacher) returns(Teacher);}执行命令来生成pb.go文件protoc --go_out=plugins=grpc:./ *.proto
-调用：
-服务端：
-1、初始化一个grpc对象
-2、注册服务
-3、设置监听、指定IP、port
-4、启动服务
-package main import ( &amp;#34;context&amp;#34; &amp;#34;fmt&amp;#34; &amp;#34;google.golang.org/grpc&amp;#34; pb &amp;#34;StudyGRPC/pb/proto&amp;#34; &amp;#34;net&amp;#34; ) type Children struct { } func (this *Children) SayHello(ctx context.</description>
+      <guid>https://kevinbin123.github.io/post/grpc%E7%AC%94%E8%AE%B0/</guid>
+      <description>grpc笔记</description>
     </item>
     
     <item>
       <title>RPC笔记</title>
-      <link>/note/go/rpc%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/RPC%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Sun, 27 Mar 2022 16:33:57 +0800</pubDate>
       
-      <guid>/note/go/rpc%E7%AC%94%E8%AE%B0/</guid>
-      <description>RPC笔记 作用： RPC：remote procedure call protocol远程调用协议；基于TCP协议，在网络中，实现像调用本机的函数一样，调用其他机子的函数。
-过程： 在服务端：
-1、注册服务，并绑定方法
-rpc.RegisterName(&amp;#34;服务名&amp;#34;,回调对象) 回调对象中的方法需要满足以下条件：
-  1、方法是导出的：也就是首字母要大写 2、方法有两个参数，都是导出类型或内建类型 3、方法的第二个参数是指针 4、方法只有一个error接口类型的返回值  例如：
-type Hello struct{}
-func (h *Hello)HelloWorld(name string,resp *string) error{ *resp =&amp;ldquo;你好，&amp;quot;+name return nil }
- 2、启动监听
-listener,err:=net.Listen() 3、建立连接
-conn,err:=listener.Accept() 4、将连接绑定到rpc服务
-rpc.ServeConn(conn) 在客户端：
-1、用rpc连接服务器
-conn,err:=rpc.Dial() 2、调用远程函数
-conn.Call(&amp;#34;服务名.方法名&amp;#34;,传入参数，传出参数) example: Server.go
-package main import ( &amp;#34;net/rpc&amp;#34; &amp;#34;net&amp;#34; &amp;#34;fmt&amp;#34; ) type Hello struct{} func (h *Hello)HelloWorld(name string,resp *string) error{ *resp =&amp;#34;你好，&amp;#34;+name return nil } func main(){ //1、注册rpc服务，并绑定方法 	err:=rpc.</description>
+      <guid>https://kevinbin123.github.io/post/RPC%E7%AC%94%E8%AE%B0/</guid>
+      <description>RPC：remote procedure call protocol远程调用协议；基于TCP协议，在网络中，实现像调用本机的函数一样，调用其他机子的函数。</description>
     </item>
     
     <item>
       <title>Protobuf笔记</title>
-      <link>/note/go/protobuf%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/protobuf%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Sun, 27 Mar 2022 16:33:43 +0800</pubDate>
       
-      <guid>/note/go/protobuf%E7%AC%94%E8%AE%B0/</guid>
-      <description>protobuf笔记 protobuf全程是Google Protocol Buffers;是一种与平台、语言无关的结构化数据表示方法；
-环境准备 1、下载protoc
-下载地址：
-https://github.com/protocolbuffers/protobuf/releases/download/v3.20.0-rc1/protoc-3.20.0-rc-1-win64.zip
-2、下载protoc-gen-go
-protoc-gen-go是protobuf编译插件里面Go的版本：
-可以通过go get方式下载；下载后在gopath中会生成protoc-gen-go.exe。
- go get -u github.com/golang/protobuf/protoc-gen-go
-如果下载不下来，可以先git clone
-然后build一下
-3、下载protoc-gen-micro （这一步不是必须的，在使用go-micro的时候才需要）
-go get -u github.com/micro/protoc-gen-micro
-或者人工build
-4、添加到环境变量
-使用 1、准备proto文件（go）
-syntax = &amp;#34;proto3&amp;#34;;package pb;enum Week{ //枚举必须从0开始  Monday=0; Tuesday=1;}message Student{ string name=1; int32 age=2;	 People p=3;	//自定义类型  repeated int32 score=4; //数组  Week w=5;	//枚举类型  oneof data{ //联合体  string teacher=6; string class=7; }}message People{ int32 weight=1;}service testS { rpc Say(People) returns (Student);}2、编译protoc --go_out=.</description>
+      <guid>https://kevinbin123.github.io/post/protobuf%E7%AC%94%E8%AE%B0/</guid>
+      <description>protobuf全程是Google Protocol Buffers;是一种与平台、语言无关的结构化数据表示方法</description>
     </item>
     
     <item>
       <title>Golang设计模式 选项设计模式</title>
-      <link>/note/go/golang%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%89%E9%A1%B9%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <link>https://kevinbin123.github.io/post/Golang%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%89%E9%A1%B9%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
       <pubDate>Sun, 27 Mar 2022 16:33:29 +0800</pubDate>
       
-      <guid>/note/go/golang%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%89%E9%A1%B9%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
-      <description>Golang设计模式-选项设计模式 选项设计模式 用途：
-用于初始化一个结构体，后续扩展或者删除结构体的相关属性的时候，无需修改初始化方法。
-使用：
-定一个结构体
-type Option struct{ op1 string op2 string op3 int op4 int } 定义一个给Option赋值的函数类型；通过接收Option的指针地址，来对Option进行赋值
-type OptionFunc func(op *Option) 具体OptionFunc的使用:
-func WriteOp1(op1 string) OptionFunc{ return func(op *Option){ op.op1=op1 } } 定义初始化函数
-func InitOption(opfs ...OptionFunc) Option{ option:=Option{} for _,opf:=range opfs{ opf(&amp;amp;option) } return option } 准备工作都做好了，接下来把Option其他几个属性的赋值方法都写好；后续如果要扩展结构体的属性，InitOption方法则无需改动。
-func WriteOp2(op2 string) OptionFunc{ return func(op *Option){ op.op2=op2 } } func WriteOp3(op3 int) OptionFunc{ return func(op *Option){ op.op3=op3 } } func WriteOp4(op4 int) OptionFunc{ return func(op *Option){ op.</description>
+      <guid>https://kevinbin123.github.io/post/Golang%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%89%E9%A1%B9%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>用于初始化一个结构体，后续扩展或者删除结构体的相关属性的时候，无需修改初始化方法</description>
     </item>
     
     <item>
       <title>Gin框架案例</title>
-      <link>/note/go/gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</link>
+      <link>https://kevinbin123.github.io/post/Gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</link>
       <pubDate>Tue, 08 Mar 2022 22:47:51 +0800</pubDate>
       
-      <guid>/note/go/gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</guid>
-      <description>Gin框架案例 案例实现目标：使用Gin框架开发一个api项目，实现外卖应用的后端的api，前端通过调用这些api；本案例不涉及到前端。
-前端启动 项目包含前端、后端两部分，实现前后端分离。
-前端地址：https://github.com/Teanix/shop_client
-需要安装有nodejs；
-运行命令：npm start
-运行后效果如下：
-项目初始化 创建CloudRestaurant项目。
-引入gin包:go get github.com/gin-gonic/gin
-使用配置文件，将项目的一些需要配置的地方进行配置，然后解析到项目中
-采用分层思想；
-config文件夹：存放一些配置文件
-controller文件夹：实现路由控制器等流程控制功能
-dao文件夹：实现具体操作数据库的方法
-model文件夹：是各个对象的定义
-param文件夹：是传递参数的解析
-services文件夹：是对象的功能实现
-tools文件夹：一些工具方法的实现
-1、建立config/app.json文件
-{ &amp;#34;app_name&amp;#34;: &amp;#34;cloudrestaurant&amp;#34;, &amp;#34;app_mode&amp;#34;: &amp;#34;dev&amp;#34;, &amp;#34;app_host&amp;#34;: &amp;#34;localhost&amp;#34;, &amp;#34;app_port&amp;#34;: &amp;#34;8090&amp;#34; } 2、创建tools/Config.go解析配置文件
-package tools import ( &amp;#34;bufio&amp;#34; &amp;#34;encoding/json&amp;#34; &amp;#34;os&amp;#34; ) type Config struct { AppName string `json:&amp;#34;app_name&amp;#34;` AppMode string `json:&amp;#34;app_mode&amp;#34;` AppHost string `json:&amp;#34;app_host&amp;#34;` AppPort string `json:&amp;#34;app_port&amp;#34;` } var _Cfg *Config = nil func GetConfig() *Config { return _Cfg } func ParseConfig(path string) (*Config, error) { file, err := os.</description>
+      <guid>https://kevinbin123.github.io/post/Gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</guid>
+      <description>案例实现目标：使用Gin框架开发一个api项目，实现外卖应用的后端的api，前端通过调用这些api；本案例不涉及到前端。</description>
     </item>
     
     <item>
       <title>Gin框架笔记</title>
-      <link>/note/go/gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/Gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Fri, 04 Mar 2022 20:36:19 +0800</pubDate>
       
-      <guid>/note/go/gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</guid>
-      <description>Gin框架笔记 初识gin 通过go mod init xxx 来管理包，只需要引入包即可，会自动下载包；不需要手动 go get了
-步骤：
-1、通过gin.Default()创建默认路由引擎
-2、设置路由，支持restful风格的api
-3、启动web服务
-简单示例代码：
-package main import &amp;#34;github.com/gin-gonic/gin&amp;#34; func main(){ r:=gin.Default() r.GET(&amp;#34;/&amp;#34;,func(c *gin.Context){ c.String(200,&amp;#34;hello&amp;#34;) }) r.Run() } 浏览器访问效果：
-实现热加载的方式：借助其他工具，比如fresh
-1、下载fresh工具：go get github.com/pilu/fresh
-2、使用fresh命令启动
-gin的路由 使用Restful风格的API 常见的有GET/POST/PUT/DELETE
-GET 使用get方式访问指定的路由；一般用来请求数据
-package main import ( &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main(){ //创建默认的路由引擎 	//设置路由 	//启动web服务 	r:=gin.Default() r.GET(&amp;#34;/users&amp;#34;,func(c *gin.Context){ c.String(200,&amp;#34;我是用户页面&amp;#34;) }) } 使用postman，用get方式请求路径效果：
-POST 使用post方式来请求指定的路由，一般用来增加数据
-package main import ( &amp;#34;github.com/gin-gonic/gin&amp;#34; ) func main(){ //创建默认的路由引擎 	//设置路由 	//启动web服务 	r:=gin.</description>
+      <guid>https://kevinbin123.github.io/post/Gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</guid>
+      <description>gin框架的使用笔记</description>
     </item>
     
     <item>
       <title>Golang小案例 获取成语并查询</title>
-      <link>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</link>
+      <link>https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</link>
       <pubDate>Mon, 28 Feb 2022 20:54:45 +0800</pubDate>
       
-      <guid>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</guid>
-      <description>Golang小案例-获取成语并查询 前言：
-本案例实现的功能：
-1、通过[万维易源]接口获取成语
-2、解析获取到的内容，并通过成语title获取具体是成语释义
-3、解析释义，并持久化到本地文件
-4、根据命令行参数来实现精确查询或者模糊查询
-本案例用到的知识为：
-1、通过http.Get获取接口内容
-2、通过json.Unmarsal解析内容
-3、通过json的Encode方法持久化数据
-4、通过flag实现命令行参数的解析
-准备工作
-定义成语的结构体
-type Idiom struct { Title string `json:&amp;#34;title&amp;#34;` Spell string `json:&amp;#34;spell&amp;#34;` Smiple string `json:&amp;#34;simple&amp;#34;` Derivation string `json:&amp;#34;derivation&amp;#34;` Content string `json:&amp;#34;content&amp;#34;` } 使用一个map来存放所有的成语
-var Idioms = make(map[string]Idiom) 定义一个本地路径用来持久化数据
-var DBpath = &amp;#34;成语大全.json&amp;#34; 定义用来接收命令行参数的变量
-var StringVar string var KeyVar string 获取列表数据
-从接口获取列表数据
-func GetJson(url string) (bytes []byte, err error) { resp, err := http.Get(url) if err != nil { fmt.</description>
+      <guid>https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/</guid>
+      <description>爬虫案例：获取成语并查询</description>
     </item>
     
     <item>
       <title>Docker笔记</title>
-      <link>/note/go/docker%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/docker%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Sun, 27 Feb 2022 20:53:41 +0800</pubDate>
       
-      <guid>/note/go/docker%E7%AC%94%E8%AE%B0/</guid>
-      <description>Docker笔记 基本概念 安装 在centos上安装，需要Centos7以上的版本
-其它系统以及自动安装的方式可以查看参考文献1
-手动安装
-0、安装之前先卸载
-$ sudo yum remove docker \  docker-client \  docker-client-latest \  docker-common \  docker-latest \  docker-latest-logrotate \  docker-logrotate \  docker-engine 1、安装设置仓库需要的软件包
-[root@localhost ~]# yum install -y yum-utils device-mapper-persistent-data lvm2 2、设置仓库，这边选择阿里云的
-[root@localhost ~]# yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 3、安装最新版本的Docker Engine-Community和containerd；
-[root@localhost ~]# yum install docker-ce docker-ce-cli containerd.io 4、启动docker并设置为开机自启动
-[root@localhost ~]# systemctl start docker [root@localhost ~]# systemctl enable docker 5、查看版本，用来验证是否安装成功
-[root@localhost ~]# docker --version docker的使用 demo的使用 Docker 以 ubuntu 镜像创建一个新容器，然后在容器里执行 bin/echo &amp;ldquo;Hello world&amp;rdquo;</description>
+      <guid>https://kevinbin123.github.io/post/docker%E7%AC%94%E8%AE%B0/</guid>
+      <description>docker的安装、基本命令</description>
     </item>
     
     <item>
       <title>Redis笔记</title>
-      <link>/note/go/redis%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/redis%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Thu, 24 Feb 2022 00:40:21 +0800</pubDate>
       
-      <guid>/note/go/redis%E7%AC%94%E8%AE%B0/</guid>
-      <description>redis笔记 安装 windows下安装 下载redis:https://github.com/tporadowski/redis/releases
-解压后，cmd进入到redis文件夹；输入命令启动：
-redis-server.exe
-启动cli连接server，新开一个cmd进入redis文件夹，输入命令：
-redis-cli.exe -h 127.0.0.1 -p 6379
-Linux下安装 docker方式：
-直接使用docker启用一个redis5.0.7的环境
-docker run --name redis507 -p 6379:6379 -d redis:5.0.7
-启用redis-cli连接redis server
-docker run -it --network host --rm redis:5.0.7 redis-cli
-正常方式：
-下载地址：https://redis.io/download
-下载并安装
-# wget https://download.redis.io/releases/redis-6.2.6.tar.gz # tar -zxvf redis-6.2.6.tar.gz # cd redis-6.2.6 # make make完之后，src目录会出现redis-server服务程序，还有客户端程序redis-cli；redis.conf也可以省略，使用默认配置
-# cd src # ./redis-server ../redis.conf 服务端启动之后，可以使用客户端与服务端进行交互
-# cd src # ./redis-cli 带ip地址和端口的链接
-# ./redis-cli -h 127.0.0.1 -p 6379 -a &amp;#34;mypass&amp;#34; 查看是否可以连接</description>
+      <guid>https://kevinbin123.github.io/post/redis%E7%AC%94%E8%AE%B0/</guid>
+      <description>redis使用笔记</description>
     </item>
     
     <item>
       <title>Golang小案例 即时通讯</title>
-      <link>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/</link>
+      <link>https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/</link>
       <pubDate>Tue, 22 Feb 2022 21:31:59 +0800</pubDate>
       
-      <guid>/note/go/golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/</guid>
-      <description>Golang小案例-即时通讯 本案例的目的是通过练习这么一个即时通讯的小案例来掌握go语言的基本使用；
-这个案例是从B站的一个视频看到的，地址在文末的参考文献中，自己又写一遍主要是为了防止忘记，好记性不如烂笔头，眼过千遍，不如coding一遍。
-本案例使用的架构如图所示：
-思路：
-1、构建server服务器，server服务器中包含ip地址，port端口，包含一个onLineMap的map类型的字段，用来记录上线的用户，还包含一个Message的channel，用来广播消息
-2、server中还启动一个DoHandler的goroutine，用来处理每一个连接到server的业务逻辑；以及开启一个ListenMessage的goroutine来监听Message
-3、user中包含了Name，Addr，还包含一个C的channel，用来接收从Message发过来的消息，还有conn用来与对应的客户端通信
-4、user中实现OnLine用户上线方法、OffLine用户下线方法、DoMessage用户处理消息业务
-构建Server  本小节目标：构建server服务器，能启动server
- 1、定义Server类型，一个服务器至少需要一个IP和一个端口
-type Server struct{ Ip string	//服务器的ip 	Port int	//服务器的端口 } 2、创建Server对象
-func NewServer(ip string, port int) *Server{ server:=&amp;amp;Server{ Ip:ip, Port:port, } return server } 3、启动Server服务，按照先监听、再创建accept、然后处理read的顺序启动server
-func (this *Server) Start(){ //监听listen 	listener, err := net.Listen(&amp;#34;tcp&amp;#34;, fmt.Sprintf(&amp;#34;%s:%d&amp;#34;, this.Ip, this.Port)) if err!=nil{ fmt.Println(&amp;#34;listen error:&amp;#34;,err) return } //关闭监听 	defer listener.Close() //创建accept 	for{ conn, err := listener.Accept() if err!</description>
+      <guid>https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/</guid>
+      <description>本案例的目的是通过练习这么一个即时通讯的小案例来掌握go语言的基本使用</description>
     </item>
     
     <item>
       <title>MySQL笔记</title>
-      <link>/note/db/mysql%E7%AC%94%E8%AE%B0/</link>
+      <link>https://kevinbin123.github.io/post/MySQL%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Thu, 17 Feb 2022 00:02:17 +0800</pubDate>
       
-      <guid>/note/db/mysql%E7%AC%94%E8%AE%B0/</guid>
-      <description>MySQL学习笔记 [TOC]
-相关概念 DB: databae，数据库，保存一组有组织的数据的容器
-DBMS: Database Management System，数据库管理系统，又称为数据库软件（产品），用于管理DB中的数据
-SQL: Structure Query Language，结构化查询语言，用于和DBMS通信的语言
-初始MySQL 安装：略
-卸载：略
-配置：略
-启动：net start mysql
-停止：net stop mysql
-登录：mysql -h localhost -P 3306 -u root -p 或者 mysql -u root -p
-登出：exit 或者 CTRL+C
-常见命令 查看当前所有的数据库：show databases;
-打开指定的库：use 库名;
-查看当前库的所有表：show tables;
-查看其它库的所有表：show tables from 库名;
-创建表：
-create table 表名( 列名 列类型, 列名 列类型, ... ); 查看表结构：desc 表名;
-查看数据库版本：
-​	未登陆到mysql服务端： mysql -V 或者mysql --version
-​	进入到数据库后用：select version();</description>
+      <guid>https://kevinbin123.github.io/post/MySQL%E7%AC%94%E8%AE%B0/</guid>
+      <description>MySQL学习笔记</description>
     </item>
     
     <item>
       <title>Golang GMP学习笔记</title>
-      <link>/note/go/golanggmp/</link>
+      <link>https://kevinbin123.github.io/post/GolangGMP/</link>
       <pubDate>Thu, 03 Feb 2022 16:47:43 +0800</pubDate>
       
-      <guid>/note/go/golanggmp/</guid>
-      <description>Golang协程调度器原理与GMP设计思想 Golang调度器由来 单进程问题 早期计算机是单进程，存在一些问题：计算机只能一个任务一个任务处理，进程阻塞带来CPU时间的浪费。
-多进程/多线程问题 为了改进这些问题，出现多线程/多进程操作系统：CPU调度器将调度时间分成一片一片时间片，在每个时间片中执行对应的进程，在宏观上看起来进程A、B、C是在并发执行；解决了单进程的阻塞问题。
-但却带来问题：
-​	1、切换进程所引起的切换成本；进程/线程的数量越多，切换成本就越大，也就越浪费；
-​	2、同时随着同步竞争（锁、竞争资源冲突）开发设计也变得越来越复杂。
-存在壁垒：
-​	1、高CPU消耗：多线程引起高消耗调度CPU；
-​	2、高内存占用：进程占用内存（虚拟内存4GB&amp;ndash;32bit OS）；线程占用内存（约4MB）；存在高内存占用弊端。
-协程引发的问题 协程（co-routine）引发的问题：
-​	1、N:1 无法利用多个CPU,出现阻塞的瓶颈
-​	2、1:1 跟多线程/多进程无异，切换成本代价昂贵
-​	3、M:N 能够利用多核、过于依赖协程调度器的优化和算法。
-协程工作在用户空间、线程工作在内核空间；M个协程，通过协程调度器与N个线程之间进行调度；重点在于优化协程调度器，使得线程的利用率达到更高。
-调度器的优化 Golang对协程的处理：协程（co-routine） 改成 Goroutine；内存：几KB可以大量开辟；灵活调度：切换成本低
-早期Golang调度器的过程：
-存在一个全局go协程队列，线程M（thread）要对go协程进行处理的时候，首先对全局go进行加锁，然后处理，处理完之后，再解锁，将go放回全局协程队列中。存在如下问题：
-​	1、创建、销毁、调度G都需要每个M（thread线程）获取锁，形成激烈的锁竞争
-​	2、M转移G会造成延迟和额外的系统负载
-​	3、系统调用（CPU在M之间的切换）导致频繁的线程阻塞和取消阻塞操作增加了系统开销
-Goroutine调度器的GMP模型和设计思想 GMP模型简介 GMP的含义：
-​	G: goroutine协程
-​	P：processor处理器，用来处理goroutine协程，和GOMAXPROCS个数一致
-​	M：thread线程
-全局队列：存放等待运行的G
-P的本地队列：存放等待运行的G；数量有限制一般不超过256个G；优先将新创建的G放在P的本地队列，如果满了会放在全局队列中
-P列表：程序启动时创建，最多有GOMAXPROCS个（可配置）
-M列表：当前操作系统分配到当前Go程序的内核线程数
-P和M的数量：
-​	P的数量：可以通过环境变量$GOMAXPROCS设置；或者在程序中通过runtime.GOMAXPROCS()来设置。
-​	M的数量：Go语言本身，限定M的最大值是10000(忽略)；runtime/debug包中的SetMaxThread函数来设置；有一个M阻塞，会创建一个新的M；如果有M空闲，那么会回收或睡眠
-调度器的设计策略 调度器的设计策略：复用线程、利用并行、抢占、全局G队列
-复用线程：work stealing机制、hand off机制
-​	work stealing机制：本线程没有可运行的G的时候，从其他M的P本地队列中偷取G，放在自己的P本地队列中执行
-​	hand off机制：当前M1在执行的G1出现了阻塞操作，创建/唤醒一个threadM3，将当前M1的P和P的本地队列都交给M3，然后M1和G1进行阻塞，M1睡眠或销毁。</description>
+      <guid>https://kevinbin123.github.io/post/GolangGMP/</guid>
+      <description>协程调度器原理与GMP设计思想</description>
     </item>
     
     <item>
       <title>计算机网络基础学习笔记</title>
-      <link>/note/net/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</link>
+      <link>https://kevinbin123.github.io/post/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Tue, 25 Jan 2022 21:40:40 +0800</pubDate>
       
-      <guid>/note/net/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</guid>
-      <description>计算机网络 计算机网络基础 因特网概述 网络、互联网（互联网）和因特网
-​	网络（NetWork）由若干节点（Node）和连接这些结点的链路（Link）zucheng
-​	多个网络还可以通过路由器组成，构成一个更大的网络，互联网，互联网是网络的网络
-​	因特网（Internet）是世界上最大的互连网络
-​	Internet和internet的区别：
-​	internet（互联网或互连网）是通用名词，网络间的协议是任意的
-​	Internet（因特网）是一个专用名词，采用TCP/IP协议族作为通信规则，前身是ARPANET。
-因特网发展的三个阶段
-​	从单个网络ARPANET向互联网发展
-​	逐步建成三级结构的因特网
-​	逐步形成了多层次ISP结构的因特网
-因特网的标准化工作
-​	制定标准一个很多特点是面向公众;所有的RFC（Request For Comments）都可以从因特网上免费下载
-​	因特网协会ISOC是一个国际性组织，对因特网进行全面管理
-​	因特网正式标准要经历的4个阶段：
-​	因特网草案（这个阶段还不是RFC文档）、建议标准（开始成为RFC文档）、草案标准、因特网标准
-因特网的组成
-​	边缘部分：由所有主机组成，用户直接使用，用来进行通信和资源共享
-​	核心部分：由大量网络和连接这些网络的路由器组成，为边缘部分提供服务（提供连通性和交换）
-三种交换方式 电路交换、报文交换、分组交换
-电路交换
-​	优点：通信时延小、有序传输、没有冲突、适用范围广、实时性强、控制简单
-​	缺点：建立连接时间长、线路独占，使用效率低、灵活性差、难以规格化
-报文交换：
-​	优点：无需建立连接、动态分配线路、提高线路可靠性、提高线路利用率、提供多目标服务
-​	缺点：引起了转发时延、需要较大存储缓存空间、需要传输额外的信息量
-分组交换：
-​	优点：无需建立连接、线路利用率高、简化了存储管理、加速传输、减少出错概率和重发数据量
-​	缺点：引起了转发时延、需要传输额外的信息量、对于数据报服务，存在失序，丢失或重复分组问题，对于虚电路服务，存在呼叫建立，数据传输和虚电路释放三个过程。
-计算机网络定义和分类 计算机网络最简单的定义：一些互连的、自治的计算机的集合
-计算机网络的分类：
-​	按交换技术分类：电路交换网络、报文交换网络、分组交换网络
-​	按使用者分类：公用网、专用网
-​	按传输介质分类：有线网络、无线网络
-​	按覆盖范围分类：广域网WAN、城域网MAN、局域网LAN、个域网PAN
-​	按拓扑结构分类：总线型网络、星型网络、环型网络、网状型网络
-计算机网络的性能指标 速率、带宽、吞吐量、时延、时延带宽积、往返时间、利用率、丢包率</description>
+      <guid>https://kevinbin123.github.io/post/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/</guid>
+      <description>计算机网络基础学习笔记</description>
     </item>
     
     <item>
       <title>Golang 中GC回收机制学习笔记</title>
-      <link>/note/go/golanggc/</link>
+      <link>https://kevinbin123.github.io/post/GolangGC/</link>
       <pubDate>Wed, 05 Jan 2022 23:47:43 +0800</pubDate>
       
-      <guid>/note/go/golanggc/</guid>
-      <description>Golang 中GC回收机制 三色标记与混合写屏障 GC (Garbage Collection)垃圾回收机制
-GoV1.3之前的回收机制：标记清除（mark and sweep）
-GoV1.5 的回收机制：三色标记
-GoV1.8的回收机制：混合写屏障
-标记清除 垃圾回收的对象就是程序不可达的对象。
-过程 1、执行STW(Stop The World)，暂停程序业务逻辑，找到所有可达对象，和不大可达对象
-2、标记出来所有可达的对象
-3、没有被标记的对象，被GC所清除
-4、停止暂停，程序继续运行，然后重复这个这个过程，知道process程序生命周期结束。
-缺点 1、STW，让程序暂停，程序出现卡顿（最重要的问题）
-2、标记需要扫描整个heap
-3、清除数据会产生heap碎片
-尝试改进：
-原来的顺序：
-启动STW - &amp;gt; Mark标记 -&amp;gt;Sweep清除 -&amp;gt;停止STW
-改进思路：
-启动STW -&amp;gt; Mark标记 -&amp;gt; 停止STW -&amp;gt;Sweep清除
-结论：STW时间的影响并不能得到有效的改进，尝试使用其他的方式。
-三色标记法 三色：White白色标记表、Grey灰色标记表、Black黑色标记表
-过程 1、所有的对象放在白色标记表中
-2、遍历Root Set（非递归，只遍历一次），把直接可达的对象从白色标记表中移除，并放到灰色标记表中
-3、遍历Grey灰色标记表，将可达对象，从白色标记表中移除，放到灰色标记表中，遍历过的灰色对象从灰色标记表移除，放到黑色标记表中
-4、重复3这个过程，直到灰色标记表为空，剩下的白色标记表中的对象就是要被清除的。
-5、回收所有白色对象（垃圾）
-不启动STW存在的问题 假如不启动STW，在GC回收过程中存在这种一个情况：
-有一个白色对象3，原先被灰色对象2指向着，这个时候，黑色对象4指向白色对象3，灰色对象2断开白色对象3了。这个时候会发生如下情况：
-灰色对象2遍历可达对象的时候，白色对象3不会被扫描到，黑色对象4已经是黑色了，不会再去扫描；这个时候白色对象3没有任何对象扫描到它，则会当做是垃圾回收掉。但它并不是垃圾（被黑色对象4引用着）。
-这种情况是需要避免的，要发生这种情况，需要满足两个条件：
-​	条件1：一个白色对象被黑色对象引用（白色被挂在黑色下）
-​	条件2：灰色对象与它可达关系的白色对象遭到破坏（灰色同时丢了该白色）
-如何保证对象不丢失，提高GC效率，减少STW时间呢
-强弱三色不变式 不让条件1、条件2同时满足（破坏两个条件同时成立），可以保证对象不丢失
-破坏条件1：强三色不变式
-​	强制性不允许黑色对象引用白色对象
-破坏条件2：弱三色不变式
-​	黑色对象可以引用白色，但是白色对象存在其他灰色对它的引用，或者可达它的链路上存在灰色对象
-屏障机制 如何实现强弱三色不变式，需要用到屏障机制，也就会添加一些额外的判断机制，来遏制条件1、条件2同时发生。</description>
+      <guid>https://kevinbin123.github.io/post/GolangGC/</guid>
+      <description>GC回收机制 三色标记与混合写屏障</description>
     </item>
     
     <item>
       <title>利用webhook将github上的博客同步到阿里云服务器记录</title>
-      <link>/tecs/%E5%88%A9%E7%94%A8webhook%E5%B0%86github%E4%B8%8A%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%AD%A5%E5%88%B0%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%B0%E5%BD%95/</link>
+      <link>https://kevinbin123.github.io/post/%E5%88%A9%E7%94%A8webhook%E5%B0%86github%E4%B8%8A%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%AD%A5%E5%88%B0%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Mon, 08 Nov 2021 23:21:28 +0800</pubDate>
       
-      <guid>/tecs/%E5%88%A9%E7%94%A8webhook%E5%B0%86github%E4%B8%8A%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%AD%A5%E5%88%B0%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%B0%E5%BD%95/</guid>
-      <description>写在前面，如何用hugo搭建博客并推送到github，可以参考前文Windows上安装hugo并且推送到github过程记录
-本文主要记录，从windows创建好的博文推送到github之后，如何利用webhook，从github拉取到阿里云服务器上
-1、服务器上安装git工具
-yum install git #安装好之后，查看是否安装成功 git --version 2、下载github-webhook工具
-#到这个网站找最新的 https://github.com/yezihack/github-webhook/releases #github release如果下载太慢可以试试这个 wget http://img.sgfoot.com/github-webhook1.4.1.linux-amd64.tar.gz 3、解压安装
-tar -zxvf github-webhook1.4.1.linux-amd64.tar.gz cp github-webhook /usr/bin/ chmod u+x /usr/bin/github-webhook cd /usr/bin 4、启动webhook,我这里是使用后台运行的方式
-nohup github-webhook -b /www/wwwroot/github-webhook-shell.sh -s yourself-secret &amp;amp; 这里的-b后面的路径是拉取github内容的脚本; -s 后面的是密码，也是github那边的webhook设置的密码，随便设置，两边到时候保持一致就可以了
-#! /bin/bash git --git-dir=&amp;#34;/www/wwwroot/120.25.194.155-520/kevinbin123.github.io/.git&amp;#34; --work-tree=&amp;#34;/www/wwwroot/120.25.194.155-520/kevinbin123.github.io&amp;#34; pull origin hugo exit 0 5、测试是否web-hook能通(ip换成自己的服务器ip)
-http://ip:2020/ping ps，处理阿里云那边的防火墙要开端口，自己的服务器的防火墙端口也要开放（一下是centos8开端口的方法）
-firewall-cmd --list-all firewall-cmd --add-port=2020/tcp --permanent firewall-cmd --reload firewall-cmd --list-all 6、生成公钥配置到github上
-ssh-keygen -t rsa cat .ssh/id_rsa.pub 复制代码 然后复制到github的settings-&amp;gt;SSH and GPG keys上 7、进入到自己的服务器的网站路径下，我这边是因为安装了宝塔，直接建了一个网站;把gitHub上的内容先clone下来</description>
+      <guid>https://kevinbin123.github.io/post/%E5%88%A9%E7%94%A8webhook%E5%B0%86github%E4%B8%8A%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%AD%A5%E5%88%B0%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%B0%E5%BD%95/</guid>
+      <description>用hugo搭建博客并推送到github</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>/about/</link>
+      <link>https://kevinbin123.github.io/about/</link>
       <pubDate>Sat, 06 Nov 2021 23:40:31 +0800</pubDate>
       
-      <guid>/about/</guid>
+      <guid>https://kevinbin123.github.io/about/</guid>
       <description>about this is about</description>
     </item>
     
     <item>
       <title>Test</title>
-      <link>/test/</link>
+      <link>https://kevinbin123.github.io/test/</link>
       <pubDate>Sat, 06 Nov 2021 23:27:24 +0800</pubDate>
       
-      <guid>/test/</guid>
+      <guid>https://kevinbin123.github.io/test/</guid>
       <description> test </description>
     </item>
     
     <item>
       <title>Centos上用docker部署nginx记录</title>
-      <link>/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</link>
+      <link>https://kevinbin123.github.io/post/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 06 Nov 2021 18:15:59 +0800</pubDate>
       
-      <guid>/tecs/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</guid>
-      <description>1、先部署docker，参考博客：
- 博客：https://blog.csdn.net/Ming13416908424/article/details/107753792
- 2、docker配置一下阿里镜像，加快一下速度
-3、拉取nginx镜像
-docker pull nginx:latest 4、运行容器
-docker run -p 80:80 --name nginx -d nginx 5、复制容器内的配置文件到宿主主机
-docker exec nginx ls /etc/nginx ##以下内容不是要输入的，是显示出来的 conf.d fastcgi_params koi-utf koi-win mime.types modules nginx.conf scgi_params uwsgi_params win-utf 6、复制容器内的配置文件到宿主机，或者仅复制conf.d文件夹内的配置文件，运行时挂载相应文件即可
-docker cp -a nginx:/etc/nginx/ /srv/nginx/conf 7、停止Nginx容器并删除
-docker stop nginx docker rm nginx 8、重新运行容器，并挂载我们在第三步复制出来的配置文件目录（注意这一步之前没有加rw等，踩了很多坑；conf下的default.conf里面root路径也不能修改，会出现404）
-docker run --privileged=true --restart always --name nginx -p 80:80 \ -v /srv/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro \ -v /srv/nginx/conf/conf.d:/etc/nginx/conf.d:ro \ -v /srv/nginx/html:/usr/share/nginx/html:rw \ -v/srv/nginx/logs:/var/log/nginx -d nginx 9、到此Nginx已安装完成，如有需要就直接修改/srv/nginx/conf/conf.</description>
+      <guid>https://kevinbin123.github.io/post/centos%E4%B8%8A%E7%94%A8docker%E9%83%A8%E7%BD%B2nginx%E8%AE%B0%E5%BD%95/</guid>
+      <description>Centos上用docker部署nginx记录</description>
     </item>
     
     <item>
       <title>Windows上安装hexo并且推送到github过程记录</title>
-      <link>/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
+      <link>https://kevinbin123.github.io/post/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 06 Nov 2021 00:50:39 +0800</pubDate>
       
-      <guid>/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
-      <description>安装准备 安装git 、nodejs、npm 、cnpm
-1、安装nodejs和npm,访问官网直接安装即可
-node.js网址： https://nodejs.org/en/
-2、安装git,访问官网直接安装即可
-Git网址：https://gitforwindows.org/（这个也是Windows版的）
-3、安装cnpm（安装的是淘宝的源）
-npm install cnpm -g --registry=https://registry.npm.taobao.org 4、输入npm -v和node -v以及cnpm -v检查当前版本 默认是会注册到环境变量，如果没有，则自己添加一下
-安装hexo 1、安装一个Hexo博客框架，在命令行输入
-cnpm install -g hexo-cli 2、完成后输入hexo -v进行验证
-3、创建一个博客的文件夹
-D:\myblog\hexotest（手动建或者用命令mkdir都可以）
-4、输入hexo init的命令去初始化，这样执行完毕后，一个hexo博客框架的基础就会全部安装在文件夹里了，注意你的cmd一定要是管理员模式
-hexo init 5、启动，输入hexo s命令，然后访问查看效果
-使用hexo 1、清理
-hexo clean 2、新建博客
-hexo n &amp;quot;文章名&amp;quot; 编辑文章要用markdown工具去编写具体的内容（D:\myblog\hexotest\source_posts） 3、生成文章
-hexo g 4、开启博客发布文章
-hexo s 推送github 安装hexo-deplyer-git cnpm install hexo-deployer-git --save 配置git 使用ssh方式推送到github
-1、在github上新建自己的仓库
-2、配置ssh
-2.1 查看Git环境所有配置
-git config &amp;ndash;list
-2.2 如果没有配置user.name和user.email则需要先配置
-git config &amp;ndash;global user.</description>
+      <guid>https://kevinbin123.github.io/post/windows%E4%B8%8A%E5%AE%89%E8%A3%85hexo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
+      <description>Windows上安装hexo并且推送到github过程记录</description>
     </item>
     
     <item>
       <title>Windows上安装hugo并且推送到github过程记录</title>
-      <link>/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
+      <link>https://kevinbin123.github.io/post/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 06 Nov 2021 00:49:06 +0800</pubDate>
       
-      <guid>/tecs/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
-      <description>安装hugo （从0.48版本开始就需要自己配置环境变量）
-访问官网；选择tag里面下载最新的包，比如hugo_0.89.0_windows-64bit.zip
-解压出来后，放到一个文件夹中，并设置成环境变量
-使用hugo version测试是否安装成功
-使用hugo 创建一个新blog
-hugo new site hugoblog 进入博客目录
-cd D:\myblog\hugotest\hugoblog 创建一篇新博文
-hugo new about.md hugo new post/first.md 编辑博文一样使用markdown工具自己编辑 更换主题
-cd themes git clone https://github.com/spf13/hyde.git 或者不仅如此themes目录的话 直接 git clone https://github.com/vaga/hugo-theme-m10c.git themes/m10c 直接指定主题启动，不在配置文件配置
-hugo server --theme=hyde --buildDrafts 在配置文件中修改后,然后启动
-修改config.toml 增加 theme = &amp;quot;m10c&amp;quot; 启动： hugo server --buildDrafts 访问的话 http://localhost:1313/
-配置github推送 hugo --baseUrl=&amp;quot;https://kevinbin123.github.io/&amp;quot; --buildDrafts 进入public目录，用git base here工具
-git init git add . git commit -m &amp;quot;hugo blog&amp;quot; git remote add origin git@github.</description>
+      <guid>https://kevinbin123.github.io/post/windows%E4%B8%8A%E5%AE%89%E8%A3%85hugo%E5%B9%B6%E4%B8%94%E6%8E%A8%E9%80%81%E5%88%B0github%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
+      <description>Windows上安装hugo并且推送到github过程记录</description>
     </item>
     
     <item>
       <title>MarkDown语法的学习</title>
-      <link>/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</link>
+      <link>https://kevinbin123.github.io/post/MarkDown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</link>
       <pubDate>Fri, 05 Nov 2021 23:47:43 +0800</pubDate>
       
-      <guid>/post/markdown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</guid>
-      <description>MarkDown的语法学习 代码块 ```go package main import fmt func main(){ } 标题 # 一级标题 ## 二级标题 ### 三级标题 #### 四级标题 ##### 五级标题 ###### 六级标题 一级标题 二级标题 三级标题 四级标题 五级标题 六级标题 字体 **加粗字体** ==高亮显示== ~~删除字体~~ *斜体* 加粗字体
-==高亮显示==
-删除字体
-斜体
-引用 &amp;gt;作者 &amp;gt;&amp;gt;作者 &amp;gt;&amp;gt;&amp;gt;作者  作者
- 作者
- 作者
-   图片 ![图片描述](/images/me.png) 链接 [链接描述](链接地址) 百度
-列表 无序列表 - 无序列表1 - 无序列表2 有序列表 1+.+名称 无序列表
-  香蕉
-  苹果</description>
+      <guid>https://kevinbin123.github.io/post/MarkDown%E8%AF%AD%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0/</guid>
+      <description>MarkDown的语法学习</description>
+    </item>
+    
+    <item>
+      <title>归档</title>
+      <link>https://kevinbin123.github.io/archives/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://kevinbin123.github.io/archives/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>搜索</title>
+      <link>https://kevinbin123.github.io/search/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://kevinbin123.github.io/search/</guid>
+      <description></description>
     </item>
     
   </channel>

@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Go Micro笔记 | abin の 成长之路</title>
+    <meta property="og:title" content="Go Micro笔记 - abin の 成长之路">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-03-27T16:34:31&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-03-27T16:34:31&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,博客,项目管理,软件架构">
+    <meta name="description" content="Go Micro笔记">
+        
+    <meta name="author" content="abin">
+    <meta property="og:url" content="https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/sidebar_menu.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kevinbin123.github.io/">
+                        abin の 成长之路
+                    </a>
+                
+                <p class="description">冉冉升起的码神</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kevinbin123.github.io/">首页</a>
+                    
+                    <a  href="https://kevinbin123.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://kevinbin123.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Go Micro笔记</h1>
+        </header>
+        
+  <time datetime="2022-03-27T08:34:31Z" class="post-meta meta-date dt-published">
+    2022年3月27日
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/Golang' target="_blank">Golang</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>阅读</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="go-micro笔记">go-micro笔记</h1>
+<p>go-micro/v2中已经剔除了consul服务发现，使用etcd了，这边为了还是先学习一下consul服务发现</p>
+<h2 id="consul服务发现">consul服务发现</h2>
+<h3 id="安装">安装：</h3>
+<p>1、下载：https://www.consul.io/downloads</p>
+<p>2、添加到环境变量</p>
+<p>
+        <img class="mx-auto" alt="image-20220315111159192" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315111159192.png" />   
+    </p>
+<p>3、测试</p>
+<p>输入<code>consul agent -dev</code>来启动</p>
+<p>输入<code>consul leave</code> 关闭</p>
+<p>
+        <img class="mx-auto" alt="image-20220315111241638" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315111241638.png" />   
+    </p>
+<p>效果：</p>
+<p>
+        <img class="mx-auto" alt="image-20220315111347800" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315111347800.png" />   
+    </p>
+<h3 id="consul命令">consul命令</h3>
+<p>使用<code>consul agent -h</code> 可以查看帮忙命令</p>
+<p>一些常用的参数有：</p>
+<blockquote>
+<p>-bind				指定consul所在ip地址</p>
+<p>-client				表明哪些机器可以访问consul，0.0.0.0不受限</p>
+<p>-config-dir		所有主动注册服务的描述信息</p>
+<p>-data-dir			存储所有注册过来的srv机器的详细信息</p>
+<p>-dev					开发者模式</p>
+<p>-http-port		consul自带一个web访问的默认端口号：8500</p>
+<p>-node				服务发现的名字</p>
+<p>-rejoin				重新加入集群</p>
+<p>-server				切换是否作为server模式；不加则作为client模式</p>
+<p>-ui						使用内置UI静态web服务</p>
+</blockquote>
+<h3 id="consul-使用">consul 使用：</h3>
+<p><strong>带有一些参数启动</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#在终端键入</span>
+consul agent -server -bootstrap-expect <span style="color:#ae81ff">1</span> -data-dir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;D:\Program Files\consul_1.11.4_windows_amd64\temp&#34;</span> -node<span style="color:#f92672">=</span>n1 -bind<span style="color:#f92672">=</span>192.168.0.54 -ui -rejoin -config-dir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;D:\Program Files\consul_1.11.4_windows_amd64\conf&#34;</span> -client<span style="color:#f92672">=</span>0.0.0.0
+<span style="color:#75715e">#看到running表明启动成功</span>
+Consul agent running!
+</code></pre></div><p>其他一些命令：</p>
+<p>consul member:查看成员</p>
+<p>consul info:查看详情信息</p>
+<p>consul leave:优雅关闭</p>
+<p><strong>通过配置文件注册服务</strong>；</p>
+<p>在-config-dir指定的路径下添加一个json文件，比如web.json</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+	<span style="color:#f92672">&#34;service&#34;</span>: {
+		<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;studyconsul&#34;</span>,
+		<span style="color:#f92672">&#34;tags&#34;</span>: [
+			<span style="color:#e6db74">&#34;study&#34;</span>,
+			<span style="color:#e6db74">&#34;consul-test&#34;</span>
+		],
+		<span style="color:#f92672">&#34;port&#34;</span>: <span style="color:#ae81ff">8080</span>
+	}
+}
+</code></pre></div><p>
+        <img class="mx-auto" alt="image-20220315115823729" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315115823729.png" />   
+    </p>
+<p>然后通过<code>consul reload</code>重新启动</p>
+<p>
+        <img class="mx-auto" alt="image-20220315115927450" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315115927450.png" />   
+    </p>
+<p>效果查看：</p>
+<p>
+        <img class="mx-auto" alt="image-20220315120002983" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315120002983.png" />   
+    </p>
+<p>或者使用命令查看：</p>
+<p><code>curl -s 192.168.0.54:8500/v1/catalog/service/studyconsul</code></p>
+<p>
+        <img class="mx-auto" alt="image-20220315120320015" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315120320015.png" />   
+    </p>
+<p><strong>添加健康检查</strong>：</p>
+<p>修改web.json</p>
+<p>consul做健康检查有：HTTP、Script、TCP、TTL。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+	<span style="color:#f92672">&#34;service&#34;</span>: {
+		<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;studyconsul&#34;</span>,
+		<span style="color:#f92672">&#34;tags&#34;</span>: [
+			<span style="color:#e6db74">&#34;study&#34;</span>,
+			<span style="color:#e6db74">&#34;consul-test&#34;</span>
+		],
+		<span style="color:#f92672">&#34;port&#34;</span>: <span style="color:#ae81ff">8080</span>,
+		<span style="color:#f92672">&#34;check&#34;</span>: {
+			<span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;api&#34;</span>,
+			<span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;http api on port 8080&#34;</span>,
+			<span style="color:#f92672">&#34;http&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:8080&#34;</span>,
+			<span style="color:#f92672">&#34;interval&#34;</span>: <span style="color:#e6db74">&#34;10s&#34;</span>,
+			<span style="color:#f92672">&#34;timeout&#34;</span>: <span style="color:#e6db74">&#34;1s&#34;</span>
+		}
+	}
+}
+</code></pre></div><p>重启<code>consul reload</code>后，查看</p>
+<p>
+        <img class="mx-auto" alt="image-20220315120933883" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220315120933883.png" />   
+    </p>
+<h2 id="consul结合grpc">consul结合grpc：</h2>
+<p><strong>流程</strong>：</p>
+<pre tabindex="0"><code>1、创建proto文件，指定rpc服务
+2、启动consul服务发现
+3、启动server
+		3.1 获取consul对象
+		3.2 使用consul对象，将server信息，注册给consul
+		3.3 启动服务
+4、启动Client
+		4.1 获取consul对象
+		4.2 使用consul对象，从consul上获取健康的服务
+		4.3 再访问服务（grpc远程调用）
+</code></pre><p><strong>示例</strong>：</p>
+<p>1、定义person.proto</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-protobuf" data-lang="protobuf">syntax<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;proto3&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#f92672">package</span> pb;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">option</span> go_package<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">Person</span>{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">int32</span> age<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">string</span> name<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">service</span> Hello{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">rpc</span> SayHello(Person) <span style="color:#66d9ef">returns</span> (Person);<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>执行命令来生成pb.go文件<code>protoc --go_out=plugins=grpc:./ *.proto</code></p>
+<p>2、consul服务发现</p>
+<p>server.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#a6e22e">pb</span> <span style="color:#e6db74">&#34;StudyGrpcAndConsul/pb&#34;</span>
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/hashicorp/consul/api&#34;</span>
+	<span style="color:#e6db74">&#34;google.golang.org/grpc&#34;</span>
+	<span style="color:#e6db74">&#34;net&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Children</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Children</span>) <span style="color:#a6e22e">SayHello</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Person</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Person</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Name</span> = <span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Name</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>, <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+
+	<span style="color:#75715e">//初始化consul配置
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulConfig</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">DefaultConfig</span>()
+	<span style="color:#75715e">//获取consul操作对象
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulClient</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#a6e22e">consulConfig</span>)
+	<span style="color:#75715e">//注册服务，服务的常规配置
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">registerService</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">AgentServiceRegistration</span>{
+		<span style="color:#a6e22e">ID</span>:      <span style="color:#e6db74">&#34;1&#34;</span>,
+		<span style="color:#a6e22e">Tags</span>:    []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;testHello&#34;</span>},
+		<span style="color:#a6e22e">Name</span>:    <span style="color:#e6db74">&#34;HelloService&#34;</span>,
+		<span style="color:#a6e22e">Port</span>:    <span style="color:#ae81ff">9090</span>,
+		<span style="color:#a6e22e">Address</span>: <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>,
+		<span style="color:#a6e22e">Check</span>: <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">AgentServiceCheck</span>{
+			<span style="color:#a6e22e">TCP</span>:      <span style="color:#e6db74">&#34;127.0.0.1:9090&#34;</span>,
+			<span style="color:#a6e22e">Timeout</span>:  <span style="color:#e6db74">&#34;5s&#34;</span>,
+			<span style="color:#a6e22e">Interval</span>: <span style="color:#e6db74">&#34;5s&#34;</span>,
+		},
+	}
+	<span style="color:#75715e">//注册服务到consul上
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulClient</span>.<span style="color:#a6e22e">Agent</span>().<span style="color:#a6e22e">ServiceRegister</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">registerService</span>)
+
+	<span style="color:#75715e">///////////////以下为grpc远程调用/////////////////
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//1 初始化grpc对象
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">grpcServer</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">NewServer</span>()
+	<span style="color:#75715e">//2 注册服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">RegisterHelloServer</span>(<span style="color:#a6e22e">grpcServer</span>, new(<span style="color:#a6e22e">Children</span>))
+	<span style="color:#75715e">//3 设置监听
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lis</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#e6db74">&#34;127.0.0.1:9090&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;监听失败：&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">lis</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;启动监听&#34;</span>)
+	<span style="color:#75715e">//4 启动服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">grpcServer</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">lis</span>)
+
+}
+
+</code></pre></div><p>client.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#a6e22e">pb</span> <span style="color:#e6db74">&#34;StudyGrpcAndConsul/pb&#34;</span>
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/hashicorp/consul/api&#34;</span>
+	<span style="color:#e6db74">&#34;google.golang.org/grpc&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#75715e">//1 初始化consul配置
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulConfig</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">DefaultConfig</span>()
+	<span style="color:#75715e">//2 创建consul对象，（可以重新指定consul的ip、port等属性，也可以使用默认）
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulClient</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#a6e22e">consulConfig</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;创建consul对象失败：&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#75715e">//3 服务发现，从consul上获取健康的服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">services</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">consulClient</span>.<span style="color:#a6e22e">Health</span>().<span style="color:#a6e22e">Service</span>(<span style="color:#e6db74">&#34;HelloService&#34;</span>, <span style="color:#e6db74">&#34;testHello&#34;</span>, <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;获取服务发现失败：err&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">addr</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">services</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">Service</span>.<span style="color:#a6e22e">Address</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">services</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">Service</span>.<span style="color:#a6e22e">Port</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>()
+	<span style="color:#75715e">///////////以下为grpc服务远程调用///////////////
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//1 连接grpc客户端
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//grpcConn, err := grpc.Dial(&#34;127.0.0.1:9090&#34;, grpc.WithInsecure())
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//修改为从服务发现中得到的addr
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">grpcConn</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#a6e22e">addr</span>, <span style="color:#a6e22e">grpc</span>.<span style="color:#a6e22e">WithInsecure</span>())
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;连接grpc出错：&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">grpcConn</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#75715e">//2 初始化grpc客户端
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">grpcClient</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">NewHelloClient</span>(<span style="color:#a6e22e">grpcConn</span>)
+	<span style="color:#75715e">//3 调用远程服务
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">per</span> <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Person</span>
+	<span style="color:#a6e22e">per</span>.<span style="color:#a6e22e">Name</span> = <span style="color:#e6db74">&#34;abin&#34;</span>
+	<span style="color:#a6e22e">per</span>.<span style="color:#a6e22e">Age</span> = <span style="color:#ae81ff">18</span>
+	<span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">grpcClient</span>.<span style="color:#a6e22e">SayHello</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">per</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;grpc调用出错:&#34;</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">p</span>)
+}
+
+</code></pre></div><p>3、效果：</p>
+<p>可以在consul上看到服务</p>
+<p>
+        <img class="mx-auto" alt="image-20220316151017613" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220316151017613.png" />   
+    </p>
+<p>运行client</p>
+<p>
+        <img class="mx-auto" alt="image-20220316151045776" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220316151045776.png" />   
+    </p>
+<p>4、注销服务：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;github.com/hashicorp/consul/api&#34;</span>
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#75715e">//初始化consul配置
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulConfig</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">DefaultConfig</span>()
+	<span style="color:#75715e">//创建consul对象
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulClient</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#a6e22e">consulConfig</span>)
+	<span style="color:#75715e">//注销服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulClient</span>.<span style="color:#a6e22e">Agent</span>().<span style="color:#a6e22e">ServiceDeregister</span>(<span style="color:#e6db74">&#34;1&#34;</span>)
+}
+</code></pre></div><h2 id="go-micro">go-micro</h2>
+<p>1、编写proto文件:hello.proto</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-protobuf" data-lang="protobuf">syntax<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;proto3&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#f92672">package</span> pb;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">option</span>  go_package<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./;pb&#34;</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">Request</span>{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">string</span> name<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">message</span> <span style="color:#a6e22e">Response</span>{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">string</span> greeting<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">service</span> Greeter{<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>  <span style="color:#66d9ef">rpc</span> Hello(Request) <span style="color:#66d9ef">returns</span> (Response);<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span>}<span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>使用命令：<code>protoc --proto_path=. --micro_out=. --go_out=. *.proto</code> 来生成micro.go和pb.go</p>
+<p>2、实现服务端</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#a6e22e">pb</span> <span style="color:#e6db74">&#34;StudyGoMicro/pb&#34;</span>
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#a6e22e">micro</span> <span style="color:#e6db74">&#34;github.com/micro/go-micro/v2&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Greeter</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">g</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Greeter</span>) <span style="color:#a6e22e">Hello</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">req</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">rsp</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Response</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">rsp</span>.<span style="color:#a6e22e">Greeting</span> = <span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Name</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#75715e">//1、创建一个新的服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">service</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">NewService</span>(
+		<span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">Name</span>(<span style="color:#e6db74">&#34;greeter&#34;</span>),
+	)
+	<span style="color:#75715e">//2、初始化服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Init</span>()
+	<span style="color:#75715e">//3、注册Handler
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">RegisterGreeterHandler</span>(<span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Server</span>(), new(<span style="color:#a6e22e">Greeter</span>))
+	<span style="color:#75715e">//4、运行服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Run</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+	}
+}
+</code></pre></div><p>3、实现客户端</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGoMicro/pb&#34;</span>
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/micro/go-micro/v2&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#75715e">//1、创建服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">service</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">NewService</span>(
+		<span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">Name</span>(<span style="color:#e6db74">&#34;greeter.client&#34;</span>),
+	)
+	<span style="color:#75715e">//2、创建客户端
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">greeter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">NewGreeterService</span>(<span style="color:#e6db74">&#34;greeter&#34;</span>, <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Client</span>())
+	<span style="color:#75715e">//3、远程调用
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rsp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">greeter</span>.<span style="color:#a6e22e">Hello</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Request</span>{
+		<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;abin&#34;</span>,
+	})
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">rsp</span>)
+}
+</code></pre></div><p>4、运行</p>
+<p>
+        <img class="mx-auto" alt="image-20220316183329621" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220316183329621.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220316183342489" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220316183342489.png" />   
+    </p>
+<h2 id="将go-micro的服务发现修改为consul">将go-micro的服务发现修改为consul</h2>
+<p>Server.go的代码</p>
+<p>1、要初始化consul服务发现<code>consulReg:=consul.NewRegistry()</code></p>
+<p>2、添加服务<code>micro.Registry(consulReg)</code></p>
+<p>注意consul包引用地址；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#a6e22e">pb</span> <span style="color:#e6db74">&#34;StudyGoMicro/pb&#34;</span>
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#a6e22e">micro</span> <span style="color:#e6db74">&#34;github.com/micro/go-micro/v2&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/micro/go-micro/v2/registry&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/micro/go-plugins/registry/consul/v2&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Greeter</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">g</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Greeter</span>) <span style="color:#a6e22e">Hello</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">req</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">rsp</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Response</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#a6e22e">rsp</span>.<span style="color:#a6e22e">Greeting</span> = <span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Name</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#75715e">// 0 初始化consul
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulReg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">consul</span>.<span style="color:#a6e22e">NewRegistry</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">options</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">registry</span>.<span style="color:#a6e22e">Options</span>) {
+		<span style="color:#a6e22e">options</span>.<span style="color:#a6e22e">Addrs</span> = []<span style="color:#66d9ef">string</span>{
+			<span style="color:#e6db74">&#34;127.0.0.1:8500&#34;</span>,
+		}
+	})
+	<span style="color:#75715e">//1、创建一个新的服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">service</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">NewService</span>(
+		<span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">Name</span>(<span style="color:#e6db74">&#34;greeter&#34;</span>),
+		<span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">Registry</span>(<span style="color:#a6e22e">consulReg</span>),
+	)
+	<span style="color:#75715e">//2、初始化服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Init</span>()
+	<span style="color:#75715e">//3、注册Handler
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">RegisterGreeterHandler</span>(<span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Server</span>(), new(<span style="color:#a6e22e">Greeter</span>))
+	<span style="color:#75715e">//4、运行服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Run</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+	}
+}
+
+</code></pre></div><p>client.go</p>
+<p>1、初始化consul服务发现<code>consulReg:=consul.NewRegistry()</code></p>
+<p>2、将consul添加到client<code>micro.Registry(consulReg)</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;StudyGoMicro/pb&#34;</span>
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/micro/go-micro/v2&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/micro/go-plugins/registry/consul/v2&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#75715e">//0 初始化consul服务发现
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">consulReg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">consul</span>.<span style="color:#a6e22e">NewRegistry</span>()
+	<span style="color:#75715e">//1、创建服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">service</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">NewService</span>(
+		<span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">Name</span>(<span style="color:#e6db74">&#34;greeter.client&#34;</span>),
+		<span style="color:#a6e22e">micro</span>.<span style="color:#a6e22e">Registry</span>(<span style="color:#a6e22e">consulReg</span>),
+	)
+	<span style="color:#75715e">//2、创建客户端
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">greeter</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">NewGreeterService</span>(<span style="color:#e6db74">&#34;greeter&#34;</span>, <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Client</span>())
+	<span style="color:#75715e">//3、远程调用
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rsp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">greeter</span>.<span style="color:#a6e22e">Hello</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">TODO</span>(), <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">pb</span>.<span style="color:#a6e22e">Request</span>{
+		<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;abin&#34;</span>,
+	})
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">rsp</span>)
+}
+
+</code></pre></div><p>效果：</p>
+<p>
+        <img class="mx-auto" alt="image-20220317150634033" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220317150634033.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220317150651072" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220317150651072.png" />   
+    </p>
+<h2 id="参考文献">参考文献</h2>
+<blockquote>
+<p>1golangIDE配置  <a href="https://www.jianshu.com/p/57973ffec653">https://www.jianshu.com/p/57973ffec653</a></p>
+<p>2go micro文档  <a href="https://learnku.com/docs/go-micro/2.x/hello-world/8462#154839">https://learnku.com/docs/go-micro/2.x/hello-world/8462#154839</a></p>
+<p>3go micro使用consul笔记 <a href="https://www.jianshu.com/p/81a2d9b3a8ea">https://www.jianshu.com/p/81a2d9b3a8ea</a></p>
+<p>​                                               <a href="https://www.jianshu.com/p/f6d83739b2ab">https://www.jianshu.com/p/f6d83739b2ab</a></p>
+</blockquote>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>相关文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/grpc%E7%AC%94%E8%AE%B0/">Grpc笔记</a></li>
+        
+        <li><a href="/post/RPC%E7%AC%94%E8%AE%B0/">RPC笔记</a></li>
+        
+        <li><a href="/post/protobuf%E7%AC%94%E8%AE%B0/">Protobuf笔记</a></li>
+        
+        <li><a href="/post/Golang%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%89%E9%A1%B9%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">Golang设计模式 选项设计模式</a></li>
+        
+        <li><a href="/post/Gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/">Gin框架案例</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/Golang' target="_blank">Golang</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div class="container">
+        &copy; 2023 <a href="https://kevinbin123.github.io/">abin の 成长之路 By abin</a>.本站博客未经授权禁止转载.
+		<br>
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="http://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>
+		       
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/bootstrap.min.js'></script>
+
+    <script src='/js/post_category.1.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kevinbin123.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kevinbin123.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" title="简单分布式系统" target="_blank">简单分布式系统</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/" title="Fyne案例之音乐播放器" target="_blank">Fyne案例之音乐播放器</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="Fyne案例之接住你小游戏" target="_blank">Fyne案例之接住你小游戏</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/" title="Gin&#43;vue2博客笔记（前端）" target="_blank">Gin&#43;vue2博客笔记（前端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/" title="Gin&#43;vue2博客笔记（后端）" target="_blank">Gin&#43;vue2博客笔记（后端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/" title="PWA笔记" target="_blank">PWA笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Golang案例 Zinx轻量级服务器框架学习笔记" target="_blank">Golang案例 Zinx轻量级服务器框架学习笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/" title="Golang小案例 爬取豆瓣电影" target="_blank">Golang小案例 爬取豆瓣电影</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/" title="Go Micro案例" target="_blank">Go Micro案例</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/" title="Go Micro笔记" target="_blank">Go Micro笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kevinbin123.github.io/categories/DB/">DB (2)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Golang/">Golang (19)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/JavaScript/">JavaScript (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Network/">Network (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/container/">container (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/other/">other (5)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kevinbin123.github.io/tags/DB/">DB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang/">Golang</a>
+    
+    <a href="https://kevinbin123.github.io/tags/JavaScript/">JavaScript</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Network/">Network</a>
+    
+    <a href="https://kevinbin123.github.io/tags/container/">container</a>
+    
+    <a href="https://kevinbin123.github.io/tags/other/">other</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.liwenzhou.com/" title="go语言学习之路">李文周的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://kevinbin123.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

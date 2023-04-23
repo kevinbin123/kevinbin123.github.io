@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Fyne案例之音乐播放器 | abin の 成长之路</title>
+    <meta property="og:title" content="Fyne案例之音乐播放器 - abin の 成长之路">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-10-07T20:40:05&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-10-07T20:40:05&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,博客,项目管理,软件架构">
+    <meta name="description" content="Fyne案例之音乐播放器">
+        
+    <meta name="author" content="abin">
+    <meta property="og:url" content="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/sidebar_menu.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kevinbin123.github.io/">
+                        abin の 成长之路
+                    </a>
+                
+                <p class="description">冉冉升起的码神</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kevinbin123.github.io/">首页</a>
+                    
+                    <a  href="https://kevinbin123.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://kevinbin123.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Fyne案例之音乐播放器</h1>
+        </header>
+        
+  <time datetime="2022-10-07T12:40:05Z" class="post-meta meta-date dt-published">
+    2022年10月7日
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/Golang' target="_blank">Golang</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>阅读</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="使用fyne实现音乐播放器">使用Fyne实现音乐播放器</h1>
+<h2 id="案例效果">案例效果</h2>
+<p>​	左侧有播放的列表；右边有播放的歌曲、进度、时间、上一曲、下一曲、暂停、音量、隐藏列表的按钮。</p>
+<p>
+        <img class="mx-auto" alt="image-20221006151812000" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202210061518164.png" />   
+    </p>
+<h2 id="案例实现">案例实现</h2>
+<p>​	准备：关于fyne框架的安装以及使用前的准备工作可以参考官网：</p>
+<blockquote>
+<p><a href="https://developer.fyne.io/started/">https://developer.fyne.io/started/</a></p>
+</blockquote>
+<p>​	音乐播放用到了开源库</p>
+<blockquote>
+<p><a href="https://github.com/faiface/beep">https://github.com/faiface/beep</a></p>
+</blockquote>
+<p>​	完整代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/app&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/container&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/data/binding&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/dialog&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/storage&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/theme&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/widget&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/faiface/beep&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/faiface/beep/effects&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/faiface/beep/flac&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/faiface/beep/mp3&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/faiface/beep/speaker&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/faiface/beep/vorbis&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/faiface/beep/wav&#34;</span>
+	<span style="color:#e6db74">&#34;log&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;path/filepath&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">streamer</span> <span style="color:#a6e22e">beep</span>.<span style="color:#a6e22e">StreamSeekCloser</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">format</span> <span style="color:#a6e22e">beep</span>.<span style="color:#a6e22e">Format</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">volume</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">effects</span>.<span style="color:#a6e22e">Volume</span>
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">New</span>()
+	<span style="color:#a6e22e">w</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">NewWindow</span>(<span style="color:#e6db74">&#34;fyne mp3 player&#34;</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">700</span>, <span style="color:#ae81ff">610</span>))
+	<span style="color:#75715e">//txtPath := widget.NewEntry()
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//txtPath.Text = &#34;a.mp3&#34;
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">done</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctrl</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">beep</span>.<span style="color:#a6e22e">Ctrl</span>
+	<span style="color:#a6e22e">lbsMsg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewLabel</span>(<span style="color:#e6db74">&#34;&#34;</span>)
+	<span style="color:#75715e">//添加进度条
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lblTimeUsed</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewLabel</span>(<span style="color:#e6db74">&#34;&#34;</span>)
+	<span style="color:#a6e22e">progress</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewProgressBar</span>()
+	<span style="color:#a6e22e">progress</span>.<span style="color:#a6e22e">Min</span> = <span style="color:#ae81ff">0</span>
+	<span style="color:#a6e22e">progress</span>.<span style="color:#a6e22e">Max</span> = <span style="color:#ae81ff">100</span>
+	<span style="color:#a6e22e">progress</span>.<span style="color:#a6e22e">Value</span> = <span style="color:#ae81ff">0</span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">btnPlayer</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">Button</span>
+	<span style="color:#a6e22e">btnPlayer</span> = <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewButtonWithIcon</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">MediaPlayIcon</span>(), <span style="color:#66d9ef">nil</span>)
+	<span style="color:#75715e">//重置功能
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">reset</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">ctrl</span> = <span style="color:#66d9ef">nil</span>
+		<span style="color:#a6e22e">lbsMsg</span>.<span style="color:#a6e22e">SetText</span>(<span style="color:#e6db74">&#34;&#34;</span>)
+		<span style="color:#a6e22e">lblTimeUsed</span>.<span style="color:#a6e22e">SetText</span>(<span style="color:#e6db74">&#34;&#34;</span>)
+		<span style="color:#a6e22e">progress</span>.<span style="color:#a6e22e">SetValue</span>(<span style="color:#ae81ff">0</span>)
+		<span style="color:#a6e22e">btnPlayer</span>.<span style="color:#a6e22e">SetIcon</span>(<span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">MediaPlayIcon</span>())
+	}
+	<span style="color:#75715e">// 添加选择按钮
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">bpath</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">binding</span>.<span style="color:#a6e22e">NewString</span>()
+	<span style="color:#a6e22e">bpath</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;a.mp3&#34;</span>)
+	<span style="color:#a6e22e">bpath</span>.<span style="color:#a6e22e">AddListener</span>(<span style="color:#a6e22e">binding</span>.<span style="color:#a6e22e">NewDataListener</span>(<span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">reset</span>()
+	}))
+	<span style="color:#a6e22e">openfile</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewOpenFile</span>(<span style="color:#a6e22e">bpath</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;.mp3&#34;</span>, <span style="color:#e6db74">&#34;.ogg&#34;</span>, <span style="color:#e6db74">&#34;.wav&#34;</span>, <span style="color:#e6db74">&#34;.flac&#34;</span>}, <span style="color:#a6e22e">w</span>)
+	<span style="color:#a6e22e">play</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ctrl</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ctrl</span>.<span style="color:#a6e22e">Paused</span> {
+				<span style="color:#a6e22e">btnPlayer</span>.<span style="color:#a6e22e">SetIcon</span>(<span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">MediaPlayIcon</span>())
+			} <span style="color:#66d9ef">else</span> {
+				<span style="color:#a6e22e">btnPlayer</span>.<span style="color:#a6e22e">SetIcon</span>(<span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">MediaPauseIcon</span>())
+			}
+			<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Lock</span>()
+			<span style="color:#a6e22e">ctrl</span>.<span style="color:#a6e22e">Paused</span> = !<span style="color:#a6e22e">ctrl</span>.<span style="color:#a6e22e">Paused</span>
+			<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Unlock</span>()
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#a6e22e">btnPlayer</span>.<span style="color:#a6e22e">SetIcon</span>(<span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">MediaPauseIcon</span>())
+			<span style="color:#a6e22e">pth</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bpath</span>.<span style="color:#a6e22e">Get</span>()
+			<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+				<span style="color:#a6e22e">f</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#a6e22e">pth</span>)
+				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+					<span style="color:#a6e22e">lbsMsg</span>.<span style="color:#a6e22e">SetText</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+				}
+				<span style="color:#75715e">// 选择多种音频
+</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Ext</span>(<span style="color:#a6e22e">pth</span>) {
+				<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;.mp3&#34;</span>:
+					<span style="color:#a6e22e">streamer</span>, <span style="color:#a6e22e">format</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">mp3</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">f</span>)
+				<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;.wav&#34;</span>:
+					<span style="color:#a6e22e">streamer</span>, <span style="color:#a6e22e">format</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">wav</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">f</span>)
+				<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;.ogg&#34;</span>:
+					<span style="color:#a6e22e">streamer</span>, <span style="color:#a6e22e">format</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">vorbis</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">f</span>)
+				<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;.flac&#34;</span>:
+					<span style="color:#a6e22e">streamer</span>, <span style="color:#a6e22e">format</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">flac</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#a6e22e">f</span>)
+				}
+
+				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+					<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">err</span>)
+				}
+				<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">streamer</span>.<span style="color:#a6e22e">Close</span>()
+
+				<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Init</span>(<span style="color:#a6e22e">format</span>.<span style="color:#a6e22e">SampleRate</span>, <span style="color:#a6e22e">format</span>.<span style="color:#a6e22e">SampleRate</span>.<span style="color:#a6e22e">N</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span><span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>))
+
+				<span style="color:#a6e22e">ctrl</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">beep</span>.<span style="color:#a6e22e">Ctrl</span>{<span style="color:#a6e22e">Streamer</span>: <span style="color:#a6e22e">beep</span>.<span style="color:#a6e22e">Loop</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">streamer</span>), <span style="color:#a6e22e">Paused</span>: <span style="color:#66d9ef">false</span>}
+				<span style="color:#a6e22e">progress</span>.<span style="color:#a6e22e">Max</span> = float64(<span style="color:#a6e22e">streamer</span>.<span style="color:#a6e22e">Len</span>())
+				<span style="color:#a6e22e">volume</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">effects</span>.<span style="color:#a6e22e">Volume</span>{
+					<span style="color:#a6e22e">Streamer</span>: <span style="color:#a6e22e">ctrl</span>,
+					<span style="color:#a6e22e">Base</span>:     <span style="color:#ae81ff">2</span>,
+					<span style="color:#a6e22e">Volume</span>:   <span style="color:#ae81ff">0</span>,
+					<span style="color:#a6e22e">Silent</span>:   <span style="color:#66d9ef">false</span>,
+				}
+				<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Play</span>(<span style="color:#a6e22e">volume</span>)
+				<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Play</span>(<span style="color:#a6e22e">ctrl</span>)
+				<span style="color:#66d9ef">for</span> {
+					<span style="color:#66d9ef">select</span> {
+					<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">done</span>:
+						<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Clear</span>()
+						<span style="color:#66d9ef">return</span>
+					<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">After</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>):
+						<span style="color:#a6e22e">progress</span>.<span style="color:#a6e22e">SetValue</span>(float64(<span style="color:#a6e22e">streamer</span>.<span style="color:#a6e22e">Position</span>()))
+						<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Lock</span>()
+						<span style="color:#a6e22e">pos</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">format</span>.<span style="color:#a6e22e">SampleRate</span>.<span style="color:#a6e22e">D</span>(<span style="color:#a6e22e">streamer</span>.<span style="color:#a6e22e">Position</span>())
+						<span style="color:#a6e22e">lenn</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">format</span>.<span style="color:#a6e22e">SampleRate</span>.<span style="color:#a6e22e">D</span>(<span style="color:#a6e22e">streamer</span>.<span style="color:#a6e22e">Len</span>())
+						<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Unlock</span>()
+						<span style="color:#a6e22e">lblTimeUsed</span>.<span style="color:#a6e22e">SetText</span>(<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%v/%v&#34;</span>, <span style="color:#a6e22e">pos</span>.<span style="color:#a6e22e">Round</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>), <span style="color:#a6e22e">lenn</span>.<span style="color:#a6e22e">Round</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)))
+					}
+				}
+				<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">done</span>
+			}()
+		}
+
+	}
+	<span style="color:#a6e22e">btnPlayer</span>.<span style="color:#a6e22e">OnTapped</span> = <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">play</span>()
+	}
+	<span style="color:#a6e22e">btnStop</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewButtonWithIcon</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">MediaStopIcon</span>(), <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">done</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">false</span>
+		<span style="color:#a6e22e">reset</span>()
+	})
+	<span style="color:#75715e">//音量调节
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">volSlider</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewSlider</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#a6e22e">volSlider</span>.<span style="color:#a6e22e">SetValue</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>)
+	<span style="color:#a6e22e">volSlider</span>.<span style="color:#a6e22e">Orientation</span> = <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">Vertical</span>
+	<span style="color:#a6e22e">volSlider</span>.<span style="color:#a6e22e">OnChanged</span> = <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">f</span> <span style="color:#66d9ef">float64</span>) {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">volume</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Lock</span>()
+		<span style="color:#a6e22e">volume</span>.<span style="color:#a6e22e">Volume</span> = <span style="color:#a6e22e">f</span> <span style="color:#75715e">// &lt;-- this right here
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">speaker</span>.<span style="color:#a6e22e">Unlock</span>()
+	}
+	<span style="color:#75715e">//var btnVolume *widget.Button
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//btnVolume = widget.NewButtonWithIcon(&#34;&#34;, theme.VolumeUpIcon(), func() {
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//	widget.ShowPopUpAtPosition(volSlider, fyne.CurrentApp().Driver().CanvasForObject(btnVolume),
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//		btnVolume.Position().Add(fyne.NewDelta(btnVolume.Size().Width/2, 0)))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//})
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">btnVolume</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">contextMenuButton</span>
+	<span style="color:#a6e22e">btnVolume</span> = <span style="color:#a6e22e">newContextMenuButton</span>(<span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">VolumeUpIcon</span>(), <span style="color:#a6e22e">volSlider</span>)
+	<span style="color:#75715e">//播放列表
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">curIdx</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+	<span style="color:#a6e22e">dl</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">binding</span>.<span style="color:#a6e22e">NewStringList</span>()
+	<span style="color:#a6e22e">dl</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">GetAudios</span>(<span style="color:#e6db74">&#34;.&#34;</span>))
+	<span style="color:#a6e22e">lst</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">LblList</span>(<span style="color:#a6e22e">dl</span>)
+	<span style="color:#a6e22e">lst</span>.<span style="color:#a6e22e">OnSelected</span> = <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">id</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">ListItemID</span>) {
+		<span style="color:#a6e22e">str</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dl</span>.<span style="color:#a6e22e">GetValue</span>(<span style="color:#a6e22e">id</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">lbsMsg</span>.<span style="color:#a6e22e">SetText</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">curIdx</span> = <span style="color:#a6e22e">id</span>
+		<span style="color:#a6e22e">bpath</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">str</span>)
+		<span style="color:#a6e22e">reset</span>()
+		<span style="color:#a6e22e">play</span>()
+	}
+	<span style="color:#75715e">//实现上一首，下一首
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">btnPrev</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewButtonWithIcon</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">MediaSkipPreviousIcon</span>(), <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">curIdx</span> = ((<span style="color:#a6e22e">curIdx</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">%</span><span style="color:#a6e22e">dl</span>.<span style="color:#a6e22e">Length</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">dl</span>.<span style="color:#a6e22e">Length</span>()) <span style="color:#f92672">%</span> <span style="color:#a6e22e">dl</span>.<span style="color:#a6e22e">Length</span>()
+		<span style="color:#a6e22e">lst</span>.<span style="color:#a6e22e">Select</span>(<span style="color:#a6e22e">curIdx</span>)
+
+	})
+	<span style="color:#a6e22e">btnNext</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewButtonWithIcon</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">MediaSkipNextIcon</span>(), <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">curIdx</span> = ((<span style="color:#a6e22e">curIdx</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">%</span><span style="color:#a6e22e">dl</span>.<span style="color:#a6e22e">Length</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">dl</span>.<span style="color:#a6e22e">Length</span>()) <span style="color:#f92672">%</span> <span style="color:#a6e22e">dl</span>.<span style="color:#a6e22e">Length</span>()
+		<span style="color:#a6e22e">lst</span>.<span style="color:#a6e22e">Select</span>(<span style="color:#a6e22e">curIdx</span>)
+	})
+	<span style="color:#75715e">//隐藏列表
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">btnHide</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewButtonWithIcon</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">ListIcon</span>(), <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">lst</span>.<span style="color:#a6e22e">Hidden</span> = !<span style="color:#a6e22e">lst</span>.<span style="color:#a6e22e">Hidden</span>
+	})
+
+	<span style="color:#a6e22e">btn</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewHBox</span>(<span style="color:#a6e22e">lblTimeUsed</span>, <span style="color:#a6e22e">btnPrev</span>, <span style="color:#a6e22e">btnPlayer</span>, <span style="color:#a6e22e">btnNext</span>, <span style="color:#a6e22e">btnStop</span>, <span style="color:#a6e22e">btnVolume</span>, <span style="color:#a6e22e">btnHide</span>)
+	<span style="color:#a6e22e">top</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewVBox</span>(<span style="color:#a6e22e">openfile</span>, <span style="color:#a6e22e">progress</span>, <span style="color:#a6e22e">btn</span>)
+	<span style="color:#a6e22e">cc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewBorder</span>(<span style="color:#a6e22e">top</span>, <span style="color:#a6e22e">lbsMsg</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewLabel</span>(<span style="color:#e6db74">&#34;&#34;</span>))
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewBorder</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">lst</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">cc</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetContent</span>(<span style="color:#a6e22e">c</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">ShowAndRun</span>()
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewOpenFile</span>(<span style="color:#a6e22e">data</span> <span style="color:#a6e22e">binding</span>.<span style="color:#a6e22e">String</span>, <span style="color:#a6e22e">exts</span> []<span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">w</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">Window</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">Container</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewBorder</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewButtonWithIcon</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">FileIcon</span>(), <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dialog</span>.<span style="color:#a6e22e">NewFileOpen</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">uc</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">URIReadCloser</span>, <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">error</span>) {
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">uc</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">uc</span>.<span style="color:#a6e22e">URI</span>().<span style="color:#a6e22e">String</span>()[<span style="color:#ae81ff">7</span>:])
+		}, <span style="color:#a6e22e">w</span>)
+		<span style="color:#a6e22e">luri</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">ListerForURI</span>(<span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">NewFileURI</span>(<span style="color:#e6db74">&#34;.&#34;</span>))
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">SetFilter</span>(<span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">NewExtensionFileFilter</span>(<span style="color:#a6e22e">exts</span>))
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">SetLocation</span>(<span style="color:#a6e22e">luri</span>)
+		<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Show</span>()
+	}),
+		<span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewEntryWithData</span>(<span style="color:#a6e22e">data</span>))
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetAudios</span>(<span style="color:#a6e22e">pth</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">lst</span> []<span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">fi</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">ReadDir</span>(<span style="color:#a6e22e">pth</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">file</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">fi</span> {
+		<span style="color:#a6e22e">path1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pth</span> <span style="color:#f92672">+</span> string(<span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Separator</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Name</span>()
+		<span style="color:#a6e22e">ext</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Ext</span>(<span style="color:#a6e22e">path1</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">IsInSlice</span>(<span style="color:#a6e22e">ext</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;.mp3&#34;</span>, <span style="color:#e6db74">&#34;.ogg&#34;</span>, <span style="color:#e6db74">&#34;.wav&#34;</span>, <span style="color:#e6db74">&#34;.flac&#34;</span>}) {
+			<span style="color:#a6e22e">lst</span> = append(<span style="color:#a6e22e">lst</span>, <span style="color:#a6e22e">path1</span>)
+		}
+
+	}
+	<span style="color:#66d9ef">return</span>
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">IsInSlice</span>(<span style="color:#a6e22e">value</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">sli</span> []<span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> {
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">sli</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">v</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+		}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">LblList</span>(<span style="color:#a6e22e">dataList</span> <span style="color:#a6e22e">binding</span>.<span style="color:#a6e22e">StringList</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">List</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewListWithData</span>(<span style="color:#a6e22e">dataList</span>,
+		<span style="color:#66d9ef">func</span>() <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">CanvasObject</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewLabel</span>(<span style="color:#e6db74">&#34;aaaaaaaaaaaaaaaaaaaaaaaaaa&#34;</span>)
+		}, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">di</span> <span style="color:#a6e22e">binding</span>.<span style="color:#a6e22e">DataItem</span>, <span style="color:#a6e22e">co</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">CanvasObject</span>) {
+			<span style="color:#a6e22e">lbl</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">co</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">Label</span>)
+			<span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">di</span>.(<span style="color:#a6e22e">binding</span>.<span style="color:#a6e22e">String</span>)
+			<span style="color:#a6e22e">ss</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Get</span>()
+			<span style="color:#a6e22e">lbl</span>.<span style="color:#a6e22e">SetText</span>(<span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Base</span>(<span style="color:#a6e22e">ss</span>))
+		})
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">contextMenuButton</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">Button</span>
+	<span style="color:#a6e22e">menu</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">CanvasObject</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">contextMenuButton</span>) <span style="color:#a6e22e">Tapped</span>(<span style="color:#a6e22e">e</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">PointEvent</span>) {
+	<span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">ShowPopUpAtPosition</span>(<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">menu</span>, <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">CurrentApp</span>().<span style="color:#a6e22e">Driver</span>().<span style="color:#a6e22e">CanvasForObject</span>(<span style="color:#a6e22e">b</span>),
+		<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">AbsolutePosition</span>.<span style="color:#a6e22e">Subtract</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">menu</span>.<span style="color:#a6e22e">Size</span>().<span style="color:#a6e22e">Height</span>)))
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newContextMenuButton</span>(<span style="color:#a6e22e">icon</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">Resource</span>, <span style="color:#a6e22e">menu</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">CanvasObject</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">contextMenuButton</span> {
+	<span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">contextMenuButton</span>{<span style="color:#a6e22e">menu</span>: <span style="color:#a6e22e">menu</span>}
+	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Icon</span> = <span style="color:#a6e22e">icon</span>
+
+	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">ExtendBaseWidget</span>(<span style="color:#a6e22e">b</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b</span>
+}
+
+</code></pre></div><h2 id="参考">参考</h2>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1gb4y127dx/">https://www.bilibili.com/video/BV1gb4y127dx/</a></p>
+</blockquote>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>相关文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/">Fyne案例之接住你小游戏</a></li>
+        
+        <li><a href="/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/">Gin&#43;vue2博客笔记（前端）</a></li>
+        
+        <li><a href="/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/">Gin&#43;vue2博客笔记（后端）</a></li>
+        
+        <li><a href="/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Golang案例 Zinx轻量级服务器框架学习笔记</a></li>
+        
+        <li><a href="/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/">Golang小案例 爬取豆瓣电影</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/Golang' target="_blank">Golang</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div class="container">
+        &copy; 2023 <a href="https://kevinbin123.github.io/">abin の 成长之路 By abin</a>.本站博客未经授权禁止转载.
+		<br>
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="http://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>
+		       
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/bootstrap.min.js'></script>
+
+    <script src='/js/post_category.1.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kevinbin123.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kevinbin123.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" title="简单分布式系统" target="_blank">简单分布式系统</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/" title="Fyne案例之音乐播放器" target="_blank">Fyne案例之音乐播放器</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="Fyne案例之接住你小游戏" target="_blank">Fyne案例之接住你小游戏</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/" title="Gin&#43;vue2博客笔记（前端）" target="_blank">Gin&#43;vue2博客笔记（前端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/" title="Gin&#43;vue2博客笔记（后端）" target="_blank">Gin&#43;vue2博客笔记（后端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/" title="PWA笔记" target="_blank">PWA笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Golang案例 Zinx轻量级服务器框架学习笔记" target="_blank">Golang案例 Zinx轻量级服务器框架学习笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/" title="Golang小案例 爬取豆瓣电影" target="_blank">Golang小案例 爬取豆瓣电影</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/" title="Go Micro案例" target="_blank">Go Micro案例</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/" title="Go Micro笔记" target="_blank">Go Micro笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kevinbin123.github.io/categories/DB/">DB (2)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Golang/">Golang (19)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/JavaScript/">JavaScript (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Network/">Network (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/container/">container (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/other/">other (5)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kevinbin123.github.io/tags/DB/">DB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang/">Golang</a>
+    
+    <a href="https://kevinbin123.github.io/tags/JavaScript/">JavaScript</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Network/">Network</a>
+    
+    <a href="https://kevinbin123.github.io/tags/container/">container</a>
+    
+    <a href="https://kevinbin123.github.io/tags/other/">other</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.liwenzhou.com/" title="go语言学习之路">李文周的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://kevinbin123.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

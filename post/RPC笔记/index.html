@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>RPC笔记 | abin の 成长之路</title>
+    <meta property="og:title" content="RPC笔记 - abin の 成长之路">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-03-27T16:33:57&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-03-27T16:33:57&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,博客,项目管理,软件架构">
+    <meta name="description" content="RPC笔记">
+        
+    <meta name="author" content="abin">
+    <meta property="og:url" content="https://kevinbin123.github.io/post/RPC%E7%AC%94%E8%AE%B0/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/sidebar_menu.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kevinbin123.github.io/">
+                        abin の 成长之路
+                    </a>
+                
+                <p class="description">冉冉升起的码神</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kevinbin123.github.io/">首页</a>
+                    
+                    <a  href="https://kevinbin123.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://kevinbin123.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">RPC笔记</h1>
+        </header>
+        
+  <time datetime="2022-03-27T08:33:57Z" class="post-meta meta-date dt-published">
+    2022年3月27日
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/Golang' target="_blank">Golang</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>阅读</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="rpc笔记">RPC笔记</h1>
+<h2 id="作用"><strong>作用：</strong></h2>
+<p>RPC：remote procedure call protocol远程调用协议；基于TCP协议，在网络中，实现像调用本机的函数一样，调用其他机子的函数。</p>
+<h2 id="过程"><strong>过程：</strong></h2>
+<p><strong>在服务端：</strong></p>
+<p>1、注册服务，并绑定方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">RegisterName</span>(<span style="color:#e6db74">&#34;服务名&#34;</span>,<span style="color:#a6e22e">回调对象</span>)
+</code></pre></div><p>回调对象中的方法需要满足以下条件：</p>
+<blockquote>
+<ul>
+<li>1、方法是导出的：也就是首字母要大写</li>
+<li>2、方法有两个参数，都是导出类型或内建类型</li>
+<li>3、方法的第二个参数是指针</li>
+<li>4、方法只有一个error接口类型的返回值</li>
+</ul>
+<p>例如：</p>
+<p>type Hello struct{}</p>
+<p>func (h *Hello)HelloWorld(name string,resp *string) error{
+*resp =&ldquo;你好，&quot;+name
+return nil
+}</p>
+</blockquote>
+<p>2、启动监听</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">listener</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>()
+</code></pre></div><p>3、建立连接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">listener</span>.<span style="color:#a6e22e">Accept</span>()
+</code></pre></div><p>4、将连接绑定到rpc服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">ServeConn</span>(<span style="color:#a6e22e">conn</span>)
+</code></pre></div><p><strong>在客户端：</strong></p>
+<p>1、用rpc连接服务器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Dial</span>()
+</code></pre></div><p>2、调用远程函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#e6db74">&#34;服务名.方法名&#34;</span>,<span style="color:#a6e22e">传入参数</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">传出参数</span>)
+</code></pre></div><h2 id="example"><strong>example:</strong></h2>
+<p>Server.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
+	<span style="color:#e6db74">&#34;net&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Hello</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">h</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Hello</span>)<span style="color:#a6e22e">HelloWorld</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>,<span style="color:#a6e22e">resp</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span>{
+	<span style="color:#f92672">*</span><span style="color:#a6e22e">resp</span> =<span style="color:#e6db74">&#34;你好，&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">name</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//1、注册rpc服务，并绑定方法
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">RegisterName</span>(<span style="color:#e6db74">&#34;hello&#34;</span>,new(<span style="color:#a6e22e">Hello</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;rpc注册失败:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#75715e">//2、创建监听
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">listener</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>,<span style="color:#e6db74">&#34;127.0.0.1:8080&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;监听失败:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">listener</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;启动监听成功&#34;</span>)
+	<span style="color:#75715e">//3、建立连接
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">listener</span>.<span style="color:#a6e22e">Accept</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;建立连接失败:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#75715e">//4、将连接绑定到服务
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">ServeConn</span>(<span style="color:#a6e22e">conn</span>)
+}
+</code></pre></div><p>client.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span>(
+	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#75715e">//1、创建连接
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>,<span style="color:#e6db74">&#34;127.0.0.1:8080&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;连接失败:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#75715e">//2、远程调用
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">reply</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">err</span>=<span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#e6db74">&#34;hello.HelloWorld&#34;</span>,<span style="color:#e6db74">&#34;abin&#34;</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">reply</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;远程调用失败:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">reply</span>)
+}
+</code></pre></div><p><strong>效果：</strong></p>
+<p>
+        <img class="mx-auto" alt="image-20220310181458868" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220310181458868.png" />   
+    </p>
+<h2 id="封装">封装</h2>
+<p>创建一个封装文件，比如DesignRpc.go</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span>(
+	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
+)
+
+<span style="color:#75715e">/*封装服务端*/</span>
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyInterface</span> <span style="color:#66d9ef">interface</span>{
+	<span style="color:#a6e22e">HelloWorld</span>(<span style="color:#66d9ef">string</span>, <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span>
+}
+<span style="color:#75715e">//注册rpc服务，并绑定方法
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RegisterServer</span>(<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">MyInterface</span>){
+	<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">RegisterName</span>(<span style="color:#e6db74">&#34;hello&#34;</span>,<span style="color:#a6e22e">i</span>)
+}
+
+<span style="color:#75715e">/*封装客户端*/</span>
+<span style="color:#75715e">//定义客户端结构体
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyClient</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Client</span>
+}
+<span style="color:#75715e">//创建连接
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">InitClient</span>(<span style="color:#a6e22e">addr</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">MyClient</span>{
+	<span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">_</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Dial</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>,<span style="color:#a6e22e">addr</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">MyClient</span>{<span style="color:#a6e22e">c</span>:<span style="color:#a6e22e">conn</span>}
+}
+<span style="color:#75715e">//远程调用
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MyClient</span>) <span style="color:#a6e22e">HelloWorld</span>(<span style="color:#a6e22e">a</span> <span style="color:#66d9ef">string</span>,<span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span>{
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#e6db74">&#34;hello.HelloWorld&#34;</span>,<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>)
+}
+</code></pre></div><p>server中就可以使用封装好的方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
+	<span style="color:#e6db74">&#34;net&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Hello</span> <span style="color:#66d9ef">struct</span>{
+
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Hello</span>) <span style="color:#a6e22e">HelloWorld</span>(<span style="color:#a6e22e">a</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">b</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span>{
+	<span style="color:#f92672">*</span><span style="color:#a6e22e">b</span> = <span style="color:#a6e22e">a</span> <span style="color:#f92672">+</span><span style="color:#e6db74">&#34; 你好！&#34;</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">RegisterServer</span>(new(<span style="color:#a6e22e">Hello</span>))
+	<span style="color:#a6e22e">lis</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>,<span style="color:#e6db74">&#34;127.0.0.1:8080&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;listen err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">lis</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;listen start&#34;</span>)
+	<span style="color:#a6e22e">conn</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">lis</span>.<span style="color:#a6e22e">Accept</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;conn err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">conn</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">ServeConn</span>(<span style="color:#a6e22e">conn</span>)
+}
+</code></pre></div><p>在client.go中也可以使用封装的方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span>(
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">Client</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">InitClient</span>(<span style="color:#e6db74">&#34;127.0.0.1:8080&#34;</span>)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">reply</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">Client</span>.<span style="color:#a6e22e">HelloWorld</span>(<span style="color:#e6db74">&#34;abin&#34;</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">reply</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;helloworld err:&#34;</span>,<span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">reply</span>,<span style="color:#a6e22e">err</span>)
+}
+</code></pre></div>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>相关文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/protobuf%E7%AC%94%E8%AE%B0/">Protobuf笔记</a></li>
+        
+        <li><a href="/post/Golang%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%89%E9%A1%B9%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">Golang设计模式 选项设计模式</a></li>
+        
+        <li><a href="/post/Gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/">Gin框架案例</a></li>
+        
+        <li><a href="/post/Gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/">Gin框架笔记</a></li>
+        
+        <li><a href="/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E8%8E%B7%E5%8F%96%E6%88%90%E8%AF%AD%E5%B9%B6%E6%9F%A5%E8%AF%A2/">Golang小案例 获取成语并查询</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/Golang' target="_blank">Golang</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div class="container">
+        &copy; 2023 <a href="https://kevinbin123.github.io/">abin の 成长之路 By abin</a>.本站博客未经授权禁止转载.
+		<br>
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="http://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>
+		       
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/bootstrap.min.js'></script>
+
+    <script src='/js/post_category.1.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kevinbin123.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kevinbin123.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" title="简单分布式系统" target="_blank">简单分布式系统</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/" title="Fyne案例之音乐播放器" target="_blank">Fyne案例之音乐播放器</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="Fyne案例之接住你小游戏" target="_blank">Fyne案例之接住你小游戏</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/" title="Gin&#43;vue2博客笔记（前端）" target="_blank">Gin&#43;vue2博客笔记（前端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/" title="Gin&#43;vue2博客笔记（后端）" target="_blank">Gin&#43;vue2博客笔记（后端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/" title="PWA笔记" target="_blank">PWA笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Golang案例 Zinx轻量级服务器框架学习笔记" target="_blank">Golang案例 Zinx轻量级服务器框架学习笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/" title="Golang小案例 爬取豆瓣电影" target="_blank">Golang小案例 爬取豆瓣电影</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/" title="Go Micro案例" target="_blank">Go Micro案例</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/" title="Go Micro笔记" target="_blank">Go Micro笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kevinbin123.github.io/categories/DB/">DB (2)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Golang/">Golang (19)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/JavaScript/">JavaScript (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Network/">Network (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/container/">container (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/other/">other (5)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kevinbin123.github.io/tags/DB/">DB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang/">Golang</a>
+    
+    <a href="https://kevinbin123.github.io/tags/JavaScript/">JavaScript</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Network/">Network</a>
+    
+    <a href="https://kevinbin123.github.io/tags/container/">container</a>
+    
+    <a href="https://kevinbin123.github.io/tags/other/">other</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.liwenzhou.com/" title="go语言学习之路">李文周的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://kevinbin123.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

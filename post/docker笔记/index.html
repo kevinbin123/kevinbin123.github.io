@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Docker笔记 | abin の 成长之路</title>
+    <meta property="og:title" content="Docker笔记 - abin の 成长之路">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-02-27T20:53:41&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-02-27T20:53:41&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,博客,项目管理,软件架构">
+    <meta name="description" content="Docker笔记">
+        
+    <meta name="author" content="abin">
+    <meta property="og:url" content="https://kevinbin123.github.io/post/docker%E7%AC%94%E8%AE%B0/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/sidebar_menu.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kevinbin123.github.io/">
+                        abin の 成长之路
+                    </a>
+                
+                <p class="description">冉冉升起的码神</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kevinbin123.github.io/">首页</a>
+                    
+                    <a  href="https://kevinbin123.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://kevinbin123.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Docker笔记</h1>
+        </header>
+        
+  <time datetime="2022-02-27T12:53:41Z" class="post-meta meta-date dt-published">
+    2022年2月27日
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/container' target="_blank">container</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>阅读</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="docker笔记">Docker笔记</h1>
+<h2 id="基本概念">基本概念</h2>
+<h2 id="安装">安装</h2>
+<p>在centos上安装，需要Centos7以上的版本</p>
+<p>其它系统以及自动安装的方式可以查看参考文献1</p>
+<p><strong>手动安装</strong></p>
+<p>0、安装之前先卸载</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sudo yum remove docker <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>                  docker-client <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>                  docker-client-latest <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>                  docker-common <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>                  docker-latest <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>                  docker-latest-logrotate <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>                  docker-logrotate <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>                  docker-engine
+</code></pre></div><p>1、安装设置仓库需要的软件包</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum install -y yum-utils device-mapper-persistent-data lvm2</span>
+</code></pre></div><p>2、设置仓库，这边选择阿里云的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span>
+</code></pre></div><p>3、安装最新版本的Docker Engine-Community和containerd；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum install docker-ce docker-ce-cli containerd.io</span>
+</code></pre></div><p>4、启动docker并设置为开机自启动</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl start docker</span>
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl enable docker</span>
+</code></pre></div><p>5、查看版本，用来验证是否安装成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker --version</span>
+</code></pre></div><h2 id="docker的使用">docker的使用</h2>
+<h3 id="demo的使用">demo的使用</h3>
+<p>Docker 以 ubuntu 镜像创建一个新容器，然后在容器里执行 bin/echo &ldquo;Hello world&rdquo;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run ubuntu /bin/echo &#34;Hello docker&#34;</span>
+</code></pre></div><p>启动容器、并进行交互式(-t是指定一个终端；-i是标准输入)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -it ubuntu /bin/bash</span>
+root@302955f6c1cd:/# cat /proc/version
+Linux version 3.10.0-1062.el7.x86_64 <span style="color:#f92672">(</span>mockbuild@kbuilder.bsys.centos.org<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>gcc version 4.8.5 <span style="color:#ae81ff">20150623</span> <span style="color:#f92672">(</span>Red Hat 4.8.5-36<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>GCC<span style="color:#f92672">)</span> <span style="color:#f92672">)</span> <span style="color:#75715e">#1 SMP Wed Aug 7 18:08:02 UTC 2019</span>
+root@302955f6c1cd:/# ls
+bin  boot  dev  etc  home  lib  lib32  lib64  libx32  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@302955f6c1cd:/# exit
+exit
+
+</code></pre></div><p>后台模式启动容器（-d参数）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d ubuntu /bin/sh -c &#34;while true;do echo hello world;sleep 1;done&#34;</span>
+ac8fc7f2f3e7f5d4f711f86937cad3a50230faef4a2b3f3b3d3029d8ac481356
+
+</code></pre></div><p>查看运行的容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker ps</span>
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+ac8fc7f2f3e7   ubuntu    <span style="color:#e6db74">&#34;/bin/sh -c &#39;while t…&#34;</span>   <span style="color:#ae81ff">9</span> seconds ago   Up <span style="color:#ae81ff">7</span> seconds             lucid_pike
+
+</code></pre></div><p>查看标准输出</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker logs ac8fc7f2f3e7</span>
+</code></pre></div><p>停止容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker stop ac8fc7f2f3e7</span>
+ac8fc7f2f3e7
+</code></pre></div><h3 id="容器使用">容器使用</h3>
+<p>查看docker命令的用法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker</span>
+</code></pre></div><p>查看某个指令的具体用法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker stats --help</span>
+</code></pre></div><p>获取镜像</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker pull ubuntu</span>
+</code></pre></div><p>启动容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -it ubuntu /bin/bash</span>
+</code></pre></div><p>查看所有的容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker ps -a</span>
+</code></pre></div><p>启动一个已停止的容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker start e763513ec269</span>
+</code></pre></div><p>后台运行一个容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -itd --name ubuntu-test ubuntu /bin/bash</span>
+</code></pre></div><p>停止容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker stop e763513ec269</span>
+</code></pre></div><p>重启容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker restart 421d41bc6683</span>
+</code></pre></div><p>后台运行容器时，需要进入容器，可以使用docker attach 或者 docker exec；推荐使用docer exec，因为使用exce退出容器的时候，不会导致容器停止。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker attach 421d41bc6683</span>
+root@421d41bc6683:/# exit
+exit
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker ps</span>
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker exec -it 421d41bc6683 /bin/bash</span>
+Error response from daemon: Container 421d41bc66830668b3f22d71d3fa170e5327d26833625ba8d73f8ebe1309452e is not running
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker start 421d41bc6683</span>
+421d41bc6683
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker exec -it 421d41bc6683 /bin/bash</span>
+root@421d41bc6683:/# exit
+exit
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker ps</span>
+CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS          PORTS     NAMES
+421d41bc6683   ubuntu    <span style="color:#e6db74">&#34;/bin/bash&#34;</span>   <span style="color:#ae81ff">2</span> minutes ago   Up <span style="color:#ae81ff">17</span> seconds             ubuntu-test
+</code></pre></div><p>导出容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker export ddbb11f45984 &gt; hello-world-test.tar</span>
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># ls</span>
+anaconda-ks.cfg  hello-world-test.tar  initial-setup-ks.cfg
+</code></pre></div><p>导入容器快照</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># cat hello-world-test.tar |docker import - test/hello:v1</span>
+sha256:ad059818de5a2787325f82af99c4e86e38a7d6ae05e6afc8febd2488b30aa69f
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker images</span>
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+test/hello    v1        ad059818de5a   <span style="color:#ae81ff">8</span> seconds ago   13.3kB
+ubuntu        latest    54c9d81cbb44   <span style="color:#ae81ff">3</span> weeks ago     72.8MB
+hello-world   latest    feb5d9fea6a5   <span style="color:#ae81ff">5</span> months ago    13.3kB
+</code></pre></div><p>删除容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker rm -f ddbb11f45984</span>
+</code></pre></div><p>清除所有处于终止状态的容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker container prune</span>
+</code></pre></div><p>运行一个web应用(-d后台运行、-P随机端口映射)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker pull training/webapp</span>
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d -P trainning/webapp python app.py</span>
+</code></pre></div><p>查看web应用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker ps</span>
+CONTAINER ID   IMAGE             COMMAND           CREATED             STATUS          PORTS                                         NAMES
+ac738d8df5ef   training/webapp   <span style="color:#e6db74">&#34;python app.py&#34;</span>   <span style="color:#ae81ff">6</span> seconds ago       Up <span style="color:#ae81ff">3</span> seconds    0.0.0.0:49153-&gt;5000/tcp, :::49153-&gt;5000/tcp   blissful_thompson
+421d41bc6683   ubuntu            <span style="color:#e6db74">&#34;/bin/bash&#34;</span>       About an hour ago   Up <span style="color:#ae81ff">57</span> minutes                                                 ubuntu-test
+</code></pre></div><p>指定端口映射(前面的是主机的端口，后面的是容器的端口)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d -p 5000:5000 training/webapp python app.py</span>
+</code></pre></div><p>如果发生了类似的错误;则重启docker<code> systemctl restart docker</code></p>
+<p>
+        <img class="mx-auto" alt="image-20220224131527231" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220224131527231.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20220224131519996" src="C:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20220224131519996.png" />   
+    </p>
+<p>查看容器端口映射情况</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker port 5154359f47ce</span>
+5000/tcp -&gt; 0.0.0.0:5000
+5000/tcp -&gt; :::5000
+</code></pre></div><p>指定绑定的网络地址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d -p 127.0.0.1:5001:5000 training/webapp python app.py</span>
+</code></pre></div><p>查看web应用程序日志(边访问，边输出)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker logs -f 5154359f47ce</span>
+</code></pre></div><p>查看web应用程序容器的进程</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker top 5154359f47ce</span>
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                <span style="color:#ae81ff">57903</span>               <span style="color:#ae81ff">57885</span>               <span style="color:#ae81ff">0</span>                   23:55               ?                   00:00:00            python app.py
+</code></pre></div><p>检查web应用程序（返回docker容器的配置和状态信息）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker inspect 5154359f47ce</span>
+</code></pre></div><p>查看最后一次创建的容器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker ps -l</span>
+</code></pre></div><p>移除容器（移除之前需要先停止）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker stop 5154359f47ce</span>
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker rm 5154359f47ce</span>
+</code></pre></div><p>容器命名</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d -P --name test training/webapp python app.py</span>
+</code></pre></div><p>创建网络</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker network create -d bridge test-net</span>
+</code></pre></div><p>连接容器到创建的网络中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -itd --name test1 --network test-net ubuntu /bin/bash</span>
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -itd --name test2 --network test-net ubuntu /bin/bash</span>
+</code></pre></div><p>测试容器之间能否ping通，如果没有ping工具，可以使用命令安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker exec -it test1 /bin/bash</span>
+root@18ffbff3df31:/# ping test2
+bash: ping: command not found
+root@18ffbff3df31:/# apt-get update
+root@18ffbff3df31:/# apt install iputils-ping
+</code></pre></div><p>将修改后的容器打包成一个新的镜像，这里的容器ID可以用docker ps查看</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker commit -m=&#34;update ping&#34; -a=&#34;abin&#34; 18ffbff3df31 abin/ubuntu:v3</span>
+</code></pre></div><p>然后启动、命名、添加到网络，并测试是否连通</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -itd --name test3 --network test-net abin/ubuntu:v3 /bin/bash</span>
+6d906966816c86aff4642b02346735c78253d75a3bfa26115988b3cfdd784a4e
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker exec -it test3 /bin/bash</span>
+root@6d906966816c:/# ping test2
+PING test2 <span style="color:#f92672">(</span>172.18.0.3<span style="color:#f92672">)</span> 56<span style="color:#f92672">(</span>84<span style="color:#f92672">)</span> bytes of data.
+<span style="color:#ae81ff">64</span> bytes from test2.test-net <span style="color:#f92672">(</span>172.18.0.3<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.059 ms
+<span style="color:#ae81ff">64</span> bytes from test2.test-net <span style="color:#f92672">(</span>172.18.0.3<span style="color:#f92672">)</span>: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>0.083 ms
+</code></pre></div><p>配置DNS，应用于全部容器：修改/etc/docker/daemon.json文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">{</span>
+  <span style="color:#e6db74">&#34;dns&#34;</span> : <span style="color:#f92672">[</span>
+    <span style="color:#e6db74">&#34;114.114.114.114&#34;</span>,
+    <span style="color:#e6db74">&#34;8.8.8.8&#34;</span>
+  <span style="color:#f92672">]</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>重启docker并查看是否生效</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart docker</span>
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -it --rm ubuntu cat etc/resolv.conf</span>
+search localdomain
+nameserver 114.114.114.114
+nameserver 8.8.8.8
+</code></pre></div><p>手工配置某个容器的DNS(&ndash;rm：容器退出时自动清理容器内部的文件系统)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -it --rm -h host_ubuntu --dns=114.114.114.114 --dns-search=test.com ubuntu</span>
+root@host_ubuntu:/# cat /etc/hostname
+host_ubuntu
+root@host_ubuntu:/# cat /etc/hosts
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+ff00::0	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+172.17.0.2	host_ubuntu
+root@host_ubuntu:/# cat /etc/resolv.conf
+search test.com
+nameserver 114.114.114.114
+</code></pre></div><h3 id="镜像使用">镜像使用</h3>
+<p>列出本地主机上的镜像</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker images</span>
+</code></pre></div><p>拉取新的镜像</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker pull httpd</span>
+</code></pre></div><p>查找镜像</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker search httpd</span>
+</code></pre></div><p>删除镜像</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker rmi httpd</span>
+</code></pre></div><p>删除镜像的时候如果遇到了错误；</p>
+<p>
+        <img class="mx-auto" alt="image-20220224144132453" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220224144132453.png" />   
+    </p>
+<p>则需要先删除容器，再删除镜像</p>
+<p>
+        <img class="mx-auto" alt="image-20220224144442221" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220224144442221.png" />   
+    </p>
+<p>创建镜像</p>
+<p>方式一：更新现有镜像</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -t -i ubuntu:15.10 /bin/bash</span>
+root@2a050926674b:/# apt-get update
+root@2a050926674b:/# exit
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker commit -m=&#34;has update by abin&#34; -a=&#34;abin&#34; 2a050926674b abin/ubuntu:v2</span>
+</code></pre></div><p>方式二：用docker build命令，根据DockerFile文件创建</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># cat Dockerfile</span>
+FROM centos:6.7
+MAINTAINER  Filsher <span style="color:#e6db74">&#34;test@123.com&#34;</span>
+RUN  /bin/echo <span style="color:#e6db74">&#39;root:123456&#39;</span>|chpasswd
+RUN useradd abin
+RUN /bin/echo <span style="color:#e6db74">&#39;abin:123456&#39;</span> |chpasswd
+RUN /bin/echo -e <span style="color:#e6db74">&#34;LANG=\&#34;en_US.UTF-8\&#34;&#34;</span> &gt;/etc/default/local
+EXPOSE <span style="color:#ae81ff">22</span>
+EXPOSE <span style="color:#ae81ff">80</span>
+CMD /usr/sbin/sshd -D
+</code></pre></div><p>-t指定目标镜像名；. 表示Dockerfile文件所在目录，也可以是绝对路径</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker build -t abin/centos:6.7 .</span>
+</code></pre></div><p>运行新的镜像</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -t -i abin/centos:6.7 /bin/bash</span>
+<span style="color:#f92672">[</span>root@bcdfc6e6eaa5 /<span style="color:#f92672">]</span><span style="color:#75715e"># id abin</span>
+uid<span style="color:#f92672">=</span>500<span style="color:#f92672">(</span>abin<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>500<span style="color:#f92672">(</span>abin<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>500<span style="color:#f92672">(</span>abin<span style="color:#f92672">)</span>
+</code></pre></div><p>设置镜像标签，并查看效果</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker tag a04221ad0891 abin/centos:dev</span>
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker images</span>
+REPOSITORY        TAG       IMAGE ID       CREATED          SIZE
+abin/centos       6.7       a04221ad0891   <span style="color:#ae81ff">2</span> minutes ago    191MB
+abin/centos       dev       a04221ad0891   <span style="color:#ae81ff">2</span> minutes ago    191MB
+abin/ubuntu       v2        b7696aaff68e   <span style="color:#ae81ff">15</span> minutes ago   137MB
+test/hello        v1        ad059818de5a   <span style="color:#ae81ff">3</span> hours ago      13.3kB
+ubuntu            latest    54c9d81cbb44   <span style="color:#ae81ff">3</span> weeks ago      72.8MB
+centos            6.7       9f1de3c6ad53   <span style="color:#ae81ff">2</span> years ago      191MB
+ubuntu            15.10     9b9cb95443b5   <span style="color:#ae81ff">5</span> years ago      137MB
+training/webapp   latest    6fae60ef3446   <span style="color:#ae81ff">6</span> years ago      349MB
+</code></pre></div><h3 id="dockerfile">Dockerfile</h3>
+<p>FROM:	构建镜像要基于哪个镜像</p>
+<p>MAINTAINER:	镜像维护者姓名或邮箱</p>
+<p>RUN:	构建镜像时运行的指令</p>
+<p>CMD:	容器运行时执行的命令，有多个以最后一个为准，也可以为ENTRYPOINT提供参数</p>
+<p>ENTRYPOINT:	容器运行时执行的命令</p>
+<p>WORKDIR:	设置工作目录</p>
+<p>COPY:	拷贝文件或目录到容器，不会自动下载或解压</p>
+<p>VOLUME:	指定容器挂载点到宿主机自动生成的目录或其他容器</p>
+<p>EXPOSE:	声明容器的服务端口</p>
+<p>ADD:	拷贝文件或目录到容器，会自动下载或解压</p>
+<p>USER:	执行命令指定运行用户</p>
+<p>HEALTHCHECK:	健康检查</p>
+<p>ARG:	构建容器指定的参数，只在dockerfile有效</p>
+<p>ENV:	设置容器环境变量</p>
+<h2 id="docker-compose">docker Compose</h2>
+<h3 id="安装-1">安装</h3>
+<p>1、最新发行的版本地址：https://github.com/docker/compose/releases；由于github经常会connection reset by peer；这边采用国内的镜像</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost compose<span style="color:#f92672">]</span><span style="color:#75715e"># curl -L https://get.daocloud.io/docker/compose/releases/download/v2.2.3/docker-compose-`uname -s`-`uname -m` &gt; /usr/local/bin/docker-compose -k</span>
+</code></pre></div><p>注意：版本前面要加v，否则下载下来内容不对，会产生类似<code>/usr/local/bin/docker-compose: line 1: {error:Document not found}: command not found</code>的错误；-k即可，表示不进行证书检查，直接下载。</p>
+<p>2、赋予执行权限</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost compose<span style="color:#f92672">]</span><span style="color:#75715e"># chmod +x /usr/local/bin/docker-compose</span>
+</code></pre></div><p>3、创建软连接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost compose<span style="color:#f92672">]</span><span style="color:#75715e"># ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose</span>
+</code></pre></div><p>4、测试是否安装成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost compose<span style="color:#f92672">]</span><span style="color:#75715e"># docker-compose --version</span>
+Docker Compose version v2.2.3
+</code></pre></div><h3 id="使用">使用</h3>
+<p>创建名为docker-compose.yml文件；文件内容类似：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># yaml 配置</span>
+<span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3&#39;</span>
+<span style="color:#f92672">services</span>:
+  <span style="color:#f92672">web</span>:
+    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">.</span>
+    <span style="color:#f92672">ports</span>:
+     - <span style="color:#e6db74">&#34;5000:5000&#34;</span>
+  <span style="color:#f92672">redis</span>:
+    <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;redis:alpine&#34;</span>
+</code></pre></div><p>启动程序(如果要在后台执行，可以加上-d参数)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost composetest<span style="color:#f92672">]</span><span style="color:#75715e"># docker-compose up</span>
+</code></pre></div><h3 id="yml配置">yml配置</h3>
+<p>常用的配置：</p>
+<p>version:	指定本 yml 依从的 compose 哪个版本制定的</p>
+<p>build:	指定为构建镜像上下文路径，作为具有在上下文指定的路径的对象，以及可选的 Dockerfile 和 args</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#34;3.7&#34;</span>
+<span style="color:#f92672">services</span>:
+  <span style="color:#f92672">webapp</span>:
+    <span style="color:#f92672">build</span>:
+      <span style="color:#f92672">context</span>: <span style="color:#ae81ff">./dir</span>
+      <span style="color:#f92672">dockerfile</span>: <span style="color:#ae81ff">Dockerfile-alternate</span>
+      <span style="color:#f92672">args</span>:
+        <span style="color:#f92672">buildno</span>: <span style="color:#ae81ff">1</span>
+      <span style="color:#f92672">labels</span>:
+        - <span style="color:#e6db74">&#34;com.example.description=Accounting webapp&#34;</span>
+        - <span style="color:#e6db74">&#34;com.example.department=Finance&#34;</span>
+        - <span style="color:#e6db74">&#34;com.example.label-with-empty-value&#34;</span>
+      <span style="color:#f92672">target</span>: <span style="color:#ae81ff">prod</span>
+</code></pre></div><blockquote>
+<ul>
+<li>context：上下文路径。</li>
+<li>dockerfile：指定构建镜像的 Dockerfile 文件名。</li>
+<li>args：添加构建参数，这是只能在构建过程中访问的环境变量。</li>
+<li>labels：设置构建镜像的标签。</li>
+<li>target：多层构建，可以指定构建哪一层。</li>
+</ul>
+</blockquote>
+<p>image:	指定容器运行的镜像。以下格式都可以</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">image</span>: <span style="color:#ae81ff">redis</span>
+<span style="color:#f92672">image</span>: <span style="color:#ae81ff">ubuntu:14.04</span>
+<span style="color:#f92672">image</span>: <span style="color:#ae81ff">tutum/influxdb</span>
+<span style="color:#f92672">image</span>: <span style="color:#ae81ff">example-registry.com:4000/postgresql</span>
+<span style="color:#f92672">image</span>: <span style="color:#ae81ff">a4bc65fd</span> <span style="color:#75715e"># 镜像id</span>
+</code></pre></div><p>secrets:	存储敏感数据，比如密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#34;3.1&#34;</span>
+<span style="color:#f92672">services</span>:
+
+<span style="color:#f92672">mysql</span>:
+  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">mysql</span>
+  <span style="color:#f92672">environment</span>:
+    <span style="color:#f92672">MYSQL_ROOT_PASSWORD_FILE</span>: <span style="color:#ae81ff">/run/secrets/my_secret</span>
+  <span style="color:#f92672">secrets</span>:
+    - <span style="color:#ae81ff">my_secret</span>
+
+<span style="color:#f92672">secrets</span>:
+  <span style="color:#f92672">my_secret</span>:
+    <span style="color:#f92672">file</span>: <span style="color:#ae81ff">./my_secret.txt</span>
+</code></pre></div><p>volumes:	将主机的数据卷或着文件挂载到容器里</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#34;3.7&#34;</span>
+<span style="color:#f92672">services</span>:
+  <span style="color:#f92672">db</span>:
+    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">postgres:latest</span>
+    <span style="color:#f92672">volumes</span>:
+      - <span style="color:#e6db74">&#34;/localhost/postgres.sock:/var/run/postgres/postgres.sock&#34;</span>
+      - <span style="color:#e6db74">&#34;/localhost/data:/var/lib/postgresql/data&#34;</span>
+</code></pre></div><h3 id="一个案例">一个案例</h3>
+<p>1、创建一个测试目录：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost compose<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir composetest</span>
+<span style="color:#f92672">[</span>root@localhost compose<span style="color:#f92672">]</span><span style="color:#75715e"># cd composetest/</span>
+</code></pre></div><p>2、创建一个app.py的python文件，实现访问就计数的功能</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">import time
+
+import redis
+from flask import Flask
+
+app <span style="color:#f92672">=</span> Flask<span style="color:#f92672">(</span>__name__<span style="color:#f92672">)</span>
+cache <span style="color:#f92672">=</span> redis.Redis<span style="color:#f92672">(</span>host<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;redis&#39;</span>, port<span style="color:#f92672">=</span>6379<span style="color:#f92672">)</span>
+
+
+def get_hit_count<span style="color:#f92672">()</span>:
+    retries <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+    <span style="color:#66d9ef">while</span> True:
+        try:
+            <span style="color:#66d9ef">return</span> cache.incr<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;hits&#39;</span><span style="color:#f92672">)</span>
+        except redis.exceptions.ConnectionError as exc:
+            <span style="color:#66d9ef">if</span> retries <span style="color:#f92672">==</span> 0:
+                raise exc
+            retries -<span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+            time.sleep<span style="color:#f92672">(</span>0.5<span style="color:#f92672">)</span>
+
+
+@app.route<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;/&#39;</span><span style="color:#f92672">)</span>
+def hello<span style="color:#f92672">()</span>:
+    count <span style="color:#f92672">=</span> get_hit_count<span style="color:#f92672">()</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;Hello World! I have been seen {} times.\n&#39;</span>.format<span style="color:#f92672">(</span>count<span style="color:#f92672">)</span>
+</code></pre></div><p>3、创建requirements.txt文件，内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">flask
+redis
+</code></pre></div><p>4、创建Dockerfile文件，内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">FROM python:3.7-alpine
+WORKDIR /code
+ENV FLASK_APP app.py
+ENV FLASK_RUN_HOST 0.0.0.0
+RUN apk add --no-cache gcc musl-dev linux-headers
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+COPY . .
+CMD <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;flask&#34;</span>, <span style="color:#e6db74">&#34;run&#34;</span><span style="color:#f92672">]</span>
+</code></pre></div><p>5、创建docker-compose.yml 的文件，内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># yaml 配置</span>
+version: <span style="color:#e6db74">&#39;3&#39;</span>
+services:
+  web:
+    build: .
+    ports:
+     - <span style="color:#e6db74">&#34;5000:5000&#34;</span>
+  redis:
+    image: <span style="color:#e6db74">&#34;redis:alpine&#34;</span>
+</code></pre></div><p>6、文件夹中应该有如下内容</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost composetest<span style="color:#f92672">]</span><span style="color:#75715e"># ls</span>
+app.py  docker-compose.yml  Dockerfile  requirements.txt
+</code></pre></div><p>7、运行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost composetest<span style="color:#f92672">]</span><span style="color:#75715e"># docker-compose up</span>
+</code></pre></div><p>8、效果，在浏览器中访问：</p>
+<p>
+        <img class="mx-auto" alt="image-20220224175724756" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220224175724756.png" />   
+    </p>
+<h2 id="docker-machine">Docker Machine</h2>
+<h3 id="安装-2">安装</h3>
+<p>由于github网络访问的问题，使用国内的镜像</p>
+<p>1、下载</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost machine<span style="color:#f92672">]</span><span style="color:#75715e"># wget https://mirrors.aliyun.com/docker-toolbox/linux/machine/0.15.0/docker-machine-Linux-x86_64</span>
+</code></pre></div><p>2、修改名字，并复制到启动目录中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost machine<span style="color:#f92672">]</span><span style="color:#75715e"># ls</span>
+docker-machine-Linux-x86_64
+<span style="color:#f92672">[</span>root@localhost machine<span style="color:#f92672">]</span><span style="color:#75715e"># mv docker-machine-Linux-x86_64 docker-machine</span>
+<span style="color:#f92672">[</span>root@localhost machine<span style="color:#f92672">]</span><span style="color:#75715e"># cp docker-machine /usr/local/bin/</span>
+</code></pre></div><p>3、赋予权限，并查看版本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost machine<span style="color:#f92672">]</span><span style="color:#75715e"># cd /usr/local/bin/</span>
+<span style="color:#f92672">[</span>root@localhost bin<span style="color:#f92672">]</span><span style="color:#75715e"># chmod +x docker-machine </span>
+<span style="color:#f92672">[</span>root@localhost bin<span style="color:#f92672">]</span><span style="color:#75715e"># ll |grep docker</span>
+-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">24707072</span> Feb <span style="color:#ae81ff">24</span> 04:30 docker-compose
+-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">28160480</span> Feb <span style="color:#ae81ff">24</span> 05:28 docker-machine
+<span style="color:#f92672">[</span>root@localhost bin<span style="color:#f92672">]</span><span style="color:#75715e"># docker-machine version</span>
+docker-machine version 0.15.0, build b48dc28d
+</code></pre></div><h3 id="使用-1">使用</h3>
+<p>可以参考此博客</p>
+<blockquote>
+<p>docker之docker-machine用法 <a href="https://www.cnblogs.com/jsonhc/p/7784466.html">https://www.cnblogs.com/jsonhc/p/7784466.html</a></p>
+</blockquote>
+<h2 id="docker-swarm">Docker Swarm</h2>
+<p>创建Swarm的管理节点：manager</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker swarm init --advertise-addr 192.168.145.150</span>
+Swarm initialized: current node <span style="color:#f92672">(</span>d9jjccs4l3dvqwt2d3f8xhf7z<span style="color:#f92672">)</span> is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-5hb8k1e7jv7mq5wlbkcm3lxg1tlmapgxj9sag9w66biwq7vppy-3kyghuw37xuv153qwwll1l39i 192.168.1
+
+To add a manager to this swarm, run <span style="color:#e6db74">&#39;docker swarm join-token manager&#39;</span> and follow the instructions.
+</code></pre></div><p>创建swarm的工作节点：worker</p>
+<p>复制manager节点出现的命令到其他的docker下执行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker swarm join --token SWMTKN-1-5hb8k1e7jv7mq5wlbkcm3lxg1tlmapgxj9sag9w66biwq7vppy-3kyghuw37xuv153qwwl</span>
+This node joined a swarm as a worker.
+
+</code></pre></div><p>查看集群信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service ps helloworld</span>
+ID             NAME           IMAGE           NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+viod7zdaaknl   helloworld.1   alpine:latest   vm        Running         Running <span style="color:#ae81ff">42</span> seconds ago 
+</code></pre></div><p>部署服务到集群</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service create --replicas 1 --name helloworld alpine ping docker.com</span>
+</code></pre></div><p>查看部署情况</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service ps helloworld</span>
+ID             NAME           IMAGE           NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+viod7zdaaknl   helloworld.1   alpine:latest   vm        Running         Running <span style="color:#ae81ff">42</span> seconds ago             
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service inspect --pretty helloworld</span>
+
+ID:		mgt7owd19r54w9wivm57acsk3
+Name:		helloworld
+Service Mode:	Replicated
+ Replicas:	<span style="color:#ae81ff">1</span>
+Placement:
+UpdateConfig:
+ Parallelism:	<span style="color:#ae81ff">1</span>
+ On failure:	pause
+ Monitoring Period: 5s
+ Max failure ratio: <span style="color:#ae81ff">0</span>
+ Update order:      stop-first
+RollbackConfig:
+ Parallelism:	<span style="color:#ae81ff">1</span>
+ On failure:	pause
+ Monitoring Period: 5s
+ Max failure ratio: <span style="color:#ae81ff">0</span>
+ Rollback order:    stop-first
+ContainerSpec:
+ Image:		alpine:latest@sha256:21a3deaa0d32a8057914f36584b5288d2e5ecc984380bc0118285c70fa8c9300
+ Args:		ping docker.com 
+ Init:		false
+Resources:
+Endpoint Mode:	vip
+</code></pre></div><p>扩展集群服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service scale helloworld=2</span>
+helloworld scaled to <span style="color:#ae81ff">2</span>
+overall progress: <span style="color:#ae81ff">2</span> out of <span style="color:#ae81ff">2</span> tasks 
+1/2: running   <span style="color:#f92672">[==================================================</span>&gt;<span style="color:#f92672">]</span> 
+2/2: running   <span style="color:#f92672">[==================================================</span>&gt;<span style="color:#f92672">]</span> 
+verify: Service converged 
+
+</code></pre></div><p>删除服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service rm helloworld</span>
+helloworld
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service ps hellowold</span>
+no such service: hellowold
+</code></pre></div><p>滚动升级服务</p>
+<p>先创建3.0.6版本的redis；再滚动升级redis；查看新的已经升级到了3.0.7</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service create --replicas 1 --name redis --update-delay 10s redis:3.0.6</span>
+jjcinsash2e6x9dcp9wqz0x3e
+overall progress: <span style="color:#ae81ff">1</span> out of <span style="color:#ae81ff">1</span> tasks 
+1/1: running   <span style="color:#f92672">[==================================================</span>&gt;<span style="color:#f92672">]</span> 
+verify: Service converged 
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service ps redis</span>
+ID             NAME      IMAGE         NODE                    DESIRED STATE   CURRENT STATE            ERROR     PORTS
+5aaa6sl0ir3o   redis.1   redis:3.0.6   localhost.localdomain   Running         Running <span style="color:#ae81ff">18</span> seconds ago             
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service update --image redis:3.0.7 redis</span>
+redis
+overall progress: <span style="color:#ae81ff">1</span> out of <span style="color:#ae81ff">1</span> tasks 
+1/1: running   <span style="color:#f92672">[==================================================</span>&gt;<span style="color:#f92672">]</span> 
+verify: Service converged 
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker service ps redis</span>
+ID             NAME          IMAGE         NODE                    DESIRED STATE   CURRENT STATE             ERROR     PORTS
+3ygtvicipkkb   redis.1       redis:3.0.7   vm                      Running         Running <span style="color:#ae81ff">14</span> seconds ago              
+5aaa6sl0ir3o    <span style="color:#ae81ff">\_</span> redis.1   redis:3.0.6   localhost.localdomain   Shutdown        Shutdown <span style="color:#ae81ff">57</span> seconds ago 
+</code></pre></div><p>查看节点情况</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker node ls</span>
+ID                            HOSTNAME                STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+3ksc0ailpvtsgra0r023tif5p     localhost.localdomain   Ready     Active                          19.03.8
+d9jjccs4l3dvqwt2d3f8xhf7z *   vm                      Ready     Active         Leader           20.10.12
+
+</code></pre></div><p>停止某个节点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker node update --availability drain localhost.localdomain</span>
+localhost.localdomain
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker node ls</span>
+ID                            HOSTNAME                STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+3ksc0ailpvtsgra0r023tif5p     localhost.localdomain   Ready     Drain                           19.03.8
+d9jjccs4l3dvqwt2d3f8xhf7z *   vm                      Ready     Active         Leader           20.10.12
+
+</code></pre></div><p>恢复某个节点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker node update --availability active localhost.localdomain</span>
+localhost.localdomain
+<span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker node ls</span>
+ID                            HOSTNAME                STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+3ksc0ailpvtsgra0r023tif5p     localhost.localdomain   Ready     Active                          19.03.8
+d9jjccs4l3dvqwt2d3f8xhf7z *   vm                      Ready     Active         Leader           20.10.12
+</code></pre></div><h2 id="参考文献">参考文献</h2>
+<blockquote>
+<p>1、菜鸟教程-Docker教程 <a href="https://www.runoob.com/docker/docker-tutorial.html">https://www.runoob.com/docker/docker-tutorial.html</a></p>
+<p>2、Centos7安装docker-machine  <a href="https://blog.csdn.net/vincen123/article/details/88781658">https://blog.csdn.net/vincen123/article/details/88781658</a></p>
+</blockquote>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>相关文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/redis%E7%AC%94%E8%AE%B0/">Redis笔记</a></li>
+        
+        <li><a href="/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/">Golang小案例 即时通讯</a></li>
+        
+        <li><a href="/post/MySQL%E7%AC%94%E8%AE%B0/">MySQL笔记</a></li>
+        
+        <li><a href="/post/GolangGMP/">Golang GMP学习笔记</a></li>
+        
+        <li><a href="/post/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/">计算机网络基础学习笔记</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/container' target="_blank">container</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div class="container">
+        &copy; 2023 <a href="https://kevinbin123.github.io/">abin の 成长之路 By abin</a>.本站博客未经授权禁止转载.
+		<br>
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="http://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>
+		       
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/bootstrap.min.js'></script>
+
+    <script src='/js/post_category.1.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kevinbin123.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kevinbin123.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" title="简单分布式系统" target="_blank">简单分布式系统</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/" title="Fyne案例之音乐播放器" target="_blank">Fyne案例之音乐播放器</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="Fyne案例之接住你小游戏" target="_blank">Fyne案例之接住你小游戏</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/" title="Gin&#43;vue2博客笔记（前端）" target="_blank">Gin&#43;vue2博客笔记（前端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/" title="Gin&#43;vue2博客笔记（后端）" target="_blank">Gin&#43;vue2博客笔记（后端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/" title="PWA笔记" target="_blank">PWA笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Golang案例 Zinx轻量级服务器框架学习笔记" target="_blank">Golang案例 Zinx轻量级服务器框架学习笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/" title="Golang小案例 爬取豆瓣电影" target="_blank">Golang小案例 爬取豆瓣电影</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/" title="Go Micro案例" target="_blank">Go Micro案例</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/" title="Go Micro笔记" target="_blank">Go Micro笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kevinbin123.github.io/categories/DB/">DB (2)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Golang/">Golang (19)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/JavaScript/">JavaScript (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Network/">Network (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/container/">container (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/other/">other (5)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kevinbin123.github.io/tags/DB/">DB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang/">Golang</a>
+    
+    <a href="https://kevinbin123.github.io/tags/JavaScript/">JavaScript</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Network/">Network</a>
+    
+    <a href="https://kevinbin123.github.io/tags/container/">container</a>
+    
+    <a href="https://kevinbin123.github.io/tags/other/">other</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.liwenzhou.com/" title="go语言学习之路">李文周的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://kevinbin123.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

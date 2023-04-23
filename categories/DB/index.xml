@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DB on abin の 成长之路</title>
+    <link>https://kevinbin123.github.io/categories/DB/</link>
+    <description>Recent content in DB on abin の 成长之路</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 24 Feb 2022 00:40:21 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/categories/DB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis笔记</title>
+      <link>https://kevinbin123.github.io/post/redis%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Thu, 24 Feb 2022 00:40:21 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/redis%E7%AC%94%E8%AE%B0/</guid>
+      <description>redis使用笔记</description>
+    </item>
+    
+    <item>
+      <title>MySQL笔记</title>
+      <link>https://kevinbin123.github.io/post/MySQL%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Thu, 17 Feb 2022 00:02:17 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/MySQL%E7%AC%94%E8%AE%B0/</guid>
+      <description>MySQL学习笔记</description>
+    </item>
+    
+  </channel>
+</rss>

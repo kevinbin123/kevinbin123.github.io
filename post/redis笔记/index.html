@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Redis笔记 | abin の 成长之路</title>
+    <meta property="og:title" content="Redis笔记 - abin の 成长之路">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-02-24T00:40:21&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-02-24T00:40:21&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,博客,项目管理,软件架构">
+    <meta name="description" content="Redis笔记">
+        
+    <meta name="author" content="abin">
+    <meta property="og:url" content="https://kevinbin123.github.io/post/redis%E7%AC%94%E8%AE%B0/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/sidebar_menu.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kevinbin123.github.io/">
+                        abin の 成长之路
+                    </a>
+                
+                <p class="description">冉冉升起的码神</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kevinbin123.github.io/">首页</a>
+                    
+                    <a  href="https://kevinbin123.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://kevinbin123.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Redis笔记</h1>
+        </header>
+        
+  <time datetime="2022-02-23T16:40:21Z" class="post-meta meta-date dt-published">
+    2022年2月24日
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/DB' target="_blank">DB</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>阅读</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="redis笔记">redis笔记</h1>
+<h2 id="安装">安装</h2>
+<h3 id="windows下安装"><strong>windows下安装</strong></h3>
+<p>下载redis:https://github.com/tporadowski/redis/releases</p>
+<p>
+        <img class="mx-auto" alt="image-20220223115812192" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/image-20220223115812192.png" />   
+    </p>
+<p>解压后，cmd进入到redis文件夹；输入命令启动：</p>
+<p><code>redis-server.exe</code></p>
+<p>启动cli连接server，新开一个cmd进入redis文件夹，输入命令：</p>
+<p><code>redis-cli.exe -h 127.0.0.1 -p 6379</code></p>
+<h3 id="linux下安装"><strong>Linux下安装</strong></h3>
+<p><strong>docker方式：</strong></p>
+<p>直接使用docker启用一个redis5.0.7的环境</p>
+<p><code>docker run --name redis507 -p 6379:6379 -d redis:5.0.7</code></p>
+<p>启用redis-cli连接redis server</p>
+<p><code>docker run -it --network host --rm redis:5.0.7 redis-cli</code></p>
+<p><strong>正常方式：</strong></p>
+<p>下载地址：https://redis.io/download</p>
+<p>下载并安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># wget https://download.redis.io/releases/redis-6.2.6.tar.gz</span>
+<span style="color:#75715e"># tar -zxvf redis-6.2.6.tar.gz</span>
+<span style="color:#75715e"># cd redis-6.2.6</span>
+<span style="color:#75715e"># make</span>
+</code></pre></div><p>make完之后，src目录会出现redis-server服务程序，还有客户端程序redis-cli；redis.conf也可以省略，使用默认配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># cd src</span>
+<span style="color:#75715e"># ./redis-server ../redis.conf</span>
+</code></pre></div><p>服务端启动之后，可以使用客户端与服务端进行交互</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># cd src</span>
+<span style="color:#75715e"># ./redis-cli</span>
+</code></pre></div><p>带ip地址和端口的链接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># ./redis-cli -h 127.0.0.1 -p 6379 -a &#34;mypass&#34;</span>
+</code></pre></div><p>查看是否可以连接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># ./redis-cli</span>
+redis 127.0.01:6379&gt; ping
+PONG
+</code></pre></div><h2 id="基本使用">基本使用</h2>
+<p>设置string类型的键值对并读取</p>
+<p>可以包含任何数据，一个键最大能存储512M</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">127.0.0.1:6379&gt; set mykey <span style="color:#e6db74">&#34;myvalue&#34;</span>
+OK
+127.0.0.1:6379&gt; get mykey
+<span style="color:#e6db74">&#34;myvalue&#34;</span>
+</code></pre></div><p>删除key</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">127.0.0.1:6379&gt; del mykey
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</code></pre></div><p>设置hash类型的键值对并读取</p>
+<p>适合存储对象，存储、读取、修改用户属性</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">127.0.0.1:6379&gt; hmset mykey field1 <span style="color:#e6db74">&#34;hello&#34;</span> field2 <span style="color:#e6db74">&#34;redis&#34;</span>
+OK
+127.0.0.1:6379&gt; hget mykey field2
+<span style="color:#e6db74">&#34;redis&#34;</span>
+127.0.0.1:6379&gt; hget mykey field1
+<span style="color:#e6db74">&#34;hello&#34;</span>
+</code></pre></div><p>设置list类型的并读取</p>
+<p>双向链表，可以用来实现消息队列</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">127.0.0.1:6379&gt; lpush mykey redis
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+127.0.0.1:6379&gt; lpush mykey mongodb
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+127.0.0.1:6379&gt; lpush mykey sqlite
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+127.0.0.1:6379&gt; rpush mykey mysql
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+127.0.0.1:6379&gt; lrange mykey <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">100</span>
+1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;sqlite&#34;</span>
+2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;mongodb&#34;</span>
+3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;redis&#34;</span>
+4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;mysql&#34;</span>
+</code></pre></div><p>设置set集合并读取</p>
+<p>添加、删除、查找复杂度都是O(1)，用来实现共同好友、好友推荐、统计访问网站的独立IP</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">127.0.0.1:6379&gt; sadd mykey redis
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+127.0.0.1:6379&gt; sadd mykey mongodb
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+127.0.0.1:6379&gt; sadd mykey sqlite
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+127.0.0.1:6379&gt; sadd mykey sqlite
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+127.0.0.1:6379&gt; smembers mykey
+1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;sqlite&#34;</span>
+2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;mongodb&#34;</span>
+3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;redis&#34;</span>
+</code></pre></div><p>设置zset集合（有序集合）并读取</p>
+<p>有序的集合，适合实现排行榜、带权重的消息队列等场景</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">127.0.0.1:6379&gt; zadd mykey <span style="color:#ae81ff">0</span> redis
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+127.0.0.1:6379&gt; zadd mykey <span style="color:#ae81ff">1</span> mongodb
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+127.0.0.1:6379&gt; zadd mykey <span style="color:#ae81ff">2</span> sqlite
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+127.0.0.1:6379&gt; zadd mykey <span style="color:#ae81ff">3</span> sqlite
+<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+127.0.0.1:6379&gt; zrangebyscore mykey <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span>
+1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;redis&#34;</span>
+2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;mongodb&#34;</span>
+</code></pre></div><h2 id="在go中使用">在go中使用</h2>
+<p>使用go-redis第三方库连接redis，这个库可以支持哨兵以及集群模式的redis；下载并安装命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">go get github.com/go-redis/redis/v8
+</code></pre></div><h3 id="连接redis">连接redis</h3>
+<p>go-redisv8的相关命令需要传递context.Context参数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+	<span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Ping</span>(<span style="color:#a6e22e">ctx</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;连接redis出错，错误信息：%v\n&#34;</span>,<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;连接成功&#34;</span>) <span style="color:#75715e">//得到输出：连接成功
+</span><span style="color:#75715e"></span>
+}
+
+</code></pre></div><h3 id="基本使用-1">基本使用</h3>
+<p>Keys()：根据正则获取keys,正则*表示获取所有的key</p>
+<p>Type()：获取key对应的类型</p>
+<p>Exists()：检测缓存项是否存在</p>
+<p>Expire()，ExpireAt()：设置有效期</p>
+<p>TTL(),PTTL()：获取有效期</p>
+<p>DBSize()：查看当前数据库key的数量</p>
+<p>Del()：删除缓存项</p>
+<p>FlushDB()：清空当前数据</p>
+<p>FlushAll()：清空所有数据库</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//使用Keys,匹配模式用*，查看所有的key
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Keys</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;*&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">result</span>)
+
+	<span style="color:#75715e">//使用Type,查看某个key是什么类型
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result2</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Type</span>(<span style="color:#a6e22e">ctx</span>,<span style="color:#e6db74">&#34;lan_rank&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">result2</span>)
+
+	<span style="color:#75715e">//使用Exists，检查某个或者某些key是否存在
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span>,<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Exists</span>(<span style="color:#a6e22e">ctx</span>,<span style="color:#e6db74">&#34;mykey&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span>&gt;<span style="color:#ae81ff">0</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;存在&#34;</span>)
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;不存在&#34;</span>)
+	}
+
+	<span style="color:#75715e">//使用Expire方法设置某个时间段（time.Duration）过期
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result3</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Expire</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Minute</span><span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result3</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;设置成功&#34;</span>)
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;设置失败&#34;</span>)
+	}
+	<span style="color:#75715e">//使用ExpireAt方法设置在某个时间点（time.Time）过期
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result4</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ExpireAt</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key2&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result4</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;设置成功&#34;</span>)
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;设置失败&#34;</span>)
+	}
+
+	<span style="color:#75715e">//使用TTL()获取某个key的剩余有效期，单位是秒s
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ttl</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">TTL</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ttl</span>)
+	<span style="color:#75715e">//使用PTTL()获取某个key的剩余有效期，单位是毫秒ms
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pttl</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">PTTL</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">pttl</span>)
+
+	<span style="color:#75715e">//使用DBSize()查看当前数据库的数量
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">num</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">DBSize</span>(<span style="color:#a6e22e">ctx</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;数据库的缓存项有：&#34;</span>,<span style="color:#a6e22e">num</span>)
+
+	<span style="color:#75715e">//使用Del() 删除缓存项
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Del</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key&#34;</span>, <span style="color:#e6db74">&#34;key2&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;成功删除了多少个：&#34;</span>,<span style="color:#a6e22e">n</span>)
+
+	<span style="color:#75715e">//使用FlushDB() 清空当前数据
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result5</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">FlushDB</span>(<span style="color:#a6e22e">ctx</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">result5</span>)
+
+	<span style="color:#75715e">//使用FlushAll() 清空所有数据库
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result6</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">FlushAll</span>(<span style="color:#a6e22e">ctx</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">result6</span>)
+}
+<span style="color:#75715e">/*执行结果：
+</span><span style="color:#75715e">Keys()结果：[lan_rank key book mykey key2]
+</span><span style="color:#75715e">Type()结果：zset
+</span><span style="color:#75715e">Exists()结果：存在
+</span><span style="color:#75715e">Expire()结果：设置成功
+</span><span style="color:#75715e">ExpireAt()结果：设置成功
+</span><span style="color:#75715e">TTL()结果：2m0s
+</span><span style="color:#75715e">PTTL()结果：1m59.98s
+</span><span style="color:#75715e">DBSize()结果：数据库的缓存项有： 4
+</span><span style="color:#75715e">Del()结果：成功删除了多少个： 1
+</span><span style="color:#75715e">FlushDB()结果：OK
+</span><span style="color:#75715e">FlushAll()结果：OK
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">*/</span>
+</code></pre></div><h3 id="string类型">string类型</h3>
+<h4 id="set相关">Set相关</h4>
+<p>Set方法的最后一个参数表示的过期时间，0表示永不过期
+SetEx()方法：设置并指定过期时间
+SetNx()方法：设置并制定过期时间，区别于SetEx在于，SetNx只能设置不存在的key</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//Set方法的最后一个参数表示的过期时间，0表示永不过期
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span>	<span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key1&#34;</span>, <span style="color:#e6db74">&#34;value1&#34;</span>, <span style="color:#ae81ff">0</span>).<span style="color:#a6e22e">Err</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key2&#34;</span>, <span style="color:#e6db74">&#34;value2&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Minute</span><span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Err</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#75715e">//SetEx()方法：设置并指定过期时间
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SetEX</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key3&#34;</span>, <span style="color:#e6db74">&#34;value3&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Hour</span><span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Err</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#75715e">//SetNx()方法：设置并制定过期时间，区别于SetEx在于，SetNx只能设置不存在的key
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SetNX</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key3&#34;</span>, <span style="color:#e6db74">&#34;value3new&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Minute</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;SetNx方法成功&#34;</span>)
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;key已经存在，SetNx方法设置失败&#34;</span>)
+	}
+}
+
+</code></pre></div><h4 id="get相关">Get相关</h4>
+<p>Get方法 获取key，如果key不存在，将返回redis.Nil
+GetRange:字符串截取</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//Set方法的最后一个参数表示的过期时间，0表示永不过期
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span>	<span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key1&#34;</span>, <span style="color:#e6db74">&#34;value1&#34;</span>, <span style="color:#ae81ff">0</span>).<span style="color:#a6e22e">Err</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#75715e">//Get方法 获取key，如果key不存在，将返回redis.Nil
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key1&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Get方法获取key1的结果为：&#34;</span>,<span style="color:#a6e22e">result</span>)
+	<span style="color:#75715e">//Get方法获取一个不存在的key，返回redis.Nil
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result2</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;no-key&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Nil</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;key不存在&#34;</span>)
+	}<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;key的值为：&#34;</span>,<span style="color:#a6e22e">result2</span>)
+	}
+
+	<span style="color:#75715e">//GetRange:字符串截取
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;mykey&#34;</span>, <span style="color:#e6db74">&#34;Hello redis&#34;</span>,<span style="color:#ae81ff">0</span>).<span style="color:#a6e22e">Err</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">result3</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">GetRange</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;mykey&#34;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">5</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;GetRange截取到的值为：&#34;</span>,<span style="color:#a6e22e">result3</span>)
+}
+<span style="color:#75715e">/*执行结果
+</span><span style="color:#75715e">Get方法获取key1的结果为： value1
+</span><span style="color:#75715e">key不存在
+</span><span style="color:#75715e">GetRange截取到的值为： Hello 
+</span><span style="color:#75715e">*/</span>
+</code></pre></div><h4 id="incrdecr">Incr、Decr</h4>
+<p>Incr方法，对key的值进行加1
+IncrBy()方法，按指定步长增加
+Decr()；减1
+Decrby()；按照指定步长减少</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//Incr方法，对key的值进行加1
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Incr</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;number&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;key当前的值为：&#34;</span>,<span style="color:#a6e22e">result</span>)
+
+	<span style="color:#75715e">//IncrBy()方法，按指定步长增加
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result2</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">IncrBy</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;number&#34;</span>, <span style="color:#ae81ff">5</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;IncrBy后，当前的key的值为：&#34;</span>,<span style="color:#a6e22e">result2</span>)
+
+	<span style="color:#75715e">//Decr()；减1
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result3</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Decr</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;number&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Decr后，当前的key的值为：&#34;</span>,<span style="color:#a6e22e">result3</span>)
+
+	<span style="color:#75715e">//Decrby()；按照指定步长减少
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">result4</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">DecrBy</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;number&#34;</span>, <span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;DecrBy后，当前的key的值为：&#34;</span>,<span style="color:#a6e22e">result4</span>)
+}
+<span style="color:#75715e">/* 执行结果：
+</span><span style="color:#75715e">key当前的值为： 1
+</span><span style="color:#75715e">IncrBy后，当前的key的值为： 6
+</span><span style="color:#75715e">Decr后，当前的key的值为： 5
+</span><span style="color:#75715e">DecrBy后，当前的key的值为： 3
+</span><span style="color:#75715e">*/</span>
+</code></pre></div><h4 id="appendstrlen">Append、StrLen</h4>
+<p>Append()方法，可以往字符串后面追加元素，返回字符串总长度
+StrLen()方法可以获取字符串的长度</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//Append()方法，可以往字符串后面追加元素，返回字符串总长度
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span><span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Set</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;mykey&#34;</span>, <span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#ae81ff">0</span>).<span style="color:#a6e22e">Err</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">length</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Append</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;mykey&#34;</span>, <span style="color:#e6db74">&#34; redis&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;当前key的长度是：&#34;</span>,<span style="color:#a6e22e">length</span>)
+	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;mykey&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;当前key的值是：&#34;</span>,<span style="color:#a6e22e">result</span>)
+
+	<span style="color:#75715e">//StrLen()方法可以获取字符串的长度
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">length2</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">StrLen</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;mykey&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;当前key的长度是：&#34;</span>,<span style="color:#a6e22e">length2</span>)
+}
+<span style="color:#75715e">/* 执行结果：
+</span><span style="color:#75715e">当前key的长度是： 11
+</span><span style="color:#75715e">当前key的值是： hello redis
+</span><span style="color:#75715e">当前key的长度是： 11
+</span><span style="color:#75715e">*/</span>
+</code></pre></div><p>MGet()、MSet()、MsetNX()等同时操作多个key的方法，可以查看官网：</p>
+<blockquote>
+<p><a href="https://pkg.go.dev/github.com/go-redis/redis/v8">https://pkg.go.dev/github.com/go-redis/redis/v8</a></p>
+</blockquote>
+<h3 id="list类型">list类型</h3>
+<p>LPush()，从添加数据到链表；返回值是当前列表元素的数量；也可以从右侧加入到链表，对应的方法是RPush()
+LInsert():在某个位置插入新元素
+Lset()：设置某个元素的值；下标是从0开始的
+LLen():获取链表元素个数
+LIndex()：获取链表下标对应的元素
+LPop（）：从链表左侧弹出数据；RPop()是从右侧弹出
+LRem()：根据值移除元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//LPush，从添加数据到链表；返回值是当前列表元素的数量
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//也可以从右侧加入到链表，对应的方法是RPush()
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">LPush</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">n</span>)
+
+	<span style="color:#75715e">//LInsert():在某个位置插入新元素
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//在名为key的缓存项值为100的元素前面插入一个值，值为123
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">LInsert</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;key&#34;</span>, <span style="color:#e6db74">&#34;before&#34;</span>, <span style="color:#e6db74">&#34;100&#34;</span>, <span style="color:#ae81ff">123</span>).<span style="color:#a6e22e">Err</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#75715e">//Lset()：设置某个元素的值；下标是从0开始的
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">LSet</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100</span>).<span style="color:#a6e22e">Err</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#75715e">//LLen():获取链表元素个数
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">length</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">LLen</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;list&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;当前链表的长度为: %v\n&#34;</span>, <span style="color:#a6e22e">length</span>)
+
+	<span style="color:#75715e">//LIndex()：获取链表下标对应的元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">val</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">LIndex</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#ae81ff">0</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;下标为0的值为: %v\n&#34;</span>, <span style="color:#a6e22e">val</span>)
+
+	<span style="color:#75715e">//LRange()：获取某个选定范围的元素集
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">vals</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">LRange</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;从下标0到下标2的值: %v\n&#34;</span>, <span style="color:#a6e22e">vals</span>)
+
+	<span style="color:#75715e">//LPop（）：从链表左侧弹出数据；RPop()是从右侧弹出
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">val</span>, <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">LPop</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;list&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;移除的元素为: %v\n&#34;</span>, <span style="color:#a6e22e">val</span>)
+
+	<span style="color:#75715e">//LRem()：根据值移除元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">num</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">LRem</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;list&#34;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;100&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;移除了: %v 个\n&#34;</span>, <span style="color:#a6e22e">num</span>)
+}
+<span style="color:#75715e">/* 执行结果：
+</span><span style="color:#75715e">3
+</span><span style="color:#75715e">当前链表的长度为: 3
+</span><span style="color:#75715e">下标为0的值为: 3
+</span><span style="color:#75715e">从下标0到下标2的值: [3 100 1]
+</span><span style="color:#75715e">移除的元素为: 3
+</span><span style="color:#75715e">移除了: 1 个
+</span><span style="color:#75715e">*/</span>
+</code></pre></div><h3 id="set类型">set类型</h3>
+<p>SAdd() 添加元素</p>
+<p>SPop()：随机获取一个元素</p>
+<p>SRem() ：删除集合里指定的值</p>
+<p>SSMembers()：获取所有的成员</p>
+<p>SIsMember()：判断元素是否在集合中</p>
+<p>SCard()：获取集合个数</p>
+<p>SUnion()：并集；SDiff():差集；SInter():交集</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//SAdd() 添加元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SAdd</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;lans&#34;</span>, <span style="color:#e6db74">&#34;go&#34;</span>, <span style="color:#e6db74">&#34;java&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SAdd</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;lans&#34;</span>, <span style="color:#e6db74">&#34;c++&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SAdd</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;lans&#34;</span>, <span style="color:#e6db74">&#34;go&#34;</span>)
+
+	<span style="color:#75715e">//SPop()：随机获取一个元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">val</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SPop</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;lans&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">nil</span>{
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">val</span>)
+
+	<span style="color:#75715e">//SRem() ：删除集合里指定的值
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SRem</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;lans&#34;</span>, <span style="color:#e6db74">&#34;java&#34;</span>, <span style="color:#e6db74">&#34;c++&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">n</span>)
+
+	<span style="color:#75715e">//SSMembers()：获取所有的成员
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">vals</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SMembers</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;lans&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">vals</span>)
+
+	<span style="color:#75715e">//SIsMember()：判断元素是否在集合中
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">exists</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SIsMember</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;lans&#34;</span>, <span style="color:#e6db74">&#34;java&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">exists</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;存在集合中&#34;</span>)
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;不存在集合中&#34;</span>)
+	}
+
+	<span style="color:#75715e">//SCard()：获取集合个数
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">total</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SCard</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;lans&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;集合总共有 %v 个元素\n&#34;</span>, <span style="color:#a6e22e">total</span>)
+
+	<span style="color:#75715e">//SUnion()：并集
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">union</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SUnion</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;setA&#34;</span>, <span style="color:#e6db74">&#34;setB&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">union</span>)
+
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SAdd</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;setA&#34;</span>, <span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;b&#34;</span>, <span style="color:#e6db74">&#34;c&#34;</span>, <span style="color:#e6db74">&#34;d&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SAdd</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;setB&#34;</span>, <span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;d&#34;</span>, <span style="color:#e6db74">&#34;e&#34;</span>, <span style="color:#e6db74">&#34;f&#34;</span>)
+
+	<span style="color:#75715e">//SDiff():差集
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">diff</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SDiff</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;setA&#34;</span>, <span style="color:#e6db74">&#34;setB&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">diff</span>)
+
+	<span style="color:#75715e">//SInter():交集
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">inter</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">SInter</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;setA&#34;</span>, <span style="color:#e6db74">&#34;setB&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">inter</span>)
+}
+
+<span style="color:#75715e">/* 执行结果：
+</span><span style="color:#75715e">java
+</span><span style="color:#75715e">1
+</span><span style="color:#75715e">[go]
+</span><span style="color:#75715e">不存在集合中
+</span><span style="color:#75715e">集合总共有 1 个元素
+</span><span style="color:#75715e">[c f b d e a]
+</span><span style="color:#75715e">[b c]
+</span><span style="color:#75715e">[d a]
+</span><span style="color:#75715e">*/</span>
+</code></pre></div><h3 id="zset类型">zset类型</h3>
+<p>ZAdd() 添加元素
+ZIncrBy()：增加元素分值
+ZRange() 根据Score升序排列 、ZRevRange() 根据Score降序排列
+ZRangeByScore()：获取Score过滤后的升序排列； ZRevRangeByScore()：获取Score过滤后的降序排列；
+ZCard():获取元素个数
+ZCount():获取区间内的元素个数
+ZScore():获取元素的score
+ZRank():获取元素在集合中升序的排名，从0开始；ZRevRank()：降序的排名
+ZRem()：通过元素的值来删除元素
+ZRemRangeByRank():根据排名删除
+ZRemRangeByScore():根据分值区间来删除</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+	<span style="color:#e6db74">&#34;math/rand&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//ZAdd() 添加元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">zSets</span><span style="color:#f92672">:=</span>[]<span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Z</span>{
+		<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Z</span>{<span style="color:#a6e22e">Score</span>:<span style="color:#ae81ff">0</span>,<span style="color:#a6e22e">Member</span>:<span style="color:#ae81ff">1</span>},
+		<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Z</span>{<span style="color:#a6e22e">Score</span>:<span style="color:#ae81ff">0</span>,<span style="color:#a6e22e">Member</span>:<span style="color:#ae81ff">2</span>},
+		<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Z</span>{<span style="color:#a6e22e">Score</span>:<span style="color:#ae81ff">0</span>,<span style="color:#a6e22e">Member</span>:<span style="color:#ae81ff">3</span>},
+		<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Z</span>{<span style="color:#a6e22e">Score</span>:<span style="color:#ae81ff">0</span>,<span style="color:#a6e22e">Member</span>:<span style="color:#ae81ff">4</span>},
+		<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Z</span>{<span style="color:#a6e22e">Score</span>:<span style="color:#ae81ff">0</span>,<span style="color:#a6e22e">Member</span>:<span style="color:#ae81ff">5</span>},
+		<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Z</span>{<span style="color:#a6e22e">Score</span>:<span style="color:#ae81ff">0</span>,<span style="color:#a6e22e">Member</span>:<span style="color:#ae81ff">6</span>},
+	}
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZAdd</span>(<span style="color:#a6e22e">ctx</span>,<span style="color:#e6db74">&#34;zSet&#34;</span>,<span style="color:#a6e22e">zSets</span><span style="color:#f92672">...</span>)
+
+	<span style="color:#75715e">//ZIncrBy()：增加元素分值
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZIncrBy</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, float64(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">100</span>)), <span style="color:#e6db74">&#34;1&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZIncrBy</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, float64(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">100</span>)), <span style="color:#e6db74">&#34;2&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZIncrBy</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, float64(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">100</span>)), <span style="color:#e6db74">&#34;3&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZIncrBy</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, float64(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">100</span>)), <span style="color:#e6db74">&#34;4&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZIncrBy</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, float64(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">100</span>)), <span style="color:#e6db74">&#34;5&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZIncrBy</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, float64(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">100</span>)), <span style="color:#e6db74">&#34;6&#34;</span>)
+
+	<span style="color:#75715e">//ZRange() 根据Score升序排列 、ZRevRange() 根据Score降序排列
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//获取分值(点击率)前三的文章ID列表
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZRevRange</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res</span>)
+
+	<span style="color:#75715e">//ZRangeByScore()：获取Score过滤后的升序排列； ZRevRangeByScore()：获取Score过滤后的降序排列；
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res2</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZRangeByScore</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">ZRangeBy</span>{
+		<span style="color:#a6e22e">Min</span>:    <span style="color:#e6db74">&#34;40&#34;</span>,
+		<span style="color:#a6e22e">Max</span>:    <span style="color:#e6db74">&#34;85&#34;</span>,
+	}).<span style="color:#a6e22e">Result</span>()
+
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res2</span>)
+
+	<span style="color:#75715e">//ZCard():获取元素个数
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">count</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZCard</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">count</span>)
+
+	<span style="color:#75715e">//ZCount():获取区间内的元素个数
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZCount</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, <span style="color:#e6db74">&#34;40&#34;</span>, <span style="color:#e6db74">&#34;85&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">n</span>)
+
+	<span style="color:#75715e">//ZScore():获取元素的score
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">score</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZScore</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, <span style="color:#e6db74">&#34;5&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">score</span>)
+
+	<span style="color:#75715e">//ZRank():获取元素在集合中升序的排名，从0开始；ZRevRank()：降序的排名
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res3</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZRevRank</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, <span style="color:#e6db74">&#34;2&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;ZRevRank方式排名：&#34;</span>,<span style="color:#a6e22e">res3</span>)
+
+	<span style="color:#75715e">//ZRem()：通过元素的值来删除元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res4</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZRem</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, <span style="color:#e6db74">&#34;2&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res4</span>)
+
+	<span style="color:#75715e">//ZRemRangeByRank():根据排名删除
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//按照升序排序删除第一个和第二个元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res5</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZRemRangeByRank</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>,  <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res5</span>)
+
+	<span style="color:#75715e">//ZRemRangeByScore():根据分值区间来删除
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//删除score在[40, 70]之间的元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res6</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">ZRemRangeByScore</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;zSet&#34;</span>, <span style="color:#e6db74">&#34;40&#34;</span>, <span style="color:#e6db74">&#34;70&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res6</span>)
+}
+
+<span style="color:#75715e">/*执行结果：
+</span><span style="color:#75715e">[2 5 1]
+</span><span style="color:#75715e">[3 4 1 5]
+</span><span style="color:#75715e">6
+</span><span style="color:#75715e">4
+</span><span style="color:#75715e">81
+</span><span style="color:#75715e">ZRevRank方式排名： 0
+</span><span style="color:#75715e">1
+</span><span style="color:#75715e">2
+</span><span style="color:#75715e">1
+</span><span style="color:#75715e">*/</span>
+
+</code></pre></div><h3 id="hash类型">hash类型</h3>
+<p>HSet():设置
+HMset():批量设置
+HGet():获取某个元素
+HGetAll():获取全部元素
+HDel():删除某个元素
+HExists():判断元素是否存在
+HLen():获取长度</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-GO" data-lang="GO"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/go-redis/redis/v8&#34;</span>
+)
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ctx</span>=<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#a6e22e">rdb</span><span style="color:#f92672">:=</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewClient</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Options</span>{
+		<span style="color:#a6e22e">Addr</span>:<span style="color:#e6db74">&#34;192.168.145.151:6379&#34;</span>,
+		<span style="color:#a6e22e">Password</span>:<span style="color:#e6db74">&#34;&#34;</span>,
+		<span style="color:#a6e22e">DB</span>:<span style="color:#ae81ff">0</span>,
+	})
+
+	<span style="color:#75715e">//HSet():设置
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HSet</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;key1&#34;</span>, <span style="color:#e6db74">&#34;value1&#34;</span>, <span style="color:#e6db74">&#34;key2&#34;</span>, <span style="color:#e6db74">&#34;value2&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HSet</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;key3&#34;</span>, <span style="color:#e6db74">&#34;value3&#34;</span>, <span style="color:#e6db74">&#34;key4&#34;</span>, <span style="color:#e6db74">&#34;value4&#34;</span>})
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HSet</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}{<span style="color:#e6db74">&#34;key5&#34;</span>: <span style="color:#e6db74">&#34;value5&#34;</span>, <span style="color:#e6db74">&#34;key6&#34;</span>: <span style="color:#e6db74">&#34;value6&#34;</span>})
+
+	<span style="color:#75715e">//HMset():批量设置
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">Del</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>)
+	<span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HMSet</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}{<span style="color:#e6db74">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;abin&#34;</span>, <span style="color:#e6db74">&#34;age&#34;</span>: <span style="color:#ae81ff">18</span>, <span style="color:#e6db74">&#34;address&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>})
+
+	<span style="color:#75715e">//HGet():获取某个元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HGet</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;address&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">address</span>)
+
+	<span style="color:#75715e">//HGetAll():获取全部元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">user</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HGetAll</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">user</span>)
+
+	<span style="color:#75715e">//HDel():删除某个元素
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HDel</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#e6db74">&#34;age&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res</span>)
+
+	<span style="color:#75715e">//HExists():判断元素是否存在
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res2</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HExists</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;address&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res2</span>)
+
+	<span style="color:#75715e">//HLen():获取长度
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">res3</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rdb</span>.<span style="color:#a6e22e">HLen</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#e6db74">&#34;user&#34;</span>).<span style="color:#a6e22e">Result</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">res3</span>)
+}
+<span style="color:#75715e">/* 执行结果：
+</span><span style="color:#75715e">中国
+</span><span style="color:#75715e">map[address:中国 age:18 name:abin]
+</span><span style="color:#75715e">2
+</span><span style="color:#75715e">true
+</span><span style="color:#75715e">1
+</span><span style="color:#75715e">*/</span>
+</code></pre></div><h2 id="参考文献">参考文献</h2>
+<blockquote>
+<p><a href="https://www.runoob.com/redis/redis-tutorial.html">https://www.runoob.com/redis/redis-tutorial.html</a></p>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">https://www.liwenzhou.com/posts/Go/go_redis/</a></p>
+<p><a href="https://www.cnblogs.com/itbsl/archive/2020/12/27/14198111.html">https://www.cnblogs.com/itbsl/archive/2020/12/27/14198111.html</a></p>
+</blockquote>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>相关文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/MySQL%E7%AC%94%E8%AE%B0/">MySQL笔记</a></li>
+        
+        <li><a href="/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF/">Golang小案例 即时通讯</a></li>
+        
+        <li><a href="/post/GolangGMP/">Golang GMP学习笔记</a></li>
+        
+        <li><a href="/post/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/">计算机网络基础学习笔记</a></li>
+        
+        <li><a href="/post/GolangGC/">Golang 中GC回收机制学习笔记</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/DB' target="_blank">DB</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div class="container">
+        &copy; 2023 <a href="https://kevinbin123.github.io/">abin の 成长之路 By abin</a>.本站博客未经授权禁止转载.
+		<br>
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="http://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>
+		       
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/bootstrap.min.js'></script>
+
+    <script src='/js/post_category.1.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kevinbin123.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kevinbin123.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" title="简单分布式系统" target="_blank">简单分布式系统</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/" title="Fyne案例之音乐播放器" target="_blank">Fyne案例之音乐播放器</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="Fyne案例之接住你小游戏" target="_blank">Fyne案例之接住你小游戏</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/" title="Gin&#43;vue2博客笔记（前端）" target="_blank">Gin&#43;vue2博客笔记（前端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/" title="Gin&#43;vue2博客笔记（后端）" target="_blank">Gin&#43;vue2博客笔记（后端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/" title="PWA笔记" target="_blank">PWA笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Golang案例 Zinx轻量级服务器框架学习笔记" target="_blank">Golang案例 Zinx轻量级服务器框架学习笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/" title="Golang小案例 爬取豆瓣电影" target="_blank">Golang小案例 爬取豆瓣电影</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/" title="Go Micro案例" target="_blank">Go Micro案例</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/" title="Go Micro笔记" target="_blank">Go Micro笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kevinbin123.github.io/categories/DB/">DB (2)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Golang/">Golang (19)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/JavaScript/">JavaScript (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Network/">Network (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/container/">container (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/other/">other (5)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kevinbin123.github.io/tags/DB/">DB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang/">Golang</a>
+    
+    <a href="https://kevinbin123.github.io/tags/JavaScript/">JavaScript</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Network/">Network</a>
+    
+    <a href="https://kevinbin123.github.io/tags/container/">container</a>
+    
+    <a href="https://kevinbin123.github.io/tags/other/">other</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.liwenzhou.com/" title="go语言学习之路">李文周的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://kevinbin123.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

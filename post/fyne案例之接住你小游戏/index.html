@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Fyne案例之接住你小游戏 | abin の 成长之路</title>
+    <meta property="og:title" content="Fyne案例之接住你小游戏 - abin の 成长之路">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2022-10-07T20:39:49&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2022-10-07T20:39:49&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,博客,项目管理,软件架构">
+    <meta name="description" content="Fyne案例之接住你小游戏">
+        
+    <meta name="author" content="abin">
+    <meta property="og:url" content="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/sidebar_menu.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kevinbin123.github.io/">
+                        abin の 成长之路
+                    </a>
+                
+                <p class="description">冉冉升起的码神</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kevinbin123.github.io/">首页</a>
+                    
+                    <a  href="https://kevinbin123.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://kevinbin123.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Fyne案例之接住你小游戏</h1>
+        </header>
+        
+  <time datetime="2022-10-07T12:39:49Z" class="post-meta meta-date dt-published">
+    2022年10月7日
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/Golang' target="_blank">Golang</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>阅读</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="使用fyne实现接住你小游戏">使用Fyne实现【接住你】小游戏</h1>
+<h2 id="案例效果">案例效果</h2>
+<p>​	有水果从上往下掉落，小车在下面接；左边有开始按钮，以及得分统计。</p>
+<p>
+        <img class="mx-auto" alt="image-20221006145145329" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202210061452089.png" />   
+    </p>
+<h2 id="案例实现">案例实现</h2>
+<p>​	准备：关于fyne框架的安装以及使用前的准备工作可以参考官网：</p>
+<blockquote>
+<p><a href="https://developer.fyne.io/started/">https://developer.fyne.io/started/</a></p>
+</blockquote>
+<p>​	1、自定义主题</p>
+<p>​	自定义一个myTheme.go的文件，然后用到了是微软雅黑的字体。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;embed&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2&#34;</span>
+	<span style="color:#e6db74">&#34;image/color&#34;</span>
+
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/theme&#34;</span>
+)
+
+<span style="color:#75715e">//go:embed msyh.ttc
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">font</span> []<span style="color:#66d9ef">byte</span>
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">myfont</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">StaticResource</span>{
+	<span style="color:#a6e22e">StaticName</span>:    <span style="color:#e6db74">&#34;MSYH&#34;</span>,
+	<span style="color:#a6e22e">StaticContent</span>: <span style="color:#a6e22e">font</span>,
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">myTheme</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">_</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">Theme</span> = (<span style="color:#f92672">*</span><span style="color:#a6e22e">myTheme</span>)(<span style="color:#66d9ef">nil</span>)
+
+<span style="color:#75715e">// return bundled font resource
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">myTheme</span>) <span style="color:#a6e22e">Font</span>(<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">TextStyle</span>) <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">Resource</span> {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Monospace</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">LightTheme</span>().<span style="color:#a6e22e">Font</span>(<span style="color:#a6e22e">s</span>)
+		<span style="color:#75715e">// return theme.DefaultTheme().Font(s)
+</span><span style="color:#75715e"></span>	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Bold</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Italic</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">LightTheme</span>().<span style="color:#a6e22e">Font</span>(<span style="color:#a6e22e">s</span>)
+			<span style="color:#75715e">// return theme.DefaultTheme().Font(s)
+</span><span style="color:#75715e"></span>		}
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">myfont</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Italic</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">LightTheme</span>().<span style="color:#a6e22e">Font</span>(<span style="color:#a6e22e">s</span>)
+		<span style="color:#75715e">// return theme.DefaultTheme().Font(s)
+</span><span style="color:#75715e"></span>	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">myfont</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">myTheme</span>) <span style="color:#a6e22e">Color</span>(<span style="color:#a6e22e">n</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">ThemeColorName</span>, <span style="color:#a6e22e">v</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">ThemeVariant</span>) <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Color</span> {
+	<span style="color:#75715e">// 自定义背景
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">ColorNameBackground</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;dddddd&#34;</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">ColorNameForeground</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ff3300&#34;</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">ColorNameDisabled</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>)
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">ColorNameDisabledButton</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;550033&#34;</span>)
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">LightTheme</span>().<span style="color:#a6e22e">Color</span>(<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">v</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">myTheme</span>) <span style="color:#a6e22e">Icon</span>(<span style="color:#a6e22e">n</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">ThemeIconName</span>) <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">Resource</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">LightTheme</span>().<span style="color:#a6e22e">Icon</span>(<span style="color:#a6e22e">n</span>)
+	<span style="color:#75715e">// return theme.DefaultTheme().Icon(n)
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">myTheme</span>) <span style="color:#a6e22e">Size</span>(<span style="color:#a6e22e">n</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">ThemeSizeName</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">theme</span>.<span style="color:#a6e22e">LightTheme</span>().<span style="color:#a6e22e">Size</span>(<span style="color:#a6e22e">n</span>)
+	<span style="color:#75715e">// return theme.DefaultTheme().Size(n)
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>​	2、先搭建游戏的框架界面，并设置自定义的主题。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ap</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">New</span>()
+	<span style="color:#a6e22e">w</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">NewWindow</span>(<span style="color:#e6db74">&#34;Get U&#34;</span>)
+	<span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">Settings</span>().<span style="color:#a6e22e">SetTheme</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">myTheme</span>{})
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">630</span>, <span style="color:#ae81ff">630</span>))
+	<span style="color:#a6e22e">bg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewRectangle</span>(<span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>))
+	
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">600</span>, <span style="color:#ae81ff">600</span>))
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeColor</span> = <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ff0000&#34;</span>)
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeWidth</span> = <span style="color:#ae81ff">5</span>
+
+	<span style="color:#a6e22e">cc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewWithoutLayout</span>(<span style="color:#a6e22e">bg</span>)
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewBorder</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">cc</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetContent</span>(<span style="color:#a6e22e">c</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">CenterOnScreen</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetMaster</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">ShowAndRun</span>()
+
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Color</span> {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">str</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">6</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Black</span>
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[:<span style="color:#ae81ff">2</span>], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#a6e22e">g</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">18</span>)
+	<span style="color:#a6e22e">b</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[<span style="color:#ae81ff">4</span>:], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">RGBA</span>{uint8(<span style="color:#a6e22e">r</span>), uint8(<span style="color:#a6e22e">g</span>), uint8(<span style="color:#a6e22e">b</span>), <span style="color:#ae81ff">255</span>}
+}
+
+
+</code></pre></div><p>​</p>
+<p>​	3、添加下落物</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ap</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">New</span>()
+	<span style="color:#a6e22e">w</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">NewWindow</span>(<span style="color:#e6db74">&#34;Get U&#34;</span>)
+	<span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">Settings</span>().<span style="color:#a6e22e">SetTheme</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">myTheme</span>{})
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">630</span>, <span style="color:#ae81ff">630</span>))
+	<span style="color:#a6e22e">bg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewRectangle</span>(<span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>))
+	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+	<span style="color:#75715e">//下落物
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">foods</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetFileList</span>(<span style="color:#e6db74">&#34;img&#34;</span>)
+	<span style="color:#a6e22e">food</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewImageFromFile</span>(<span style="color:#e6db74">&#34;img/banana.png&#34;</span>)
+	<span style="color:#a6e22e">food1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewImageFromFile</span>(<span style="color:#e6db74">&#34;img/caomei.png&#34;</span>)
+	<span style="color:#a6e22e">foodSize</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">50</span>)
+	<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">foodSize</span>)
+	<span style="color:#a6e22e">food1</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">foodSize</span>)
+	<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#a6e22e">food1</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">200</span>, <span style="color:#ae81ff">50</span>))
+
+	<span style="color:#75715e">//下落物移动
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">NewTicker</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)
+	<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Seed</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())
+	<span style="color:#a6e22e">foodReset</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">food</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">Image</span>) {
+		<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">foods</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">foods</span>))])
+		<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Resource</span> = <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewStaticResource</span>(<span style="color:#e6db74">&#34;img&#34;</span>, <span style="color:#a6e22e">res</span>)
+		<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Float32</span>()<span style="color:#f92672">*</span><span style="color:#ae81ff">550</span>, <span style="color:#ae81ff">50</span>))
+	}
+	
+
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">600</span>, <span style="color:#ae81ff">600</span>))
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeColor</span> = <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ff0000&#34;</span>)
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeWidth</span> = <span style="color:#ae81ff">5</span>
+
+	<span style="color:#a6e22e">cc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewWithoutLayout</span>(<span style="color:#a6e22e">bg</span>, <span style="color:#a6e22e">food</span>, <span style="color:#a6e22e">food1</span>, <span style="color:#a6e22e">rect</span>)
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewBorder</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">cc</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetContent</span>(<span style="color:#a6e22e">c</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">CenterOnScreen</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetMaster</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">ShowAndRun</span>()
+
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetFileList</span>(<span style="color:#a6e22e">pth</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">lst</span> []<span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">fi</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadDir</span>(<span style="color:#a6e22e">pth</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">file</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">fi</span> {
+		<span style="color:#a6e22e">path1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pth</span> <span style="color:#f92672">+</span> string(<span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Separator</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Name</span>()
+		<span style="color:#a6e22e">lst</span> = append(<span style="color:#a6e22e">lst</span>, <span style="color:#a6e22e">path1</span>)
+	}
+	<span style="color:#66d9ef">return</span>
+}
+</code></pre></div><p>​	img里面可以预先放置一些图片</p>
+<p>
+        <img class="mx-auto" alt="image-20221006145818177" src="https://cdn.jsdelivr.net/gh/kevinbin123/pics/imgs/202210061458332.png" />   
+    </p>
+<p>​	4、放置小车</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ap</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">New</span>()
+	<span style="color:#a6e22e">w</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">NewWindow</span>(<span style="color:#e6db74">&#34;Get U&#34;</span>)
+	<span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">Settings</span>().<span style="color:#a6e22e">SetTheme</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">myTheme</span>{})
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">630</span>, <span style="color:#ae81ff">630</span>))
+	<span style="color:#a6e22e">bg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewRectangle</span>(<span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>))
+	<span style="color:#75715e">//计数器
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//lblResult := widget.NewLabel(&#34;total point&#34;)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lblResult</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewText</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;0000ff&#34;</span>))
+	<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">Text</span> = <span style="color:#e6db74">&#34;0&#34;</span>
+	<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">TextSize</span> = <span style="color:#ae81ff">50</span>
+	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+	<span style="color:#75715e">//下落物
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">foods</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetFileList</span>(<span style="color:#e6db74">&#34;img&#34;</span>)
+	<span style="color:#a6e22e">food</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewImageFromFile</span>(<span style="color:#e6db74">&#34;img/banana.png&#34;</span>)
+	<span style="color:#a6e22e">food1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewImageFromFile</span>(<span style="color:#e6db74">&#34;img/caomei.png&#34;</span>)
+	<span style="color:#a6e22e">foodSize</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">50</span>)
+	<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">foodSize</span>)
+	<span style="color:#a6e22e">food1</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">foodSize</span>)
+	<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#a6e22e">food1</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">200</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#75715e">//circle := canvas.NewCircle(hex2rgb(&#34;ff0000&#34;))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//circle.Resize(fyne.NewSize(50, 50))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//circle.Move(fyne.NewPos(100, 50))
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//小车
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rect</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewRectangle</span>(<span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">540</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">StrokeWidth</span> = <span style="color:#ae81ff">5</span>
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">StrokeColor</span> = <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;0000ff&#34;</span>)
+
+	<span style="color:#75715e">//下落物移动
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">NewTicker</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)
+	<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Seed</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())
+	<span style="color:#a6e22e">foodReset</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">food</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">Image</span>) {
+		<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">foods</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">foods</span>))])
+		<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Resource</span> = <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewStaticResource</span>(<span style="color:#e6db74">&#34;img&#34;</span>, <span style="color:#a6e22e">res</span>)
+		<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Float32</span>()<span style="color:#f92672">*</span><span style="color:#ae81ff">550</span>, <span style="color:#ae81ff">50</span>))
+	}
+	
+	<span style="color:#75715e">//小车移动
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Canvas</span>().<span style="color:#a6e22e">SetOnTypedKey</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">event</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyEvent</span>) {
+		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Name</span> {
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyLeft</span>:
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &gt; <span style="color:#ae81ff">0</span> {
+				<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">0</span>)))
+			}
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyRight</span>:
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &lt; <span style="color:#ae81ff">500</span> {
+				<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">0</span>)))
+			}
+		}
+
+	})
+
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">600</span>, <span style="color:#ae81ff">600</span>))
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeColor</span> = <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ff0000&#34;</span>)
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeWidth</span> = <span style="color:#ae81ff">5</span>
+
+	<span style="color:#a6e22e">cc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewWithoutLayout</span>(<span style="color:#a6e22e">bg</span>, <span style="color:#a6e22e">food</span>, <span style="color:#a6e22e">food1</span>, <span style="color:#a6e22e">rect</span>)
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewBorder</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">cc</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetContent</span>(<span style="color:#a6e22e">c</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">CenterOnScreen</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetMaster</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">ShowAndRun</span>()
+
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Color</span> {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">str</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">6</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Black</span>
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[:<span style="color:#ae81ff">2</span>], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#a6e22e">g</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">18</span>)
+	<span style="color:#a6e22e">b</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[<span style="color:#ae81ff">4</span>:], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">RGBA</span>{uint8(<span style="color:#a6e22e">r</span>), uint8(<span style="color:#a6e22e">g</span>), uint8(<span style="color:#a6e22e">b</span>), <span style="color:#ae81ff">255</span>}
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetFileList</span>(<span style="color:#a6e22e">pth</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">lst</span> []<span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">fi</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadDir</span>(<span style="color:#a6e22e">pth</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">file</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">fi</span> {
+		<span style="color:#a6e22e">path1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pth</span> <span style="color:#f92672">+</span> string(<span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Separator</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Name</span>()
+		<span style="color:#a6e22e">lst</span> = append(<span style="color:#a6e22e">lst</span>, <span style="color:#a6e22e">path1</span>)
+	}
+	<span style="color:#66d9ef">return</span>
+}
+
+</code></pre></div><p>​	5、设置开始，以及分数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ap</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">New</span>()
+	<span style="color:#a6e22e">w</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">NewWindow</span>(<span style="color:#e6db74">&#34;Get U&#34;</span>)
+	<span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">Settings</span>().<span style="color:#a6e22e">SetTheme</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">myTheme</span>{})
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">630</span>, <span style="color:#ae81ff">630</span>))
+	<span style="color:#a6e22e">bg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewRectangle</span>(<span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>))
+	<span style="color:#75715e">//计数器
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//lblResult := widget.NewLabel(&#34;total point&#34;)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lblResult</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewText</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;0000ff&#34;</span>))
+	<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">Text</span> = <span style="color:#e6db74">&#34;0&#34;</span>
+	<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">TextSize</span> = <span style="color:#ae81ff">50</span>
+	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+	<span style="color:#75715e">//下落物
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">foods</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetFileList</span>(<span style="color:#e6db74">&#34;img&#34;</span>)
+	<span style="color:#a6e22e">food</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewImageFromFile</span>(<span style="color:#e6db74">&#34;img/banana.png&#34;</span>)
+	<span style="color:#a6e22e">food1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewImageFromFile</span>(<span style="color:#e6db74">&#34;img/caomei.png&#34;</span>)
+	<span style="color:#a6e22e">foodSize</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">50</span>)
+	<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">foodSize</span>)
+	<span style="color:#a6e22e">food1</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">foodSize</span>)
+	<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#a6e22e">food1</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">200</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#75715e">//circle := canvas.NewCircle(hex2rgb(&#34;ff0000&#34;))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//circle.Resize(fyne.NewSize(50, 50))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//circle.Move(fyne.NewPos(100, 50))
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//小车
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rect</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewRectangle</span>(<span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">540</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">StrokeWidth</span> = <span style="color:#ae81ff">5</span>
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">StrokeColor</span> = <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;0000ff&#34;</span>)
+
+	<span style="color:#75715e">//下落物移动
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">NewTicker</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)
+	<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Seed</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())
+    <span style="color:#75715e">//重置下落物，包括重置物品、以及开始下落的位置
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">foodReset</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">food</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">Image</span>) {
+		<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">foods</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">foods</span>))])
+		<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Resource</span> = <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewStaticResource</span>(<span style="color:#e6db74">&#34;img&#34;</span>, <span style="color:#a6e22e">res</span>)
+		<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Float32</span>()<span style="color:#f92672">*</span><span style="color:#ae81ff">550</span>, <span style="color:#ae81ff">50</span>))
+	}
+	<span style="color:#75715e">//定义速度和分数初始
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">startSpeed</span> <span style="color:#66d9ef">float32</span> = <span style="color:#ae81ff">0</span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">speeds</span> = []<span style="color:#a6e22e">Speed</span>{<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">uniform</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">double</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">exponent</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">dumps</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sqrt</span>{}}
+	<span style="color:#75715e">//
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">foodRefresh</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">food</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">Image</span>) {
+        <span style="color:#75715e">//随机选择下落速度的模式，有匀速下落、两倍速、指数、减速、开更号等
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">randSpeed</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">speeds</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">speeds</span>))]
+		<span style="color:#66d9ef">for</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">C</span> {
+            <span style="color:#75715e">//如果下落物已经落到了地面，则重置下落物
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Y</span> &gt; <span style="color:#ae81ff">600</span> {
+				<span style="color:#a6e22e">foodReset</span>(<span style="color:#a6e22e">food</span>)
+				<span style="color:#a6e22e">startSpeed</span> = <span style="color:#ae81ff">0</span>
+				<span style="color:#a6e22e">randSpeed</span> = <span style="color:#a6e22e">speeds</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">speeds</span>))]
+			}
+            <span style="color:#75715e">// 下落物的速度逐渐加快
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">startSpeed</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">0.5</span>
+			<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">randSpeed</span>.<span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">startSpeed</span>))))
+            <span style="color:#75715e">//判断下落物是否已经落进了小车中
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &gt; <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &lt; <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span><span style="color:#f92672">+</span><span style="color:#ae81ff">100</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Y</span> &gt; <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Y</span> {
+				<span style="color:#a6e22e">foodReset</span>(<span style="color:#a6e22e">food</span>)
+				<span style="color:#a6e22e">startSpeed</span> = <span style="color:#ae81ff">0</span>
+				<span style="color:#a6e22e">randSpeed</span> = <span style="color:#a6e22e">speeds</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">speeds</span>))]
+				<span style="color:#a6e22e">result</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">randSpeed</span>.<span style="color:#a6e22e">point</span>()
+				<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">Text</span> = <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">result</span>)
+				<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">Refresh</span>()
+			}
+			<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Refresh</span>()
+		}
+	}
+	<span style="color:#a6e22e">btnStart</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewButton</span>(<span style="color:#e6db74">&#34;开始&#34;</span>, <span style="color:#66d9ef">func</span>() {
+		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+			<span style="color:#a6e22e">foodRefresh</span>(<span style="color:#a6e22e">food</span>)
+		}()
+		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+			<span style="color:#a6e22e">foodRefresh</span>(<span style="color:#a6e22e">food1</span>)
+		}()
+	})
+
+	<span style="color:#75715e">//小车移动
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Canvas</span>().<span style="color:#a6e22e">SetOnTypedKey</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">event</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyEvent</span>) {
+		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Name</span> {
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyLeft</span>:
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &gt; <span style="color:#ae81ff">0</span> {
+				<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">0</span>)))
+			}
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyRight</span>:
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &lt; <span style="color:#ae81ff">500</span> {
+				<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">0</span>)))
+			}
+		}
+
+	})
+	<span style="color:#75715e">//设置背景框
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">600</span>, <span style="color:#ae81ff">600</span>))
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeColor</span> = <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ff0000&#34;</span>)
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeWidth</span> = <span style="color:#ae81ff">5</span>
+	<span style="color:#75715e">//组装各个布局
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//右侧由背景、下落物、小车组成
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewWithoutLayout</span>(<span style="color:#a6e22e">bg</span>, <span style="color:#a6e22e">food</span>, <span style="color:#a6e22e">food1</span>, <span style="color:#a6e22e">rect</span>)
+    <span style="color:#75715e">//左侧由计分器、开始按钮组成
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">left</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewVBox</span>(<span style="color:#a6e22e">lblResult</span>, <span style="color:#a6e22e">btnStart</span>)
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewBorder</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">left</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">cc</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetContent</span>(<span style="color:#a6e22e">c</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">CenterOnScreen</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetMaster</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">ShowAndRun</span>()
+
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Color</span> {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">str</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">6</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Black</span>
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[:<span style="color:#ae81ff">2</span>], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#a6e22e">g</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">18</span>)
+	<span style="color:#a6e22e">b</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[<span style="color:#ae81ff">4</span>:], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">RGBA</span>{uint8(<span style="color:#a6e22e">r</span>), uint8(<span style="color:#a6e22e">g</span>), uint8(<span style="color:#a6e22e">b</span>), <span style="color:#ae81ff">255</span>}
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetFileList</span>(<span style="color:#a6e22e">pth</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">lst</span> []<span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">fi</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadDir</span>(<span style="color:#a6e22e">pth</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">file</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">fi</span> {
+		<span style="color:#a6e22e">path1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pth</span> <span style="color:#f92672">+</span> string(<span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Separator</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Name</span>()
+		<span style="color:#a6e22e">lst</span> = append(<span style="color:#a6e22e">lst</span>, <span style="color:#a6e22e">path1</span>)
+	}
+	<span style="color:#66d9ef">return</span>
+}
+
+<span style="color:#75715e">//定义速度和分数结构体
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Speed</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">speed</span>(<span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span>
+	<span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#75715e">//匀速
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">uniform</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">uniform</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">uniform</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">3</span>
+}
+
+<span style="color:#75715e">//两倍速
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">double</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">double</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">double</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">4</span>
+}
+
+<span style="color:#75715e">//指数倍
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">exponent</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">exponent</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">s</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">exponent</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">5</span>
+}
+
+<span style="color:#75715e">//减速
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">dumps</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dumps</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dumps</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span>
+}
+
+<span style="color:#75715e">//开更号
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">sqrt</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sqrt</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> float32(<span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Sqrt</span>(float64(<span style="color:#a6e22e">s</span>))) <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sqrt</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+}
+</code></pre></div><p>​	完整代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/app&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/canvas&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/container&#34;</span>
+	<span style="color:#e6db74">&#34;fyne.io/fyne/v2/widget&#34;</span>
+	<span style="color:#e6db74">&#34;image/color&#34;</span>
+	<span style="color:#e6db74">&#34;io/ioutil&#34;</span>
+	<span style="color:#e6db74">&#34;math&#34;</span>
+	<span style="color:#e6db74">&#34;math/rand&#34;</span>
+	<span style="color:#e6db74">&#34;path/filepath&#34;</span>
+	<span style="color:#e6db74">&#34;strconv&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ap</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">New</span>()
+	<span style="color:#a6e22e">w</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">NewWindow</span>(<span style="color:#e6db74">&#34;Get U&#34;</span>)
+	<span style="color:#a6e22e">ap</span>.<span style="color:#a6e22e">Settings</span>().<span style="color:#a6e22e">SetTheme</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">myTheme</span>{})
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">630</span>, <span style="color:#ae81ff">630</span>))
+	<span style="color:#a6e22e">bg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewRectangle</span>(<span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>))
+	<span style="color:#75715e">//计数器
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//lblResult := widget.NewLabel(&#34;total point&#34;)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lblResult</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewText</span>(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;0000ff&#34;</span>))
+	<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">Text</span> = <span style="color:#e6db74">&#34;0&#34;</span>
+	<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">TextSize</span> = <span style="color:#ae81ff">50</span>
+	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+	<span style="color:#75715e">//下落物
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">foods</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">GetFileList</span>(<span style="color:#e6db74">&#34;img&#34;</span>)
+	<span style="color:#a6e22e">food</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewImageFromFile</span>(<span style="color:#e6db74">&#34;img/banana.png&#34;</span>)
+	<span style="color:#a6e22e">food1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewImageFromFile</span>(<span style="color:#e6db74">&#34;img/caomei.png&#34;</span>)
+	<span style="color:#a6e22e">foodSize</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">50</span>)
+	<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">foodSize</span>)
+	<span style="color:#a6e22e">food1</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">foodSize</span>)
+	<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#a6e22e">food1</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">200</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#75715e">//circle := canvas.NewCircle(hex2rgb(&#34;ff0000&#34;))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//circle.Resize(fyne.NewSize(50, 50))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//circle.Move(fyne.NewPos(100, 50))
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">//小车
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rect</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">NewRectangle</span>(<span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ffffff&#34;</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">50</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">540</span>))
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">StrokeWidth</span> = <span style="color:#ae81ff">5</span>
+	<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">StrokeColor</span> = <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;0000ff&#34;</span>)
+
+	<span style="color:#75715e">//下落物移动
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">NewTicker</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)
+	<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Seed</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())
+    <span style="color:#75715e">//重置下落物，包括重置物品、以及开始下落的位置
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">foodReset</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">food</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">Image</span>) {
+		<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadFile</span>(<span style="color:#a6e22e">foods</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">foods</span>))])
+		<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Resource</span> = <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewStaticResource</span>(<span style="color:#e6db74">&#34;img&#34;</span>, <span style="color:#a6e22e">res</span>)
+		<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewPos</span>(<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Float32</span>()<span style="color:#f92672">*</span><span style="color:#ae81ff">550</span>, <span style="color:#ae81ff">50</span>))
+	}
+	<span style="color:#75715e">//定义速度和分数初始
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">startSpeed</span> <span style="color:#66d9ef">float32</span> = <span style="color:#ae81ff">0</span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">speeds</span> = []<span style="color:#a6e22e">Speed</span>{<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">uniform</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">double</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">exponent</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">dumps</span>{}, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">sqrt</span>{}}
+	<span style="color:#75715e">//
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">foodRefresh</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">food</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">Image</span>) {
+        <span style="color:#75715e">//随机选择下落速度的模式，有匀速下落、两倍速、指数、减速、开更号等
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">randSpeed</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">speeds</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">speeds</span>))]
+		<span style="color:#66d9ef">for</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">C</span> {
+            <span style="color:#75715e">//如果下落物已经落到了地面，则重置下落物
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Y</span> &gt; <span style="color:#ae81ff">600</span> {
+				<span style="color:#a6e22e">foodReset</span>(<span style="color:#a6e22e">food</span>)
+				<span style="color:#a6e22e">startSpeed</span> = <span style="color:#ae81ff">0</span>
+				<span style="color:#a6e22e">randSpeed</span> = <span style="color:#a6e22e">speeds</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">speeds</span>))]
+			}
+            <span style="color:#75715e">// 下落物的速度逐渐加快
+</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">startSpeed</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">0.5</span>
+			<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">randSpeed</span>.<span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">startSpeed</span>))))
+            <span style="color:#75715e">//判断下落物是否已经落进了小车中
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &gt; <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &lt; <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span><span style="color:#f92672">+</span><span style="color:#ae81ff">100</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Y</span> &gt; <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Y</span> {
+				<span style="color:#a6e22e">foodReset</span>(<span style="color:#a6e22e">food</span>)
+				<span style="color:#a6e22e">startSpeed</span> = <span style="color:#ae81ff">0</span>
+				<span style="color:#a6e22e">randSpeed</span> = <span style="color:#a6e22e">speeds</span>[<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(len(<span style="color:#a6e22e">speeds</span>))]
+				<span style="color:#a6e22e">result</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">randSpeed</span>.<span style="color:#a6e22e">point</span>()
+				<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">Text</span> = <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">Itoa</span>(<span style="color:#a6e22e">result</span>)
+				<span style="color:#a6e22e">lblResult</span>.<span style="color:#a6e22e">Refresh</span>()
+			}
+			<span style="color:#a6e22e">food</span>.<span style="color:#a6e22e">Refresh</span>()
+		}
+	}
+	<span style="color:#a6e22e">btnStart</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">widget</span>.<span style="color:#a6e22e">NewButton</span>(<span style="color:#e6db74">&#34;开始&#34;</span>, <span style="color:#66d9ef">func</span>() {
+		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+			<span style="color:#a6e22e">foodRefresh</span>(<span style="color:#a6e22e">food</span>)
+		}()
+		<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+			<span style="color:#a6e22e">foodRefresh</span>(<span style="color:#a6e22e">food1</span>)
+		}()
+	})
+
+	<span style="color:#75715e">//小车移动
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Canvas</span>().<span style="color:#a6e22e">SetOnTypedKey</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">event</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyEvent</span>) {
+		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">Name</span> {
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyLeft</span>:
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &gt; <span style="color:#ae81ff">0</span> {
+				<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">0</span>)))
+			}
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">KeyRight</span>:
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">X</span> &lt; <span style="color:#ae81ff">500</span> {
+				<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Move</span>(<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">Position</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewDelta</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">0</span>)))
+			}
+		}
+
+	})
+	<span style="color:#75715e">//设置背景框
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">Resize</span>(<span style="color:#a6e22e">fyne</span>.<span style="color:#a6e22e">NewSize</span>(<span style="color:#ae81ff">600</span>, <span style="color:#ae81ff">600</span>))
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeColor</span> = <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#e6db74">&#34;ff0000&#34;</span>)
+	<span style="color:#a6e22e">bg</span>.<span style="color:#a6e22e">StrokeWidth</span> = <span style="color:#ae81ff">5</span>
+	<span style="color:#75715e">//组装各个布局
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//右侧由背景、下落物、小车组成
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewWithoutLayout</span>(<span style="color:#a6e22e">bg</span>, <span style="color:#a6e22e">food</span>, <span style="color:#a6e22e">food1</span>, <span style="color:#a6e22e">rect</span>)
+    <span style="color:#75715e">//左侧由计分器、开始按钮组成
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">left</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewVBox</span>(<span style="color:#a6e22e">lblResult</span>, <span style="color:#a6e22e">btnStart</span>)
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">NewBorder</span>(<span style="color:#66d9ef">nil</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">left</span>, <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">cc</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetContent</span>(<span style="color:#a6e22e">c</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">CenterOnScreen</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">SetMaster</span>()
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">ShowAndRun</span>()
+
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">hex2rgb</span>(<span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Color</span> {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">str</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">6</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Black</span>
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[:<span style="color:#ae81ff">2</span>], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#a6e22e">g</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">18</span>)
+	<span style="color:#a6e22e">b</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">strconv</span>.<span style="color:#a6e22e">ParseInt</span>(<span style="color:#a6e22e">str</span>[<span style="color:#ae81ff">4</span>:], <span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">10</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">RGBA</span>{uint8(<span style="color:#a6e22e">r</span>), uint8(<span style="color:#a6e22e">g</span>), uint8(<span style="color:#a6e22e">b</span>), <span style="color:#ae81ff">255</span>}
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">GetFileList</span>(<span style="color:#a6e22e">pth</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">lst</span> []<span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">fi</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadDir</span>(<span style="color:#a6e22e">pth</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">file</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">fi</span> {
+		<span style="color:#a6e22e">path1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pth</span> <span style="color:#f92672">+</span> string(<span style="color:#a6e22e">filepath</span>.<span style="color:#a6e22e">Separator</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Name</span>()
+		<span style="color:#a6e22e">lst</span> = append(<span style="color:#a6e22e">lst</span>, <span style="color:#a6e22e">path1</span>)
+	}
+	<span style="color:#66d9ef">return</span>
+}
+
+<span style="color:#75715e">//定义速度和分数结构体
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Speed</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">speed</span>(<span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span>
+	<span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span>
+}
+
+<span style="color:#75715e">//匀速
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">uniform</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">uniform</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">uniform</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">3</span>
+}
+
+<span style="color:#75715e">//两倍速
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">double</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">double</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">double</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">4</span>
+}
+
+<span style="color:#75715e">//指数倍
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">exponent</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">exponent</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">s</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">exponent</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">5</span>
+}
+
+<span style="color:#75715e">//减速
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">dumps</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dumps</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dumps</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span>
+}
+
+<span style="color:#75715e">//开更号
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">sqrt</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sqrt</span>) <span style="color:#a6e22e">speed</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">float32</span>) <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> float32(<span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Sqrt</span>(float64(<span style="color:#a6e22e">s</span>))) <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>
+}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sqrt</span>) <span style="color:#a6e22e">point</span>() <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+}
+</code></pre></div><h2 id="参考">参考</h2>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1764y1Y7ve/">https://www.bilibili.com/video/BV1764y1Y7ve/</a></p>
+</blockquote>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>相关文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/">Gin&#43;vue2博客笔记（前端）</a></li>
+        
+        <li><a href="/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/">Gin&#43;vue2博客笔记（后端）</a></li>
+        
+        <li><a href="/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Golang案例 Zinx轻量级服务器框架学习笔记</a></li>
+        
+        <li><a href="/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/">Golang小案例 爬取豆瓣电影</a></li>
+        
+        <li><a href="/post/go-micro%E6%A1%88%E4%BE%8B/">Go Micro案例</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/Golang' target="_blank">Golang</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div class="container">
+        &copy; 2023 <a href="https://kevinbin123.github.io/">abin の 成长之路 By abin</a>.本站博客未经授权禁止转载.
+		<br>
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="http://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>
+		       
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/bootstrap.min.js'></script>
+
+    <script src='/js/post_category.1.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kevinbin123.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kevinbin123.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" title="简单分布式系统" target="_blank">简单分布式系统</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/" title="Fyne案例之音乐播放器" target="_blank">Fyne案例之音乐播放器</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="Fyne案例之接住你小游戏" target="_blank">Fyne案例之接住你小游戏</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/" title="Gin&#43;vue2博客笔记（前端）" target="_blank">Gin&#43;vue2博客笔记（前端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/" title="Gin&#43;vue2博客笔记（后端）" target="_blank">Gin&#43;vue2博客笔记（后端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/" title="PWA笔记" target="_blank">PWA笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E6%A1%88%E4%BE%8B-zinx%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Golang案例 Zinx轻量级服务器框架学习笔记" target="_blank">Golang案例 Zinx轻量级服务器框架学习笔记</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Golang%E5%B0%8F%E6%A1%88%E4%BE%8B-%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1/" title="Golang小案例 爬取豆瓣电影" target="_blank">Golang小案例 爬取豆瓣电影</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E6%A1%88%E4%BE%8B/" title="Go Micro案例" target="_blank">Go Micro案例</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/go-micro%E7%AC%94%E8%AE%B0/" title="Go Micro笔记" target="_blank">Go Micro笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kevinbin123.github.io/categories/DB/">DB (2)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Golang/">Golang (19)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/JavaScript/">JavaScript (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Network/">Network (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/container/">container (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/other/">other (5)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kevinbin123.github.io/tags/DB/">DB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang/">Golang</a>
+    
+    <a href="https://kevinbin123.github.io/tags/JavaScript/">JavaScript</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Network/">Network</a>
+    
+    <a href="https://kevinbin123.github.io/tags/container/">container</a>
+    
+    <a href="https://kevinbin123.github.io/tags/other/">other</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.liwenzhou.com/" title="go语言学习之路">李文周的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://kevinbin123.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
