@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gin on abin の 成长之路</title>
+    <link>https://kevinbin123.github.io/tags/gin/</link>
+    <description>Recent content in gin on abin の 成长之路</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 14 Aug 2022 23:44:09 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/tags/gin/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gin&#43;vue2博客笔记（前端）</title>
+      <link>https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</link>
+      <pubDate>Sun, 14 Aug 2022 23:44:09 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/</guid>
+      <description>这个是一个博客系统，后端使用的是gin框架编写；前端包含管理页面和前台展示页面，使用的是vue2版本；</description>
+    </item>
+    
+    <item>
+      <title>Gin&#43;vue2博客笔记（后端）</title>
+      <link>https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/</link>
+      <pubDate>Sun, 14 Aug 2022 23:44:00 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/</guid>
+      <description>这个是一个博客系统，后端使用的是gin框架编写；前端包含管理页面和前台展示页面，使用的是vue2版本；</description>
+    </item>
+    
+    <item>
+      <title>Gin框架案例</title>
+      <link>https://kevinbin123.github.io/post/Gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</link>
+      <pubDate>Tue, 08 Mar 2022 22:47:51 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/Gin%E6%A1%86%E6%9E%B6%E6%A1%88%E4%BE%8B/</guid>
+      <description>案例实现目标：使用Gin框架开发一个api项目，实现外卖应用的后端的api，前端通过调用这些api；本案例不涉及到前端。</description>
+    </item>
+    
+    <item>
+      <title>Gin框架笔记</title>
+      <link>https://kevinbin123.github.io/post/Gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Fri, 04 Mar 2022 20:36:19 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/Gin%E6%A1%86%E6%9E%B6%E7%AC%94%E8%AE%B0/</guid>
+      <description>gin框架的使用笔记</description>
+    </item>
+    
+  </channel>
+</rss>

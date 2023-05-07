@@ -6,22 +6,76 @@
     <description>Recent content in Tags on abin の 成长之路</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 07 Oct 2022 20:40:21 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 24 Apr 2023 10:25:33 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>JavaScript</title>
+      <link>https://kevinbin123.github.io/tags/JavaScript/</link>
+      <pubDate>Mon, 24 Apr 2023 10:25:33 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/tags/JavaScript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Koa2</title>
+      <link>https://kevinbin123.github.io/tags/Koa2/</link>
+      <pubDate>Mon, 24 Apr 2023 10:25:33 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/tags/Koa2/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MongoDB</title>
+      <link>https://kevinbin123.github.io/tags/MongoDB/</link>
+      <pubDate>Mon, 24 Apr 2023 10:25:33 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/tags/MongoDB/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vue2</title>
+      <link>https://kevinbin123.github.io/tags/vue2/</link>
+      <pubDate>Mon, 24 Apr 2023 10:24:01 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/tags/vue2/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Golang</title>
       <link>https://kevinbin123.github.io/tags/Golang/</link>
-      <pubDate>Fri, 07 Oct 2022 20:40:21 +0800</pubDate>
+      <pubDate>Mon, 24 Apr 2023 09:50:26 +0800</pubDate>
       
       <guid>https://kevinbin123.github.io/tags/Golang/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>JavaScript</title>
-      <link>https://kevinbin123.github.io/tags/JavaScript/</link>
-      <pubDate>Wed, 27 Apr 2022 00:09:36 +0800</pubDate>
+      <title>Fyne</title>
+      <link>https://kevinbin123.github.io/tags/Fyne/</link>
+      <pubDate>Fri, 07 Oct 2022 20:40:05 +0800</pubDate>
       
-      <guid>https://kevinbin123.github.io/tags/JavaScript/</guid>
+      <guid>https://kevinbin123.github.io/tags/Fyne/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Golang案例</title>
+      <link>https://kevinbin123.github.io/tags/Golang%E6%A1%88%E4%BE%8B/</link>
+      <pubDate>Fri, 07 Oct 2022 20:40:05 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/tags/Golang%E6%A1%88%E4%BE%8B/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gin</title>
+      <link>https://kevinbin123.github.io/tags/gin/</link>
+      <pubDate>Sun, 14 Aug 2022 23:44:09 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/tags/gin/</guid>
       <description></description>
     </item>
     

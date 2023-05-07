@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fyne on abin の 成长之路</title>
+    <link>https://kevinbin123.github.io/tags/Fyne/</link>
+    <description>Recent content in Fyne on abin の 成长之路</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 07 Oct 2022 20:40:05 +0800</lastBuildDate><atom:link href="https://kevinbin123.github.io/tags/Fyne/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Fyne案例之音乐播放器</title>
+      <link>https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</link>
+      <pubDate>Fri, 07 Oct 2022 20:40:05 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</guid>
+      <description>使用Fyne实现音乐播放器</description>
+    </item>
+    
+    <item>
+      <title>Fyne案例之接住你小游戏</title>
+      <link>https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</link>
+      <pubDate>Fri, 07 Oct 2022 20:39:49 +0800</pubDate>
+      
+      <guid>https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/</guid>
+      <description>使用Fyne实现【接住你】小游戏</description>
+    </item>
+    
+  </channel>
+</rss>

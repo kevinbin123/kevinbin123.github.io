@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>go Http标准库的使用 | abin の 成长之路</title>
+    <meta property="og:title" content="go Http标准库的使用 - abin の 成长之路">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-04-24T09:50:26&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-04-24T09:50:26&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,博客,项目管理,软件架构">
+    <meta name="description" content="go Http标准库的使用">
+        
+    <meta name="author" content="abin">
+    <meta property="og:url" content="https://kevinbin123.github.io/post/http/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/sidebar_menu.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kevinbin123.github.io/">
+                        abin の 成长之路
+                    </a>
+                
+                <p class="description">冉冉升起的码神</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kevinbin123.github.io/">首页</a>
+                    
+                    <a  href="https://kevinbin123.github.io/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://kevinbin123.github.io/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">go Http标准库的使用</h1>
+        </header>
+        
+  <time datetime="2023-04-24T01:50:26Z" class="post-meta meta-date dt-published">
+    2023年4月24日
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/Golang' target="_blank">Golang</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>阅读</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="http">HTTP</h1>
+<h2 id="基本请求">基本请求</h2>
+<h3 id="get方法">get方法</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">get</span>() {
+	<span style="color:#a6e22e">resp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	}()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642b87bf-22ec2cfe22fe121a3a47fb97&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>
+}
+</code></pre></div><h3 id="post方法">post方法</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">post</span>() {
+	<span style="color:#a6e22e">resp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Post</span>(<span style="color:#e6db74">&#34;http://httpbin.org/post&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	}()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, 
+  <span style="color:#f92672">&#34;files&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;form&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Content-Length&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642b88a7-3c0a6bb16515100d1ac15d9b&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;json&#34;</span>: <span style="color:#66d9ef">null</span>, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/post&#34;</span>
+}
+</code></pre></div><h3 id="put方法">put方法</h3>
+<p>请求</p>
+<p>其他请求没有像get和post那样直接封装，需要先通过<code>NewRequest</code>创建request，然后通过<code>DefaultClient</code>的do方法得到response。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">put</span>() {
+	<span style="color:#a6e22e">request</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodPut</span>, <span style="color:#e6db74">&#34;http://httpbin.org/put&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultClient</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">request</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, 
+  <span style="color:#f92672">&#34;files&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;form&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Content-Length&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642b8a9d-32242aec31cc365b261169e9&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;json&#34;</span>: <span style="color:#66d9ef">null</span>, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/put&#34;</span>
+}
+</code></pre></div><h3 id="post方法-1">post方法</h3>
+<p>请求</p>
+<p>其他请求没有像get和post那样直接封装，需要先通过<code>NewRequest</code>创建request，然后通过<code>DefaultClient</code>的do方法得到response。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">del</span>() {
+	<span style="color:#a6e22e">request</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodDelete</span>, <span style="color:#e6db74">&#34;http://httpbin.org/delete&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultClient</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">request</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, 
+  <span style="color:#f92672">&#34;files&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;form&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642b8b9f-62cd5895294028303b23a206&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;json&#34;</span>: <span style="color:#66d9ef">null</span>, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/delete&#34;</span>
+}
+</code></pre></div><h2 id="请求设置">请求设置</h2>
+<p>打印返回</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printBody</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Response</span>) {
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+</code></pre></div><h3 id="设置头部">设置头部</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">requestByHead</span>() {
+	<span style="color:#a6e22e">request</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>, <span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">Header</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;user-agent&#34;</span>, <span style="color:#e6db74">&#34;chrome&#34;</span>)
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultClient</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">request</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">printBody</span>(<span style="color:#a6e22e">r</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;chrome&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642bc803-090a6c0c2e30361b2908858a&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>
+}
+</code></pre></div><h3 id="设置请求参数">设置请求参数</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">requestByParams</span>() {
+	<span style="color:#a6e22e">request</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>, <span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">params</span> <span style="color:#f92672">:=</span> make(<span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">Values</span>)
+	<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#e6db74">&#34;abin&#34;</span>)
+	<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;age&#34;</span>, <span style="color:#e6db74">&#34;18&#34;</span>)
+	<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">RawQuery</span> = <span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">Encode</span>()
+
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultClient</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">request</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">printBody</span>(<span style="color:#a6e22e">r</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {
+    <span style="color:#f92672">&#34;age&#34;</span>: <span style="color:#e6db74">&#34;18&#34;</span>, 
+    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;abin&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642bc859-0ead2b3a62b060bd2540e96d&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/get?age=18&amp;name=abin&#34;</span>
+}
+</code></pre></div><h2 id="响应信息">响应信息</h2>
+<h3 id="响应体">响应体</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">responseBody</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Response</span>) {
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">responseBody</span>(<span style="color:#a6e22e">r</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642bf768-00496373470e85993a94b349&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>
+}
+</code></pre></div><h3 id="响应状态">响应状态</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">responseStatus</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Response</span>) {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;statusCode: %d, status: %s&#34;</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">StatusCode</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Status</span>)
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">responseStatus</span>(<span style="color:#a6e22e">r</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">statusCode:</span> <span style="color:#ae81ff">200</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#960050;background-color:#1e0010">status:</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span>
+</code></pre></div><h3 id="响应头部">响应头部</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">responseHead</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Response</span>) {
+	<span style="color:#a6e22e">ct</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Header</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;content-type&#34;</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ct</span>)
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">responseHead</span>(<span style="color:#a6e22e">r</span>)
+}
+
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">application/json</span>
+</code></pre></div><h3 id="编码">编码</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;bufio&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;io/ioutil&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+
+	<span style="color:#e6db74">&#34;golang.org/x/net/html/charset&#34;</span>
+	<span style="color:#e6db74">&#34;golang.org/x/text/transform&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">encoding</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Response</span>) {
+	<span style="color:#a6e22e">bufReader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufio</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#a6e22e">bytes</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">bufReader</span>.<span style="color:#a6e22e">Peek</span>(<span style="color:#ae81ff">1024</span>)
+
+	<span style="color:#a6e22e">e</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">charset</span>.<span style="color:#a6e22e">DetermineEncoding</span>(<span style="color:#a6e22e">bytes</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Header</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;content-type&#34;</span>))
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">e</span>)
+
+	<span style="color:#a6e22e">bodyReader</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">transform</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">bufReader</span>, <span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">NewDecoder</span>())
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">bodyReader</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">encoding</span>(<span style="color:#a6e22e">r</span>)
+}
+
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">Windows</span> <span style="color:#ae81ff">1252</span>
+{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642bf88f-321386f90dc59b3a48c19a52&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/get&#34;</span>
+}
+</code></pre></div><h2 id="下载文件与进度显示">下载文件与进度显示</h2>
+<h3 id="下载文件">下载文件</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;io&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">downloadFile</span>(<span style="color:#a6e22e">url</span>, <span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">resp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">url</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#a6e22e">filename</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">err</span>)
+}
+
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">url</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fsafe-img.xhscdn.com%2Fbw1%2F949c52f4-5af0-4e84-8f53-7403b84d1e44%3FimageView2%2F2%2Fw%2F1080%2Fformat%2Fjpg&amp;refer=http%3A%2F%2Fsafe-img.xhscdn.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1682325804&amp;t=31d41a6fe0c4e0eca68f01459258f1c5&#34;</span>
+	<span style="color:#a6e22e">filename</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;caomei.png&#34;</span>
+	<span style="color:#a6e22e">downloadFileProgress</span>(<span style="color:#a6e22e">url</span>, <span style="color:#a6e22e">filename</span>)
+}
+</code></pre></div><h3 id="带进度显示的下载">带进度显示的下载</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;io&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+)
+
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Reader</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Reader</span>
+	<span style="color:#a6e22e">Total</span>   <span style="color:#66d9ef">int64</span>
+	<span style="color:#a6e22e">Current</span> <span style="color:#66d9ef">int64</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">downloadFileProgress</span>(<span style="color:#a6e22e">url</span>, <span style="color:#a6e22e">filename</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">resp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">url</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Create</span>(<span style="color:#a6e22e">filename</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">file</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">reader</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Reader</span>{
+		<span style="color:#a6e22e">Reader</span>: <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">Body</span>,
+		<span style="color:#a6e22e">Total</span>:  <span style="color:#a6e22e">resp</span>.<span style="color:#a6e22e">ContentLength</span>,
+	}
+	<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">reader</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Reader</span>) <span style="color:#a6e22e">Read</span>(<span style="color:#a6e22e">p</span> []<span style="color:#66d9ef">byte</span>) (<span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">e</span> = <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Reader</span>.<span style="color:#a6e22e">Read</span>(<span style="color:#a6e22e">p</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Current</span> <span style="color:#f92672">+=</span> int64(<span style="color:#a6e22e">n</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;\r进度%.2f%%&#34;</span>, float64(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Current</span><span style="color:#f92672">*</span><span style="color:#ae81ff">10000</span><span style="color:#f92672">/</span><span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Total</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">100</span>)
+	<span style="color:#66d9ef">return</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">url</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fsafe-img.xhscdn.com%2Fbw1%2F949c52f4-5af0-4e84-8f53-7403b84d1e44%3FimageView2%2F2%2Fw%2F1080%2Fformat%2Fjpg&amp;refer=http%3A%2F%2Fsafe-img.xhscdn.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1682325804&amp;t=31d41a6fe0c4e0eca68f01459258f1c5&#34;</span>
+	<span style="color:#a6e22e">filename</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;caomei.png&#34;</span>
+	 <span style="color:#a6e22e">downloadFileProgress</span>(<span style="color:#a6e22e">url</span>, <span style="color:#a6e22e">filename</span>)
+}
+</code></pre></div><h2 id="form-与文件上传">form 与文件上传</h2>
+<h3 id="postform">postForm</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">postForm</span>() {
+	<span style="color:#a6e22e">data</span> <span style="color:#f92672">:=</span> make(<span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">Values</span>)
+	<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#e6db74">&#34;abin&#34;</span>)
+	<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;age&#34;</span>, <span style="color:#e6db74">&#34;18&#34;</span>)
+	<span style="color:#a6e22e">payload</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">Encode</span>()
+
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Post</span>(<span style="color:#e6db74">&#34;http://httpbin.org/post&#34;</span>,
+		<span style="color:#e6db74">&#34;application/x-www-form-urlencoded&#34;</span>,
+		<span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">payload</span>))
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, 
+  <span style="color:#f92672">&#34;files&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;form&#34;</span>: {
+    <span style="color:#f92672">&#34;age&#34;</span>: <span style="color:#e6db74">&#34;18&#34;</span>, 
+    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;abin&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Content-Length&#34;</span>: <span style="color:#e6db74">&#34;16&#34;</span>, 
+    <span style="color:#f92672">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/x-www-form-urlencoded&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642bfa4c-488edff16634a98c64729024&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;json&#34;</span>: <span style="color:#66d9ef">null</span>, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/post&#34;</span>
+}
+</code></pre></div><h3 id="postjson">postJson</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">postJson</span>() {
+	<span style="color:#a6e22e">data</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">struct</span> {
+		<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;name&#34;`</span>
+		<span style="color:#a6e22e">Age</span>  <span style="color:#66d9ef">int</span>    <span style="color:#e6db74">`json:&#34;age&#34;`</span>
+	}{
+		<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;abin&#34;</span>,
+		<span style="color:#a6e22e">Age</span>:  <span style="color:#ae81ff">18</span>,
+	}
+	<span style="color:#a6e22e">payload</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#a6e22e">data</span>)
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Post</span>(<span style="color:#e6db74">&#34;http://httpbin.org/post&#34;</span>,
+		<span style="color:#e6db74">&#34;application/json&#34;</span>,
+		<span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">NewReader</span>(<span style="color:#a6e22e">payload</span>))
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+</code></pre></div><p>响应：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;{\&#34;name\&#34;:\&#34;abin\&#34;,\&#34;age\&#34;:18}&#34;</span>, 
+  <span style="color:#f92672">&#34;files&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;form&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Content-Length&#34;</span>: <span style="color:#e6db74">&#34;24&#34;</span>, 
+    <span style="color:#f92672">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/json&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642bfa70-4f457dc016cd53603c7c1ce9&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;json&#34;</span>: {
+    <span style="color:#f92672">&#34;age&#34;</span>: <span style="color:#ae81ff">18</span>, 
+    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;abin&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/post&#34;</span>
+}
+</code></pre></div><h3 id="postfile">postFile</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">postFile</span>() {
+	<span style="color:#a6e22e">body</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">Buffer</span>{}
+	<span style="color:#a6e22e">writer</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">multipart</span>.<span style="color:#a6e22e">NewWriter</span>(<span style="color:#a6e22e">body</span>)
+	<span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">writer</span>.<span style="color:#a6e22e">WriteField</span>(<span style="color:#e6db74">&#34;words&#34;</span>, <span style="color:#e6db74">&#34;123&#34;</span>)
+
+	<span style="color:#a6e22e">upload1Writer</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">writer</span>.<span style="color:#a6e22e">CreateFormFile</span>(<span style="color:#e6db74">&#34;uploadfile1&#34;</span>, <span style="color:#e6db74">&#34;uploadfile1&#34;</span>)
+	<span style="color:#a6e22e">uploadFile1</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;uploadfile1&#34;</span>)
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">uploadFile1</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">upload1Writer</span>, <span style="color:#a6e22e">uploadFile1</span>)
+
+	<span style="color:#a6e22e">upload2Writer</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">writer</span>.<span style="color:#a6e22e">CreateFormFile</span>(<span style="color:#e6db74">&#34;uploadfile2&#34;</span>, <span style="color:#e6db74">&#34;uploadfile2&#34;</span>)
+	<span style="color:#a6e22e">uploadFile2</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Open</span>(<span style="color:#e6db74">&#34;uploadfile2&#34;</span>)
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">uploadFile2</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">upload2Writer</span>, <span style="color:#a6e22e">uploadFile2</span>)
+	<span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">writer</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#75715e">//fmt.Println(writer.FormDataContentType())
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//fmt.Println(body.String())
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Post</span>(<span style="color:#e6db74">&#34;http://httpbin.org/post&#34;</span>,
+		<span style="color:#a6e22e">writer</span>.<span style="color:#a6e22e">FormDataContentType</span>(),
+		<span style="color:#a6e22e">body</span>)
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+</code></pre></div><p>响应</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;args&#34;</span>: {}, 
+  <span style="color:#f92672">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>, 
+  <span style="color:#f92672">&#34;files&#34;</span>: {
+    <span style="color:#f92672">&#34;uploadfile1&#34;</span>: <span style="color:#e6db74">&#34;hello1\n&#34;</span>, 
+    <span style="color:#f92672">&#34;uploadfile2&#34;</span>: <span style="color:#e6db74">&#34;hello2222\n&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;form&#34;</span>: {
+    <span style="color:#f92672">&#34;words&#34;</span>: <span style="color:#e6db74">&#34;123&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;headers&#34;</span>: {
+    <span style="color:#f92672">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip&#34;</span>, 
+    <span style="color:#f92672">&#34;Content-Length&#34;</span>: <span style="color:#e6db74">&#34;568&#34;</span>, 
+    <span style="color:#f92672">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;multipart/form-data; boundary=4443a543851b2f0b69668fddf2a28c4ce8e07713eac4fab6f3efd3881e3b&#34;</span>, 
+    <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;httpbin.org&#34;</span>, 
+    <span style="color:#f92672">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Go-http-client/1.1&#34;</span>, 
+    <span style="color:#f92672">&#34;X-Amzn-Trace-Id&#34;</span>: <span style="color:#e6db74">&#34;Root=1-642bfadb-3500cc054b205e507517d519&#34;</span>
+  }, 
+  <span style="color:#f92672">&#34;json&#34;</span>: <span style="color:#66d9ef">null</span>, 
+  <span style="color:#f92672">&#34;origin&#34;</span>: <span style="color:#e6db74">&#34;117.29.120.69&#34;</span>, 
+  <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;http://httpbin.org/post&#34;</span>
+}
+</code></pre></div><h2 id="重定向">重定向</h2>
+<h3 id="限定次数">限定次数</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">redirectLimitTimes</span>() {
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">CheckRedirect</span>: <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">req</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">via</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) <span style="color:#66d9ef">error</span> {
+			<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">via</span>) &gt; <span style="color:#ae81ff">10</span> {
+				<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;redirect too many times&#34;</span>)
+			}
+			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+		},
+	}
+	<span style="color:#a6e22e">request</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>, <span style="color:#e6db74">&#34;http://httpbin.org/redirect/20&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">request</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+
+</code></pre></div><p>响应：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">panic:</span> <span style="color:#960050;background-color:#1e0010">Get</span> <span style="color:#e6db74">&#34;/relative-redirect/9&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#960050;background-color:#1e0010">redirect</span> <span style="color:#960050;background-color:#1e0010">too</span> <span style="color:#960050;background-color:#1e0010">many</span> <span style="color:#960050;background-color:#1e0010">times</span>
+</code></pre></div><h3 id="拒绝重定向">拒绝重定向</h3>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">redirectForbidden</span>() {
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">CheckRedirect</span>: <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">req</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">via</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) <span style="color:#66d9ef">error</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ErrUseLastResponse</span>
+		},
+	}
+	<span style="color:#a6e22e">request</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>, <span style="color:#e6db74">&#34;http://httpbin.org/cookies/set?name=abin&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#75715e">//r, err := http.DefaultClient.Do(request)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">request</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">URL</span>)
+}
+</code></pre></div><p>响应</p>
+<p>还是回到请求地址，否则应该跳转到<code>http://httpbin.org/cookies</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">http</span>:<span style="color:#75715e">//httpbin.org/cookies/set?name=abin
+</span></code></pre></div><h2 id="cookie">cookie</h2>
+<h3 id="手动设置cookie">手动设置cookie</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">rrcookie</span>() {
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">CheckRedirect</span>: <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">req</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>, <span style="color:#a6e22e">via</span> []<span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) <span style="color:#66d9ef">error</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ErrUseLastResponse</span>
+		},
+	}
+	<span style="color:#a6e22e">firstRequest</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>, <span style="color:#e6db74">&#34;http://httpbin.org/cookies/set?name=abin&amp;password=123456&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#a6e22e">firstResp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">firstRequest</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">firstResp</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+
+	<span style="color:#a6e22e">secondRequest</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>, <span style="color:#e6db74">&#34;http://httpbin.org/cookies&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">cookie</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">firstResp</span>.<span style="color:#a6e22e">Cookies</span>() {
+		<span style="color:#a6e22e">secondRequest</span>.<span style="color:#a6e22e">AddCookie</span>(<span style="color:#a6e22e">cookie</span>)
+	}
+
+	<span style="color:#a6e22e">secondResp</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">secondRequest</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">secondResp</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">content</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">secondResp</span>.<span style="color:#a6e22e">Body</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s&#34;</span>, <span style="color:#a6e22e">content</span>)
+}
+</code></pre></div><h3 id="使用cookiejar">使用cookiejar</h3>
+<h4 id="会话期cookie">会话期cookie</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">jarCookie</span>() {
+	<span style="color:#a6e22e">jar</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cookiejar</span>.<span style="color:#a6e22e">New</span>(<span style="color:#66d9ef">nil</span>)
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">Jar</span>: <span style="color:#a6e22e">jar</span>,
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;http://httpbin.org/cookies/set?username=abin&amp;password=123456&#34;</span>)
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+}
+</code></pre></div><h4 id="持久化cookie">持久化cookie</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">go get  github.com/juju/persistent-cookiejar
+</code></pre></div><p>创建一个server，提供login和center两个路由；</p>
+<p>1、先通过login登录，再访问center</p>
+<p>2、携带了cookie就返回“个人主页”；没有携带cookie就返回”无法访问“</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">login</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">req</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">username</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">PostFormValue</span>(<span style="color:#e6db74">&#34;username&#34;</span>)
+	<span style="color:#a6e22e">password</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">PostFormValue</span>(<span style="color:#e6db74">&#34;password&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">username</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;abin&#34;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">password</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;abin123&#34;</span> {
+		<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">SetCookie</span>(<span style="color:#a6e22e">w</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Cookie</span>{
+			<span style="color:#a6e22e">Name</span>:    <span style="color:#e6db74">&#34;isLogin&#34;</span>,
+			<span style="color:#a6e22e">Value</span>:   <span style="color:#e6db74">&#34;1&#34;</span>,
+			<span style="color:#a6e22e">Expires</span>: <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Hour</span>),
+		})
+		<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;登录成功\n&#34;</span>))
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;登录失败&#34;</span>))
+	}
+	<span style="color:#66d9ef">return</span>
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">center</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">isLogin</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Cookie</span>(<span style="color:#e6db74">&#34;isLogin&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ErrNoCookie</span> {
+		<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;无法访问&#34;</span>))
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusUnauthorized</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">isLogin</span>.<span style="color:#a6e22e">Value</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;1&#34;</span> {
+		<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;无法访问&#34;</span>))
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusUnauthorized</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;个人主页\n&#34;</span>))
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/login&#34;</span>, <span style="color:#a6e22e">login</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/center&#34;</span>, <span style="color:#a6e22e">center</span>)
+	<span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><p>接下来创建通过第三方cookiejar包来实现持久化cookie</p>
+<p>查看cookie存放位置 cat ~/.go-cookies</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;io&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;net/http/cookiejar&#34;</span>
+	<span style="color:#e6db74">&#34;net/url&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#a6e22e">cookiejar2</span> <span style="color:#e6db74">&#34;github.com/juju/persistent-cookiejar&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">login</span>(<span style="color:#a6e22e">jar</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">CookieJar</span>) {
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">Jar</span>: <span style="color:#a6e22e">jar</span>,
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">PostForm</span>(<span style="color:#e6db74">&#34;http://localhost:8080/login&#34;</span>,
+		<span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">Values</span>{<span style="color:#e6db74">&#34;username&#34;</span>: {<span style="color:#e6db74">&#34;abin&#34;</span>}, <span style="color:#e6db74">&#34;password&#34;</span>: {<span style="color:#e6db74">&#34;abin123&#34;</span>}})
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">center</span>(<span style="color:#a6e22e">jar</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">CookieJar</span>) {
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">Jar</span>: <span style="color:#a6e22e">jar</span>,
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;http://localhost:8080/center&#34;</span>)
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#75715e">// 会话期cookie
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//jar, _ := cookiejar.New(nil)
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// 持久性 cookie  第三方 github.com/juju/persistent-cookiejar
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">jar</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cookiejar2</span>.<span style="color:#a6e22e">New</span>(<span style="color:#66d9ef">nil</span>)
+	<span style="color:#75715e">//login(jar)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">center</span>(<span style="color:#a6e22e">jar</span>)
+	<span style="color:#a6e22e">jar</span>.<span style="color:#a6e22e">Save</span>()
+
+	<span style="color:#75715e">// 查看cookie存放位置 cat ~/.go-cookies
+</span><span style="color:#75715e"></span>}
+
+</code></pre></div><h2 id="超时和代理">超时和代理</h2>
+<h3 id="超时">超时</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{
+		<span style="color:#a6e22e">Timeout</span>: <span style="color:#ae81ff">10</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>,
+		<span style="color:#a6e22e">Transport</span>: <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Transport</span>{
+			<span style="color:#a6e22e">DialContext</span>: <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">network</span>, <span style="color:#a6e22e">addr</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">conn</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Conn</span>, <span style="color:#a6e22e">e</span> <span style="color:#66d9ef">error</span>) {
+				<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">DialTimeout</span>(<span style="color:#a6e22e">network</span>, <span style="color:#a6e22e">addr</span>, <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+			},
+			<span style="color:#a6e22e">ResponseHeaderTimeout</span>: <span style="color:#ae81ff">5</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>,
+			<span style="color:#a6e22e">TLSHandshakeTimeout</span>:   <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>,
+			<span style="color:#a6e22e">IdleConnTimeout</span>:       <span style="color:#ae81ff">60</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>,
+		},
+	}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;http://httpbin.org/delay/10&#34;</span>)
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+}
+</code></pre></div><h3 id="代理">代理</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">proxyUrl</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">Parse</span>(<span style="color:#e6db74">&#34;http://127.0.0.1:8087&#34;</span>)
+	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Transport</span>{
+		<span style="color:#a6e22e">Proxy</span>: <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ProxyURL</span>(<span style="color:#a6e22e">proxyUrl</span>),
+	}
+	<span style="color:#75715e">// 一般代理有http 和 shadowsocks的代理
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{<span style="color:#a6e22e">Transport</span>: <span style="color:#a6e22e">t</span>}
+	<span style="color:#a6e22e">r</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;https://google.com&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>.<span style="color:#a6e22e">Close</span>()
+	<span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+}
+</code></pre></div><h1 id="web">WEB</h1>
+<h2 id="初体验">初体验</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">req</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;hello world&#34;</span>))
+	})
+
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:1234&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><h2 id="handle">Handle</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">myHandler</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">my</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">myHandler</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;hello&#34;</span>))
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">aboutHandler</span> <span style="color:#66d9ef">struct</span>{}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ab</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">aboutHandler</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;about&#34;</span>))
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">index</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;index&#34;</span>))
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">mh</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">myHandler</span>{}
+	<span style="color:#a6e22e">ab</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">aboutHandler</span>{}
+	<span style="color:#a6e22e">server</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>{
+		<span style="color:#a6e22e">Addr</span>:    <span style="color:#e6db74">&#34;localhost:8080&#34;</span>,
+		<span style="color:#a6e22e">Handler</span>: <span style="color:#66d9ef">nil</span>,
+	}
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/hello&#34;</span>, <span style="color:#a6e22e">mh</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/about&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ab</span>)
+
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/welcome&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;welcome&#34;</span>))
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/index&#34;</span>, <span style="color:#a6e22e">index</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/index2&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandlerFunc</span>(<span style="color:#a6e22e">index</span>))
+
+	<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">ListenAndServe</span>()
+}
+</code></pre></div><h2 id="内置handlers">内置Handlers</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ServeFile</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>, <span style="color:#e6db74">&#34;webroot&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>)
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><p>或者</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">FileServer</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Dir</span>(<span style="color:#e6db74">&#34;webroot&#34;</span>)))
+}
+
+</code></pre></div><h2 id="request">Request</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/home&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">url</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">URL</span>
+		<span style="color:#a6e22e">query</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">Query</span>()
+		<span style="color:#a6e22e">id</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">query</span>[<span style="color:#e6db74">&#34;id&#34;</span>]
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">id</span>)
+		<span style="color:#a6e22e">name</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">query</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;name&#34;</span>)
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">name</span>)
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><h2 id="form">Form</h2>
+<p>先使用一个简单的html的form表单提交请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">form</span> <span style="color:#a6e22e">action</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://127.0.0.1:8080/process?firstname=banban&#34;</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;post&#34;</span> <span style="color:#a6e22e">enctype</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;multipart/form-data&#34;</span>&gt;
+  &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;firstname&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;abin&#34;</span>&gt;
+  &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lastname&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;renren&#34;</span>&gt;
+    &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;file&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;upload&#34;</span> &gt;
+  &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;submit&#34;</span> &gt;
+&lt;/<span style="color:#f92672">form</span>&gt;
+</code></pre></div><p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">handleFile</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#75715e">//方式一：
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//r.ParseMultipartForm(1024)
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//fileheader := r.MultipartForm.File[&#34;upload&#34;][0]
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//file, err := fileheader.Open()
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//if err == nil {
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//	data, err := ioutil.ReadAll(file)
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//	if err == nil {
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//		fmt.Fprintln(w, string(data))
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//	}
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//}
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">// 方式二
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">file</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">FormFile</span>(<span style="color:#e6db74">&#34;upload&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadAll</span>(<span style="color:#a6e22e">file</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprintln</span>(<span style="color:#a6e22e">w</span>, string(<span style="color:#a6e22e">data</span>))
+		}
+	}
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/process&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ParseForm</span>()
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprintln</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Form</span>)
+		<span style="color:#75715e">// r.ParseMultipartForm(1024)
+</span><span style="color:#75715e"></span>		<span style="color:#75715e">// //fmt.Fprintln(w, r.Form)
+</span><span style="color:#75715e"></span>		<span style="color:#75715e">// fmt.Fprintln(w, r.FormValue(&#34;firstname&#34;))
+</span><span style="color:#75715e"></span>		<span style="color:#75715e">// fmt.Fprintln(w, r.PostFormValue(&#34;firstname&#34;))
+</span><span style="color:#75715e"></span>	})
+	<span style="color:#75715e">// http.HandleFunc(&#34;/process&#34;, handleFile)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><p>总结</p>
+<table>
+<thead>
+<tr>
+<th>Go语言操作</th>
+<th>解析操作</th>
+<th>读取URL</th>
+<th>读取Body（表单）</th>
+<th>支持文本</th>
+<th>支持二进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Form</td>
+<td>ParseForm()</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+<td></td>
+</tr>
+<tr>
+<td>PostForm</td>
+<td>ParseForm()</td>
+<td></td>
+<td>是</td>
+<td>是</td>
+<td></td>
+</tr>
+<tr>
+<td>FormValue()</td>
+<td>自动调用ParseForm()</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+<td></td>
+</tr>
+<tr>
+<td>PostFormValue()</td>
+<td>自动调用ParseForm()</td>
+<td></td>
+<td>是</td>
+<td>是</td>
+<td></td>
+</tr>
+<tr>
+<td>MultipartForm</td>
+<td>ParseMultipartForm()</td>
+<td></td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>FormFile()</td>
+<td>自动调用ParseMultipartForm</td>
+<td></td>
+<td>是</td>
+<td></td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<h2 id="responsewriter">ResponseWriter</h2>
+<p>请求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">writeExample</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">str</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">`&lt;!DOCTYPE html&gt;
+</span><span style="color:#e6db74">		&lt;html lang=&#34;en&#34;&gt;
+</span><span style="color:#e6db74">		&lt;head&gt;
+</span><span style="color:#e6db74">			&lt;meta charset=&#34;UTF-8&#34;&gt;
+</span><span style="color:#e6db74">			&lt;title&gt;Title&lt;/title&gt;
+</span><span style="color:#e6db74">		&lt;/head&gt;
+</span><span style="color:#e6db74">		&lt;body&gt;
+</span><span style="color:#e6db74">		&lt;form action=&#34;http://127.0.0.1:8080/process?firstname=banban&#34; method=&#34;post&#34; enctype=&#34;multipart/form-data&#34;&gt;
+</span><span style="color:#e6db74">		  &lt;input type=&#34;text&#34; name=&#34;firstname&#34; value=&#34;abin&#34;&gt;
+</span><span style="color:#e6db74">		  &lt;input type=&#34;text&#34; name=&#34;lastname&#34; value=&#34;renren&#34;&gt;
+</span><span style="color:#e6db74">			&lt;input type=&#34;file&#34; name=&#34;upload&#34; &gt;
+</span><span style="color:#e6db74">		  &lt;input type=&#34;submit&#34; &gt;
+</span><span style="color:#e6db74">		&lt;/form&gt;
+</span><span style="color:#e6db74">		&lt;/body&gt;
+</span><span style="color:#e6db74">		&lt;/html&gt;`</span>
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">str</span>))
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">writeHeaderExample</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#ae81ff">501</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;no such service&#34;</span>))
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">redirectExample</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;Location&#34;</span>, <span style="color:#e6db74">&#34;http://google.com&#34;</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#ae81ff">302</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">jsonExample</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;Content-Type&#34;</span>, <span style="color:#e6db74">&#34;application/json&#34;</span>)
+	<span style="color:#a6e22e">data</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">struct</span> {
+		<span style="color:#a6e22e">User</span>    <span style="color:#66d9ef">string</span>
+		<span style="color:#a6e22e">Threads</span> []<span style="color:#66d9ef">string</span>
+	}{
+		<span style="color:#a6e22e">User</span>:    <span style="color:#e6db74">&#34;abin&#34;</span>,
+		<span style="color:#a6e22e">Threads</span>: []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;first&#34;</span>, <span style="color:#e6db74">&#34;second&#34;</span>},
+	}
+	<span style="color:#a6e22e">json</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">Marshal</span>(<span style="color:#a6e22e">data</span>)
+	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>(<span style="color:#a6e22e">json</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+
+	<span style="color:#a6e22e">server</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>{
+		<span style="color:#a6e22e">Addr</span>: <span style="color:#e6db74">&#34;localhost:8080&#34;</span>,
+	}
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/write&#34;</span>, <span style="color:#a6e22e">writeExample</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/writeHeader&#34;</span>, <span style="color:#a6e22e">writeHeaderExample</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/redirect&#34;</span>, <span style="color:#a6e22e">redirectExample</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/json&#34;</span>, <span style="color:#a6e22e">jsonExample</span>)
+	<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">ListenAndServe</span>()
+}
+</code></pre></div><h2 id="template">template</h2>
+<p>试一下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">server</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>{
+		<span style="color:#a6e22e">Addr</span>: <span style="color:#e6db74">&#34;localhost:8080&#34;</span>,
+	}
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/process&#34;</span>, <span style="color:#a6e22e">process</span>)
+	<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">ListenAndServe</span>()
+}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">process</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;tmpl.html&#34;</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;hello world&#34;</span>)
+}
+</code></pre></div><p>demo</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">templates</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">loadTemplates</span>()
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">fileName</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>[<span style="color:#ae81ff">1</span>:]
+		<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">templates</span>.<span style="color:#a6e22e">Lookup</span>(<span style="color:#a6e22e">fileName</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#66d9ef">nil</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+				<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatalln</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+			}
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusNotFound</span>)
+		}
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/css/&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">FileServer</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Dir</span>(<span style="color:#e6db74">&#34;wwwroot&#34;</span>)))
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/img/&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">FileServer</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Dir</span>(<span style="color:#e6db74">&#34;wwwroot&#34;</span>)))
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;localhost:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">loadTemplates</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">Template</span> {
+	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;templates&#34;</span>)
+	<span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">Must</span>(<span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">ParseGlob</span>(<span style="color:#e6db74">&#34;templates/*.html&#34;</span>))
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+}
+</code></pre></div><h3 id="action">Action</h3>
+<h4 id="if">if</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ifaction</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;if.html&#34;</span>)
+	<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Seed</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#ae81ff">10</span>) &gt; <span style="color:#ae81ff">5</span>)
+}
+</code></pre></div><p>模板</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{if .}}
+满足条件
+{{else}}
+不满足条件
+{{end}}
+</code></pre></div><h4 id="range">range</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">rangeaction</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;range.html&#34;</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#e6db74">&#34;world&#34;</span>, <span style="color:#e6db74">&#34;abin&#34;</span>})
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">rangenullaction</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;rangenull.html&#34;</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, []<span style="color:#66d9ef">string</span>{})
+}
+</code></pre></div><p>模板</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{range .}}
+this is content {{.}} &lt;<span style="color:#f92672">br</span>&gt;
+{{end}}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{range .}}
+this is content {{.}} &lt;<span style="color:#f92672">br</span>&gt;
+{{else}}
+nothing
+{{end}}
+</code></pre></div><h4 id="with">with</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">withaction</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;with.html&#34;</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;hello&#34;</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">withnullaction</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;withnull.html&#34;</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;hello&#34;</span>)
+}
+</code></pre></div><p>模板</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">  this dot is {{.}}
+&lt;<span style="color:#f92672">br</span>&gt;
+{{with &#34;world&#34;}}
+  now this dot is set to {{.}}
+{{end}}
+  &lt;<span style="color:#f92672">br</span>&gt;
+ this dot is {{.}} again
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">this dot is {{.}}
+&lt;<span style="color:#f92672">br</span>&gt;
+{{with &#34;&#34;}}
+now this dot is set to {{.}}
+{{else}}
+the dot still {{.}}
+{{end}}
+&lt;<span style="color:#f92672">br</span>&gt;
+this dot is {{.}} again
+</code></pre></div><h4 id="template-1">template</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">templateaction</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;tmp1.html&#34;</span>, <span style="color:#e6db74">&#34;tmp2.html&#34;</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;hello world&#34;</span>)
+}
+</code></pre></div><p>模板</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html"> this is t1.html
+ this is t1 value --&gt; {{.}}
+
+  &lt;<span style="color:#f92672">hr</span>/&gt;
+  {{template &#34;tmp2.html&#34; .}}
+  &lt;<span style="color:#f92672">hr</span>/&gt;
+  this is t1 after
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;background-color:yellow;&#34;</span>&gt;
+  this is t2.html&lt;<span style="color:#f92672">br</span>&gt;
+  this is t2 value --&gt; {{.}}
+&lt;/<span style="color:#f92672">div</span>&gt;
+</code></pre></div><h3 id="funcmap">FuncMap</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">server</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>{
+		<span style="color:#a6e22e">Addr</span>: <span style="color:#e6db74">&#34;localhost:8080&#34;</span>,
+	}
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/process&#34;</span>, <span style="color:#a6e22e">process</span>)
+	<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">ListenAndServe</span>()
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">process</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">funcMap</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">FuncMap</span>{<span style="color:#e6db74">&#34;fdate&#34;</span>: <span style="color:#a6e22e">formatDate</span>}
+	<span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;t1.html&#34;</span>).<span style="color:#a6e22e">Funcs</span>(<span style="color:#a6e22e">funcMap</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;t1.html&#34;</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>())
+
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">formatDate</span>(<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) <span style="color:#66d9ef">string</span> {
+	<span style="color:#a6e22e">layout</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;2006-01-02&#34;</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Format</span>(<span style="color:#a6e22e">layout</span>)
+}
+</code></pre></div><p>模板</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">  {{ . | fdate }}
+  &lt;<span style="color:#f92672">hr</span>&gt;
+  {{fdate .}}
+</code></pre></div><h3 id="综合">综合</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/home&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;layout.html&#34;</span>, <span style="color:#e6db74">&#34;home.html&#34;</span>)
+		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">ExecuteTemplate</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;layout&#34;</span>, <span style="color:#e6db74">&#34;hello world&#34;</span>)
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/about&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;layout.html&#34;</span>, <span style="color:#e6db74">&#34;about.html&#34;</span>)
+		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">ExecuteTemplate</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;layout&#34;</span>, <span style="color:#e6db74">&#34;hello world&#34;</span>)
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><p>layout.html</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;layout&#34;}}
+<span style="color:#75715e">&lt;!DOCTYPE html&gt;</span>
+&lt;<span style="color:#f92672">html</span> <span style="color:#a6e22e">lang</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+&lt;<span style="color:#f92672">head</span>&gt;
+    &lt;<span style="color:#f92672">meta</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UTF-8&#34;</span>&gt;
+    &lt;<span style="color:#f92672">title</span>&gt;Title&lt;/<span style="color:#f92672">title</span>&gt;
+    &lt;<span style="color:#f92672">link</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stylesheet&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css&#34;</span> <span style="color:#a6e22e">integrity</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N&#34;</span> <span style="color:#a6e22e">crossorigin</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;anonymous&#34;</span>&gt;
+&lt;/<span style="color:#f92672">head</span>&gt;
+&lt;<span style="color:#f92672">body</span>&gt;
+&lt;<span style="color:#f92672">ul</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav nav-tabs&#34;</span>&gt;
+    &lt;<span style="color:#f92672">li</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav-item&#34;</span>&gt;
+        &lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav-link active&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#&#34;</span>&gt;Active&lt;/<span style="color:#f92672">a</span>&gt;
+    &lt;/<span style="color:#f92672">li</span>&gt;
+    &lt;<span style="color:#f92672">li</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav-item&#34;</span>&gt;
+        &lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav-link&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#&#34;</span>&gt;Link&lt;/<span style="color:#f92672">a</span>&gt;
+    &lt;/<span style="color:#f92672">li</span>&gt;
+    &lt;<span style="color:#f92672">li</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav-item&#34;</span>&gt;
+        &lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav-link&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#&#34;</span>&gt;Link&lt;/<span style="color:#f92672">a</span>&gt;
+    &lt;/<span style="color:#f92672">li</span>&gt;
+    &lt;<span style="color:#f92672">li</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav-item&#34;</span>&gt;
+        &lt;<span style="color:#f92672">a</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nav-link disabled&#34;</span>&gt;Disabled&lt;/<span style="color:#f92672">a</span>&gt;
+    &lt;/<span style="color:#f92672">li</span>&gt;
+&lt;/<span style="color:#f92672">ul</span>&gt;
+
+{{ template &#34;content&#34; .}}
+
+&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;
+{{end}}
+</code></pre></div><p>home.html</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;content&#34;}}
+&lt;<span style="color:#f92672">h1</span>&gt;Home&lt;/<span style="color:#f92672">h1</span>&gt;
+{{if eq . &#34;hello world&#34;}}
+    yes
+{{end}}
+{{end}}
+</code></pre></div><p>about.html</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">{{define &#34;content&#34;}}
+&lt;<span style="color:#f92672">h1</span>&gt;About&lt;/<span style="color:#f92672">h1</span>&gt;
+{{end}}
+</code></pre></div><h2 id="router">router</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">controller</span>.<span style="color:#a6e22e">RegisterRoutes</span>()
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><p>controller</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">RegisterRoutes</span>() {
+
+	<span style="color:#a6e22e">registerHomeRoutes</span>()
+	<span style="color:#a6e22e">registerAboutRoutes</span>()
+}
+</code></pre></div><p>home</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">registerHomeRoutes</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/home&#34;</span>, <span style="color:#a6e22e">handleHome</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">handleHome</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;layout.html&#34;</span>, <span style="color:#e6db74">&#34;home.html&#34;</span>)
+	<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">ExecuteTemplate</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;layout&#34;</span>, <span style="color:#e6db74">&#34;hello world&#34;</span>)
+}
+</code></pre></div><h2 id="json">JSON</h2>
+<p>Encoder/Decoder</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/process&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Method</span> {
+		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodPost</span>:
+			<span style="color:#a6e22e">dec</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewDecoder</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Body</span>)
+			<span style="color:#a6e22e">com</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">company</span>{}
+			<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dec</span>.<span style="color:#a6e22e">Decode</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">com</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+				<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+				<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+				<span style="color:#66d9ef">return</span>
+			}
+			<span style="color:#a6e22e">enc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#a6e22e">w</span>)
+			<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">enc</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">com</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+				<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>.<span style="color:#a6e22e">Error</span>())
+				<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusInternalServerError</span>)
+				<span style="color:#66d9ef">return</span>
+			}
+		<span style="color:#66d9ef">default</span>:
+			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusMethodNotAllowed</span>)
+		}
+
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><h2 id="middleware">Middleware</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">company</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Id</span>      <span style="color:#66d9ef">int</span>    <span style="color:#e6db74">`json:&#34;id&#34;`</span>
+	<span style="color:#a6e22e">Name</span>    <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;name&#34;`</span>
+	<span style="color:#a6e22e">Country</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;country&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/process&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">com</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">company</span>{
+			<span style="color:#a6e22e">Id</span>:      <span style="color:#ae81ff">1</span>,
+			<span style="color:#a6e22e">Name</span>:    <span style="color:#e6db74">&#34;google&#34;</span>,
+			<span style="color:#a6e22e">Country</span>: <span style="color:#e6db74">&#34;USA&#34;</span>,
+		}
+		<span style="color:#a6e22e">encoder</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#a6e22e">w</span>)
+		<span style="color:#a6e22e">encoder</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">com</span>)
+	})
+
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, new(<span style="color:#a6e22e">middle</span>.<span style="color:#a6e22e">AuthMiddle</span>))
+}
+</code></pre></div><p>中间件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AuthMiddle</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Next</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handler</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">AuthMiddle</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">Next</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">Next</span> = <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultServeMux</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Header</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;Authrization&#34;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {
+		<span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">Next</span>.<span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>)
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusUnauthorized</span>)
+	}
+}
+</code></pre></div><h2 id="context">Context</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">company</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Id</span>      <span style="color:#66d9ef">int</span>    <span style="color:#e6db74">`json:&#34;id&#34;`</span>
+	<span style="color:#a6e22e">Name</span>    <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;name&#34;`</span>
+	<span style="color:#a6e22e">Country</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`json:&#34;country&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/process&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">com</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">company</span>{
+			<span style="color:#a6e22e">Id</span>:      <span style="color:#ae81ff">1</span>,
+			<span style="color:#a6e22e">Name</span>:    <span style="color:#e6db74">&#34;google&#34;</span>,
+			<span style="color:#a6e22e">Country</span>: <span style="color:#e6db74">&#34;USA&#34;</span>,
+		}
+		<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+		<span style="color:#a6e22e">encoder</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">NewEncoder</span>(<span style="color:#a6e22e">w</span>)
+		<span style="color:#a6e22e">encoder</span>.<span style="color:#a6e22e">Encode</span>(<span style="color:#a6e22e">com</span>)
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">middle</span>.<span style="color:#a6e22e">TimeoutMiddle</span>{<span style="color:#a6e22e">Next</span>: new(<span style="color:#a6e22e">middle</span>.<span style="color:#a6e22e">AuthMiddle</span>)})
+}
+</code></pre></div><p>auth中间件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AuthMiddle</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Next</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handler</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">am</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">AuthMiddle</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">am</span>.<span style="color:#a6e22e">Next</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">am</span>.<span style="color:#a6e22e">Next</span> = <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultServeMux</span>
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Header</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;Authrization&#34;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {
+		<span style="color:#a6e22e">am</span>.<span style="color:#a6e22e">Next</span>.<span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>)
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusUnauthorized</span>)
+	}
+}
+</code></pre></div><p>timeout中间件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">TimeoutMiddle</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Next</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handler</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">tm</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TimeoutMiddle</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">tm</span>.<span style="color:#a6e22e">Next</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">tm</span>.<span style="color:#a6e22e">Next</span> = <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">DefaultServeMux</span>
+	}
+	<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Context</span>()
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">WithContext</span>(<span style="color:#a6e22e">ctx</span>)
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">struct</span>{})
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">tm</span>.<span style="color:#a6e22e">Next</span>.<span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>)
+		<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">struct</span>{}{}
+	}()
+	<span style="color:#66d9ef">select</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>:
+		<span style="color:#66d9ef">return</span>
+	<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>():
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusRequestTimeout</span>)
+	}
+	<span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>()
+}
+</code></pre></div><h2 id="https">HTTPS</h2>
+<p>生成https证书</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">go run C:<span style="color:#ae81ff">\M</span>ySoft<span style="color:#ae81ff">\g</span>o<span style="color:#ae81ff">\s</span>rc<span style="color:#ae81ff">\c</span>rypto<span style="color:#ae81ff">\t</span>ls<span style="color:#ae81ff">\g</span>enerate_cert.go -host localhost
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/home&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;hello&#34;</span>))
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServeTLS</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#e6db74">&#34;cert.pem&#34;</span>, <span style="color:#e6db74">&#34;key.pem&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><p>http2</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/home&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">pusher</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">w</span>.(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Pusher</span>); <span style="color:#a6e22e">ok</span> {
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;push ok&#34;</span>)
+			<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">pusher</span>.<span style="color:#a6e22e">Push</span>(<span style="color:#e6db74">&#34;/css/app.css&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">PushOptions</span>{
+				<span style="color:#a6e22e">Header</span>: <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Header</span>{
+					<span style="color:#e6db74">&#34;Content-Type&#34;</span>: []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;text/css&#34;</span>},
+				},
+			})
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;push err:&#34;</span>, <span style="color:#a6e22e">err</span>)
+			}
+			<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">pusher</span>.<span style="color:#a6e22e">Push</span>(<span style="color:#e6db74">&#34;/img/01.jpg&#34;</span>, <span style="color:#66d9ef">nil</span>)
+			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+				<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;push err:&#34;</span>, <span style="color:#a6e22e">err</span>)
+			}
+		}
+		<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">ParseFiles</span>(<span style="color:#e6db74">&#34;layout.html&#34;</span>, <span style="color:#e6db74">&#34;home.html&#34;</span>)
+		<span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">ExecuteTemplate</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;layout&#34;</span>, <span style="color:#e6db74">&#34;hello world&#34;</span>)
+	})
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/css/&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">FileServer</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Dir</span>(<span style="color:#e6db74">&#34;wwwroot&#34;</span>)))
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/img/&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">FileServer</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Dir</span>(<span style="color:#e6db74">&#34;wwwroot&#34;</span>)))
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServeTLS</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#e6db74">&#34;cert.pem&#34;</span>, <span style="color:#e6db74">&#34;key.pem&#34;</span>, <span style="color:#66d9ef">nil</span>)
+}
+</code></pre></div><h2 id="pprof">pprof</h2>
+<p>通过web方式查看  <code>http://localhost:8000/debug/pprof/</code>
+通过cmdline方式查看 <code>go tool pprof http://localhost:8000/debug/pprof/heap</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;net/http/pprof&#34;</span>
+)
+
+<span style="color:#75715e">// web  http://localhost:8000/debug/pprof/
+</span><span style="color:#75715e">// cmdline : go tool pprof http://localhost:8000/debug/pprof/heap
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">server</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>{
+		<span style="color:#a6e22e">Addr</span>: <span style="color:#e6db74">&#34;:8080&#34;</span>,
+	}
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/home&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;hello world&#34;</span>))
+	})
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8000&#34;</span>, <span style="color:#66d9ef">nil</span>)
+	<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">ListenAndServe</span>()
+}
+</code></pre></div>
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>相关文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">简单分布式系统</a></li>
+        
+        <li><a href="/post/go-micro%E6%A1%88%E4%BE%8B/">Go Micro案例</a></li>
+        
+        <li><a href="/post/go-micro%E7%AC%94%E8%AE%B0/">Go Micro笔记</a></li>
+        
+        <li><a href="/post/grpc%E7%AC%94%E8%AE%B0/">Grpc笔记</a></li>
+        
+        <li><a href="/post/RPC%E7%AC%94%E8%AE%B0/">RPC笔记</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/Golang' target="_blank">Golang</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div class="container">
+        &copy; 2023 <a href="https://kevinbin123.github.io/">abin の 成长之路 By abin</a>.本站博客未经授权禁止转载.
+		<br>
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="http://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>
+		       
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/bootstrap.min.js'></script>
+
+    <script src='/js/post_category.1.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kevinbin123.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kevinbin123.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/Koa2&#43;MongoDB%E7%AE%80%E4%B9%A6%E5%90%8E%E5%8F%B0%E7%9A%84%E5%90%8E%E7%AB%AF/" title="Koa2&#43;MongoDB简书后台的后端" target="_blank">Koa2&#43;MongoDB简书后台的后端</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/vue2&#43;ElementUI%E7%AE%80%E4%B9%A6%E5%90%8E%E5%8F%B0%E5%89%8D%E7%AB%AF/" title="Vue2&#43;ElementUI简书后台前端" target="_blank">Vue2&#43;ElementUI简书后台前端</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/js/" title="Js" target="_blank">Js</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/http/" title="go Http标准库的使用" target="_blank">go Http标准库的使用</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/%E7%AE%80%E5%8D%95%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" title="简单分布式系统" target="_blank">简单分布式系统</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/" title="Fyne案例之音乐播放器" target="_blank">Fyne案例之音乐播放器</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/fyne%E6%A1%88%E4%BE%8B%E4%B9%8B%E6%8E%A5%E4%BD%8F%E4%BD%A0%E5%B0%8F%E6%B8%B8%E6%88%8F/" title="Fyne案例之接住你小游戏" target="_blank">Fyne案例之接住你小游戏</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%89%8D%E7%AB%AF/" title="Gin&#43;vue2博客笔记（前端）" target="_blank">Gin&#43;vue2博客笔记（前端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/gin&#43;vue2%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0%E5%90%8E%E7%AB%AF/" title="Gin&#43;vue2博客笔记（后端）" target="_blank">Gin&#43;vue2博客笔记（后端）</a>
+    </li>
+    
+    <li>
+        <a href="https://kevinbin123.github.io/post/PWA%E7%AC%94%E8%AE%B0/" title="PWA笔记" target="_blank">PWA笔记</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kevinbin123.github.io/categories/DB/">DB (2)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Golang/">Golang (20)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/JavaScript/">JavaScript (4)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/Network/">Network (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/container/">container (1)</a></li>
+    
+    <li><a href="https://kevinbin123.github.io/categories/other/">other (5)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kevinbin123.github.io/tags/DB/">DB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Fyne/">Fyne</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang/">Golang</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Golang%E6%A1%88%E4%BE%8B/">Golang案例</a>
+    
+    <a href="https://kevinbin123.github.io/tags/JavaScript/">JavaScript</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Koa2/">Koa2</a>
+    
+    <a href="https://kevinbin123.github.io/tags/MongoDB/">MongoDB</a>
+    
+    <a href="https://kevinbin123.github.io/tags/Network/">Network</a>
+    
+    <a href="https://kevinbin123.github.io/tags/container/">container</a>
+    
+    <a href="https://kevinbin123.github.io/tags/gin/">gin</a>
+    
+    <a href="https://kevinbin123.github.io/tags/other/">other</a>
+    
+    <a href="https://kevinbin123.github.io/tags/vue2/">vue2</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.liwenzhou.com/" title="go语言学习之路">李文周的博客</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://kevinbin123.github.io/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
